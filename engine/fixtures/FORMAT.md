@@ -68,7 +68,7 @@ Each file in `fixtures/scenarios/` is one JSON scenario, a single-fund run (FINA
 - `buys` are in execution order. On the same day, round-up batches come first in cut-off order, then dividend reinvestments in ex-date order.
 - `series` has one point per calendar-open day in [start, end] (R-13.2).
 - `transactions_used` counts rows that produced a round-up candidate: posted purchase debits inside the window, including whole-dollar ones that round up $0. `transactions_ignored` counts every other row.
-- When the run fails, `status` is `"error"`, `error_code` is set, and `summary`, `buys` and `series` are `null`.
+- When the run fails, `status` is `"error"`, `error_code` is set, and `summary`, `buys`, `series`, `transactions_used` and `transactions_ignored` are all `null`.
 
 ### Error codes
 
@@ -76,11 +76,16 @@ Each file in `fixtures/scenarios/` is one JSON scenario, a single-fund run (FINA
 |---|---|
 | `WINDOW_OUTSIDE_DATA` | R-12.1 (start before first close, end after last close, or start > end) |
 | `GAP_TOO_LONG` | R-6.3(a) |
-| `GAP_ON_EVENT` | R-6.3(b) |
+| `GAP_ON_EVENT` | R-6.3(b): an event ex-date (on or before the data end) has no close |
 | `EVENT_NOT_CALENDAR_DAY` | R-6.3(c): split/dividend ex-date not a calendar-open day |
 | `CLOSE_ON_CLOSED_DAY` | R-6.3(c): a close dated on a day not in `calendar` |
 | `SPLIT_ADJUSTED_SERIES` | R-7.5 |
 | `EX_AFTER_PAY` | R-8.7 |
 | `MISSING_PAY_DATE` | R-8.8 |
 
-Series validation (R-6.3(c), R-7.5, R-8.7, R-8.8) covers the **whole** market input. Gap rules (R-6.3(a)(b)) apply only inside the window. If several errors apply, report the first in this order: `WINDOW_OUTSIDE_DATA`, `CLOSE_ON_CLOSED_DAY`, `EVENT_NOT_CALENDAR_DAY`, `MISSING_PAY_DATE`, `EX_AFTER_PAY`, `SPLIT_ADJUSTED_SERIES`, `GAP_ON_EVENT`, `GAP_TOO_LONG`.
+Scope of each check:
+- **Whole market input:** R-6.3(b) `GAP_ON_EVENT`, R-6.3(c), R-7.5, R-8.7 and R-8.8. Exception: an event whose ex-date is **after the data end** (the last close in the input) is "no data yet" (R-6.5). It is ignored entirely: no check of any kind applies to it, and it has no effect.
+- **Inside the window only:** R-6.3(a) `GAP_TOO_LONG`. Only missing days inside [start, end] count toward the run of 4.
+- In R-7.5, "the last session before X" is the last day before X that has a close (skipping gaps).
+
+If several errors apply, report the first in this order: `WINDOW_OUTSIDE_DATA`, `CLOSE_ON_CLOSED_DAY`, `EVENT_NOT_CALENDAR_DAY`, `MISSING_PAY_DATE`, `EX_AFTER_PAY`, `GAP_ON_EVENT`, `SPLIT_ADJUSTED_SERIES`, `GAP_TOO_LONG`. A split whose ex-date has no close is therefore `GAP_ON_EVENT`.
