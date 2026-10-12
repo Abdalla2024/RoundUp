@@ -51,8 +51,11 @@ MUTATIONS = [
     ("3-decimal amounts accepted", "R-0.1", S + "money.py",
      [(r'(\.\d{1,2})?$")', r'(\.\d{1,3})?$")')]),
     ("display rounds half-up", "R-0.4", S + "money.py",
-     [("q = value.quantize(exp, rounding=ROUND_HALF_EVEN, context=CONTEXT)",
-       "q = value.quantize(exp, rounding='ROUND_HALF_UP', context=CONTEXT)")]),
+     [("q = snapped.quantize(exp, rounding=ROUND_HALF_EVEN, context=CONTEXT)",
+       "q = snapped.quantize(exp, rounding='ROUND_HALF_UP', context=CONTEXT)")]),
+    ("tie snap removed (cross-check finding)", "R-0.4", S + "money.py",
+     [("q = snapped.quantize(exp, rounding=ROUND_HALF_EVEN, context=CONTEXT)",
+       "q = value.quantize(exp, rounding=ROUND_HALF_EVEN, context=CONTEXT)")]),
     ("float trap removed", "R-0.5", S + "money.py",
      [("traps=[InvalidOperation, DivisionByZero, Overflow, FloatOperation])",
        "traps=[InvalidOperation, DivisionByZero, Overflow])")]),
@@ -122,7 +125,9 @@ def run_one(mut) -> tuple[bool, str]:
     with tempfile.TemporaryDirectory() as tmp:
         work = pathlib.Path(tmp) / "engine"
         shutil.copytree(HERE, work, ignore=shutil.ignore_patterns(".venv", "__pycache__", ".hypothesis",
-                                                                   "fixtures", "*.egg-info"))
+                                                                   "*.egg-info"))
+        shutil.copytree(HERE.parent / "crosscheck", pathlib.Path(tmp) / "crosscheck",
+                        ignore=shutil.ignore_patterns("__pycache__"))
         path = work / rel
         src = path.read_text()
         for old, new in edits:
@@ -132,9 +137,11 @@ def run_one(mut) -> tuple[bool, str]:
         path.write_text(src)
         proc = subprocess.run([str(PY), "-m", "pytest", "-x", "-q", "-p", "no:cacheprovider", "--no-header"],
                               cwd=work, capture_output=True, text=True)
-        caught = proc.returncode != 0
         failed = [ln for ln in proc.stdout.splitlines() if ln.startswith("FAILED")]
-        return caught, failed[0][7:90] if failed else proc.stdout.strip().splitlines()[-1]
+        if proc.returncode != 0 and not failed:
+            # A collection/import error is a harness problem, never a "catch".
+            return False, "HARNESS ERROR: " + proc.stdout.strip().splitlines()[-1]
+        return bool(failed), failed[0][7:90] if failed else proc.stdout.strip().splitlines()[-1]
 
 
 def main() -> int:
