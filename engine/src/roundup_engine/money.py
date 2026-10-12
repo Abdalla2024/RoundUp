@@ -54,8 +54,14 @@ def cents_to_decimal(cents: int) -> Decimal:
     return Decimal(cents).scaleb(-2)
 
 
+# Values carry at most ~1e-24 of arithmetic residue from 28-digit division (R-0.3). Snapping to 20
+# places first removes that residue, so an exact half-cent tie still rounds half-even (R-0.4).
+SNAP = Decimal("1e-20")
+
+
 def _q(value: Decimal, exp: Decimal) -> str:
-    q = value.quantize(exp, rounding=ROUND_HALF_EVEN, context=CONTEXT)
+    snapped = value.quantize(SNAP, rounding=ROUND_HALF_EVEN, context=Context(prec=60))
+    q = snapped.quantize(exp, rounding=ROUND_HALF_EVEN, context=CONTEXT)
     if q.is_zero():
         q = abs(q)  # never display "-0.00"
     return format(q, "f")

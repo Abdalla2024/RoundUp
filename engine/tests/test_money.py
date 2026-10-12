@@ -53,3 +53,12 @@ def test_context_traps_float_operation():
     assert CONTEXT.traps[FloatOperation]
     with pytest.raises(FloatOperation):
         CONTEXT.create_decimal(1.1)
+
+
+def test_r_0_4_exact_ties_survive_28_digit_residue():
+    """Regression (cross-check finding, scenario R-5288): an exact half-cent tie computed as
+    9.485000000000000000000000001 must still round half-even to 9.48."""
+    assert display_money(Decimal("9.485000000000000000000000001")) == "9.48"
+    assert display_money(Decimal("9.484999999999999999999999999")) == "9.48"
+    assert display_money(Decimal("9.495000000000000000000000001")) == "9.50"
+    assert display_shares(Decimal("0.0000025000000000000000000001")) == "0.000002"

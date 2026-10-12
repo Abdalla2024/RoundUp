@@ -176,3 +176,11 @@ def test_r_5_7_fund_runs_are_independent(seed_a, seed_b):
     first = run_scenario(a)
     run_scenario(b)
     assert run_scenario(a) == first
+
+
+def test_regression_r5288_half_cent_tie_in_series():
+    """Found by the independent cross-check: the exact value on 2024-07-24 is 9.485 (a tie)."""
+    s = generate(5288, n_days=40 + 5288 % 60)
+    out = run_scenario(s)
+    point = [p for p in out["series"] if p["date"] == "2024-07-24"][0]
+    assert point["value"] == "9.48"
