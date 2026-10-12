@@ -1,0 +1,13 @@
+{"id": "S3", "description": "weekly, reinvest off. Week of 05-06..05-12 (incl. Sunday purchase) = 90+50+60 = 2.00, bought 05-13 @11 = 2/11 sh. 05-14 round-up 1c, week cut-off 05-19 > end -> cash. Dividend ex 05-07 earns nothing (0 shares). Dividend ex 05-14 pay 05-20: receivable 2/11. End value 24/11+0.01+2/11; gain 4/11; pct 40000/2211=18.09.",
+ "covers": ["R-5.2","R-5.4","R-8.3","R-8.4","R-13.1"],
+ "market": {"symbol": "T", "calendar": ["2024-05-06","2024-05-07","2024-05-08","2024-05-09","2024-05-10","2024-05-13","2024-05-14"],
+   "closes": {"2024-05-06":"10.00","2024-05-07":"10.00","2024-05-08":"10.00","2024-05-09":"10.00","2024-05-10":"10.00","2024-05-13":"11.00","2024-05-14":"12.00"},
+   "dividends": [{"ex_date":"2024-05-07","pay_date":"2024-05-08","amount_raw":"0.30"},{"ex_date":"2024-05-14","pay_date":"2024-05-20","amount_raw":"1.00"}],
+   "splits": []},
+ "transactions": [
+  {"posted_date":"2024-05-06","amount":"9.10","direction":"debit","status":"posted","type":"","description":"a"},
+  {"posted_date":"2024-05-09","amount":"0.50","direction":"debit","status":"posted","type":"","description":"b"},
+  {"posted_date":"2024-05-12","amount":"0.40","direction":"debit","status":"posted","type":"","description":"c"},
+  {"posted_date":"2024-05-14","amount":"0.99","direction":"debit","status":"posted","type":"","description":"d"}
+ ],
+ "config": {"strategy":"weekly","start":"2024-05-06","end":"2024-05-14","reinvest":"false"}}

@@ -1,0 +1,585 @@
+{
+ "config": {
+  "end": "2024-08-09",
+  "reinvest": "true",
+  "start": "2024-05-09",
+  "strategy": "weekly"
+ },
+ "covers": [],
+ "description": "random scenario seed 1010",
+ "id": "R-1010",
+ "market": {
+  "calendar": [
+   "2024-05-06",
+   "2024-05-07",
+   "2024-05-08",
+   "2024-05-09",
+   "2024-05-10",
+   "2024-05-13",
+   "2024-05-14",
+   "2024-05-15",
+   "2024-05-16",
+   "2024-05-17",
+   "2024-05-20",
+   "2024-05-21",
+   "2024-05-22",
+   "2024-05-23",
+   "2024-05-24",
+   "2024-05-27",
+   "2024-05-28",
+   "2024-05-29",
+   "2024-05-30",
+   "2024-05-31",
+   "2024-06-03",
+   "2024-06-04",
+   "2024-06-05",
+   "2024-06-06",
+   "2024-06-07",
+   "2024-06-10",
+   "2024-06-11",
+   "2024-06-12",
+   "2024-06-14",
+   "2024-06-17",
+   "2024-06-18",
+   "2024-06-19",
+   "2024-06-20",
+   "2024-06-21",
+   "2024-06-24",
+   "2024-06-25",
+   "2024-06-26",
+   "2024-06-27",
+   "2024-06-28",
+   "2024-07-01",
+   "2024-07-03",
+   "2024-07-04",
+   "2024-07-05",
+   "2024-07-08",
+   "2024-07-09",
+   "2024-07-11",
+   "2024-07-12",
+   "2024-07-16",
+   "2024-07-17",
+   "2024-07-18",
+   "2024-07-19",
+   "2024-07-22",
+   "2024-07-23",
+   "2024-07-24",
+   "2024-07-25",
+   "2024-07-26",
+   "2024-07-29",
+   "2024-07-30",
+   "2024-07-31",
+   "2024-08-01",
+   "2024-08-02",
+   "2024-08-05",
+   "2024-08-06",
+   "2024-08-07",
+   "2024-08-08",
+   "2024-08-09",
+   "2024-08-12",
+   "2024-08-13",
+   "2024-08-14",
+   "2024-08-15"
+  ],
+  "closes": {
+   "2024-05-06": "117.2600",
+   "2024-05-07": "113.4800",
+   "2024-05-08": "115.9000",
+   "2024-05-09": "116.1900",
+   "2024-05-10": "116.4200",
+   "2024-05-13": "115.6600",
+   "2024-05-14": "111.4400",
+   "2024-05-15": "110.8000",
+   "2024-05-16": "108.2000",
+   "2024-05-17": "104.6500",
+   "2024-05-20": "106.8600",
+   "2024-05-21": "104.8300",
+   "2024-05-22": "108.1100",
+   "2024-05-23": "110.5300",
+   "2024-05-24": "114.8100",
+   "2024-05-27": "114.7400",
+   "2024-05-28": "119.0900",
+   "2024-05-29": "117.1600",
+   "2024-05-30": "112.7300",
+   "2024-05-31": "36.4467",
+   "2024-06-03": "35.1467",
+   "2024-06-04": "35.0500",
+   "2024-06-06": "36.1167",
+   "2024-06-07": "35.0600",
+   "2024-06-12": "37.5567",
+   "2024-06-14": "36.7633",
+   "2024-06-17": "36.1433",
+   "2024-06-18": "34.8700",
+   "2024-06-24": "34.0967",
+   "2024-06-25": "32.8533",
+   "2024-06-26": "32.5767",
+   "2024-06-27": "33.7633",
+   "2024-06-28": "32.7767",
+   "2024-07-01": "33.1800",
+   "2024-07-03": "31.8533",
+   "2024-07-04": "31.2067",
+   "2024-07-05": "32.2567",
+   "2024-07-08": "33.5433",
+   "2024-07-09": "32.5000",
+   "2024-07-11": "33.3133",
+   "2024-07-12": "33.7733",
+   "2024-07-16": "34.2700",
+   "2024-07-17": "34.8233",
+   "2024-07-18": "35.6033",
+   "2024-07-19": "36.8333",
+   "2024-07-22": "35.4233",
+   "2024-07-23": "36.4167",
+   "2024-07-24": "36.4967",
+   "2024-07-25": "35.8467",
+   "2024-07-26": "34.4900",
+   "2024-07-29": "33.2300",
+   "2024-07-30": "32.7233",
+   "2024-07-31": "32.1433",
+   "2024-08-01": "31.7333",
+   "2024-08-02": "32.6267",
+   "2024-08-05": "32.6900",
+   "2024-08-06": "32.4667",
+   "2024-08-07": "33.2900",
+   "2024-08-08": "33.8033",
+   "2024-08-09": "33.1833",
+   "2024-08-12": "32.7633",
+   "2024-08-13": "32.3567",
+   "2024-08-14": "32.7433",
+   "2024-08-15": "32.1667"
+  },
+  "dividends": [],
+  "splits": [
+   {
+    "ex_date": "2024-05-31",
+    "ratio": "3"
+   }
+  ],
+  "symbol": "TEST"
+ },
+ "transactions": [
+  {
+   "amount": "40.21",
+   "description": "ATM WITHDRAWAL",
+   "direction": "debit",
+   "posted_date": "2024-07-21",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "36.52",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-07-20",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "84.79",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-05-17",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "52.54",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-08-03",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "91.21",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-19",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "72.54",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-07-31",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "21.91",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-06-23",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "80.19",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-14",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "1.234",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-05",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "97.98",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-08-01",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "11.42",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-08-05",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "43.62",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-31",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "7.35",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-05-19",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "61.90",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-06-21",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "75.62",
+   "description": "COFFEE",
+   "direction": "credit",
+   "posted_date": "2024-05-16",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "57.62",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-08-08",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "49.58",
+   "description": "ATM WITHDRAWAL",
+   "direction": "debit",
+   "posted_date": "2024-05-18",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "47.02",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-03",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "65.68",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-03",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "28.82",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-29",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "13.83",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-07-11",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "20.67",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-07",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "91.61",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-07-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "95.68",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-05-17",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "69.56",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-08",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "99.02",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-06-26",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "86.00",
+   "description": "ATM WITHDRAWAL",
+   "direction": "debit",
+   "posted_date": "2024-05-18",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "87.22",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-05-15",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "81.04",
+   "description": "GROCERY",
+   "direction": "credit",
+   "posted_date": "2024-08-01",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "33.31",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-06-15",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "40.47",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-14",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "74.42",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-26",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "81.72",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-06-13",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "1.234",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-05-23",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "67.98",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-07-11",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "84.63",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-06-29",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "13.22",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-07-12",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "35.61",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-05-23",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "44.03",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-23",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "10.24",
+   "description": "ATM WITHDRAWAL",
+   "direction": "debit",
+   "posted_date": "2024-08-06",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.50",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-12",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "90.55",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-22",
+   "status": "cancelled",
+   "type": ""
+  },
+  {
+   "amount": "78.12",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-08-08",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "93.30",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-07-22",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "31.01",
+   "description": "ATM WITHDRAWAL",
+   "direction": "debit",
+   "posted_date": "2024-07-20",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "91.98",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-06-12",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "76.12",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-06-07",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "31.69",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-07-31",
+   "status": "pending",
+   "type": ""
+  },
+  {
+   "amount": "8.92",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-06-14",
+   "status": "pending",
+   "type": ""
+  },
+  {
+   "amount": "94.73",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-06-05",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "50.20",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-07-14",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "98.53",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-06-07",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "48.34",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-07-13",
+   "status": "posted",
+   "type": ""
+  }
+ ]
+}

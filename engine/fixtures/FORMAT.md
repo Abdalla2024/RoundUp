@@ -87,5 +87,7 @@ Scope of each check:
 - **Whole market input:** R-6.3(b) `GAP_ON_EVENT`, R-6.3(c), R-7.5, R-8.7 and R-8.8. Exception: an event whose ex-date is **after the data end** (the last close in the input) is "no data yet" (R-6.5). It is ignored entirely: no check of any kind applies to it, and it has no effect.
 - **Inside the window only:** R-6.3(a) `GAP_TOO_LONG`. Only missing days inside [start, end] count toward the run of 4.
 - In R-7.5, "the last session before X" is the last day before X that has a close (skipping gaps).
+- Dividend **pay dates may be any calendar date**, including weekends and holidays. Paid status uses the pay date itself; reinvestment uses the first session on or after it (cross-check AMB-17).
+- Prices, dividend amounts and split ratios may have any number of decimals and are parsed exactly. The two-decimal limit of R-0.1 applies only to transaction amounts (cross-check AMB-18).
 
 If several errors apply, report the first in this order: `WINDOW_OUTSIDE_DATA`, `CLOSE_ON_CLOSED_DAY`, `EVENT_NOT_CALENDAR_DAY`, `MISSING_PAY_DATE`, `EX_AFTER_PAY`, `GAP_ON_EVENT`, `SPLIT_ADJUSTED_SERIES`, `GAP_TOO_LONG`. A split whose ex-date has no close is therefore `GAP_ON_EVENT`.

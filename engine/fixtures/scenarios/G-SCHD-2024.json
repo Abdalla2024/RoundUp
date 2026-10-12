@@ -1,0 +1,203 @@
+{
+ "config": {
+  "end": "2024-10-31",
+  "reinvest": "true",
+  "start": "2024-10-01",
+  "strategy": "threshold"
+ },
+ "covers": [
+  "R-7.4",
+  "R-7.5",
+  "R-8.3"
+ ],
+ "description": "SCHD-shaped 3-for-1 split (sample prices) with a dividend whose ex-date is before the split and pay date after it",
+ "id": "G-SCHD-2024",
+ "market": {
+  "calendar": [
+   "2024-10-01",
+   "2024-10-02",
+   "2024-10-03",
+   "2024-10-04",
+   "2024-10-07",
+   "2024-10-08",
+   "2024-10-09",
+   "2024-10-10",
+   "2024-10-11",
+   "2024-10-14",
+   "2024-10-15",
+   "2024-10-16",
+   "2024-10-17",
+   "2024-10-18",
+   "2024-10-21",
+   "2024-10-22",
+   "2024-10-23",
+   "2024-10-24",
+   "2024-10-25",
+   "2024-10-28",
+   "2024-10-29",
+   "2024-10-30",
+   "2024-10-31"
+  ],
+  "closes": {
+   "2024-10-01": "81.00",
+   "2024-10-02": "81.00",
+   "2024-10-03": "81.00",
+   "2024-10-04": "81.00",
+   "2024-10-07": "80.25",
+   "2024-10-08": "80.25",
+   "2024-10-09": "80.25",
+   "2024-10-10": "80.25",
+   "2024-10-11": "26.75",
+   "2024-10-14": "26.75",
+   "2024-10-15": "26.75",
+   "2024-10-16": "26.75",
+   "2024-10-17": "26.75",
+   "2024-10-18": "26.75",
+   "2024-10-21": "26.75",
+   "2024-10-22": "26.75",
+   "2024-10-23": "26.75",
+   "2024-10-24": "26.75",
+   "2024-10-25": "26.75",
+   "2024-10-28": "26.75",
+   "2024-10-29": "26.75",
+   "2024-10-30": "26.75",
+   "2024-10-31": "26.75"
+  },
+  "dividends": [
+   {
+    "amount_raw": "0.75",
+    "ex_date": "2024-10-07",
+    "pay_date": "2024-10-15"
+   }
+  ],
+  "splits": [
+   {
+    "ex_date": "2024-10-11",
+    "ratio": "3"
+   }
+  ],
+  "symbol": "TEST"
+ },
+ "transactions": [
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.60",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2024-10-02",
+   "status": "posted",
+   "type": ""
+  }
+ ]
+}

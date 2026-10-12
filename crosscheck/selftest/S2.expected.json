@@ -1,0 +1,9 @@
+{"status":"ok","error_code":null,
+ "summary":{"contributed":"1.45","roundup_buys":"3","dividend_buys":"1","dividends_earned":"0.01","dividends_paid":"0.01","shares":"0.057051","holdings_value":"1.54","uninvested_cash":"0.00","receivables":"0.00","ending_value":"1.54","gain":"0.09","gain_pct":"6.23","as_of":"2024-03-08"},
+ "buys":[
+  {"date":"2024-03-04","kind":"roundup","cash":"0.50","price":"50.00","shares":"0.010000","delayed_by_data_gap":"false"},
+  {"date":"2024-03-05","kind":"roundup","cash":"0.20","price":"52.00","shares":"0.003846","delayed_by_data_gap":"false"},
+  {"date":"2024-03-07","kind":"roundup","cash":"0.75","price":"26.00","shares":"0.028846","delayed_by_data_gap":"true"},
+  {"date":"2024-03-08","kind":"dividend","cash":"0.01","price":"27.00","shares":"0.000513","delayed_by_data_gap":"false"}],
+ "series":[{"date":"2024-03-01","value":"0.50","carried":"false"},{"date":"2024-03-04","value":"0.70","carried":"false"},{"date":"2024-03-05","value":"1.47","carried":"false"},{"date":"2024-03-06","value":"1.47","carried":"true"},{"date":"2024-03-07","value":"1.48","carried":"false"},{"date":"2024-03-08","value":"1.54","carried":"false"}],
+ "transactions_used":"3","transactions_ignored":"0"}

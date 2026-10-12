@@ -1,0 +1,553 @@
+{
+ "config": {
+  "end": "2024-12-12",
+  "reinvest": "false",
+  "start": "2024-09-16",
+  "strategy": "monthly"
+ },
+ "covers": [],
+ "description": "random scenario seed 1013",
+ "id": "R-1013",
+ "market": {
+  "calendar": [
+   "2024-09-09",
+   "2024-09-10",
+   "2024-09-11",
+   "2024-09-12",
+   "2024-09-13",
+   "2024-09-16",
+   "2024-09-17",
+   "2024-09-18",
+   "2024-09-19",
+   "2024-09-23",
+   "2024-09-24",
+   "2024-09-25",
+   "2024-09-26",
+   "2024-09-27",
+   "2024-10-01",
+   "2024-10-02",
+   "2024-10-03",
+   "2024-10-04",
+   "2024-10-07",
+   "2024-10-08",
+   "2024-10-09",
+   "2024-10-10",
+   "2024-10-11",
+   "2024-10-14",
+   "2024-10-15",
+   "2024-10-16",
+   "2024-10-17",
+   "2024-10-18",
+   "2024-10-21",
+   "2024-10-22",
+   "2024-10-23",
+   "2024-10-24",
+   "2024-10-25",
+   "2024-10-28",
+   "2024-10-29",
+   "2024-10-30",
+   "2024-10-31",
+   "2024-11-01",
+   "2024-11-04",
+   "2024-11-05",
+   "2024-11-06",
+   "2024-11-07",
+   "2024-11-08",
+   "2024-11-11",
+   "2024-11-12",
+   "2024-11-13",
+   "2024-11-14",
+   "2024-11-15",
+   "2024-11-18",
+   "2024-11-19",
+   "2024-11-20",
+   "2024-11-21",
+   "2024-11-22",
+   "2024-11-25",
+   "2024-11-26",
+   "2024-11-27",
+   "2024-11-28",
+   "2024-12-02",
+   "2024-12-03",
+   "2024-12-04",
+   "2024-12-05",
+   "2024-12-06",
+   "2024-12-09",
+   "2024-12-10",
+   "2024-12-11",
+   "2024-12-12",
+   "2024-12-13",
+   "2024-12-16",
+   "2024-12-17",
+   "2024-12-18"
+  ],
+  "closes": {
+   "2024-09-09": "148.9000",
+   "2024-09-10": "152.6300",
+   "2024-09-11": "155.4300",
+   "2024-09-12": "150.6800",
+   "2024-09-13": "150.5900",
+   "2024-09-16": "150.7300",
+   "2024-09-17": "148.0800",
+   "2024-09-18": "148.7800",
+   "2024-09-23": "144.7700",
+   "2024-09-24": "146.3900",
+   "2024-09-25": "141.1700",
+   "2024-09-26": "140.3500",
+   "2024-09-27": "145.9500",
+   "2024-10-01": "148.7600",
+   "2024-10-02": "145.4300",
+   "2024-10-03": "148.4900",
+   "2024-10-04": "153.4700",
+   "2024-10-07": "148.8100",
+   "2024-10-08": "146.5200",
+   "2024-10-09": "151.9100",
+   "2024-10-10": "152.6700",
+   "2024-10-11": "152.9200",
+   "2024-10-14": "148.2700",
+   "2024-10-15": "148.3000",
+   "2024-10-16": "146.7500",
+   "2024-10-17": "145.8500",
+   "2024-10-18": "147.6100",
+   "2024-10-21": "147.8500",
+   "2024-10-22": "144.2600",
+   "2024-10-23": "149.6200",
+   "2024-10-24": "154.7500",
+   "2024-10-25": "154.0900",
+   "2024-10-28": "148.8700",
+   "2024-10-29": "147.1400",
+   "2024-10-30": "145.7500",
+   "2024-10-31": "148.8100",
+   "2024-11-01": "152.4100",
+   "2024-11-04": "149.6700",
+   "2024-11-05": "150.2300",
+   "2024-11-06": "156.0600",
+   "2024-11-07": "158.3700",
+   "2024-11-08": "164.3500",
+   "2024-11-11": "158.4200",
+   "2024-11-12": "154.3400",
+   "2024-11-13": "153.8300",
+   "2024-11-14": "159.6200",
+   "2024-11-15": "157.4900",
+   "2024-11-18": "153.2600",
+   "2024-11-19": "152.5100",
+   "2024-11-20": "154.7100",
+   "2024-11-21": "154.4600",
+   "2024-11-22": "159.1700",
+   "2024-11-25": "156.8000",
+   "2024-11-26": "152.0800",
+   "2024-11-27": "146.6800",
+   "2024-11-28": "145.4400",
+   "2024-12-02": "147.9000",
+   "2024-12-03": "151.2800",
+   "2024-12-04": "146.1900",
+   "2024-12-05": "144.9300",
+   "2024-12-06": "142.4100",
+   "2024-12-09": "137.4900",
+   "2024-12-10": "132.8300",
+   "2024-12-11": "135.4900",
+   "2024-12-12": "137.7500",
+   "2024-12-13": "132.3200",
+   "2024-12-16": "132.5500",
+   "2024-12-17": "128.1800",
+   "2024-12-18": "132.6600"
+  },
+  "dividends": [
+   {
+    "amount_raw": "1.970000",
+    "ex_date": "2024-12-09",
+    "pay_date": "2024-12-11"
+   },
+   {
+    "amount_raw": "2.040000",
+    "ex_date": "2024-10-28",
+    "pay_date": "2024-11-07"
+   },
+   {
+    "amount_raw": "0.750000",
+    "ex_date": "2024-11-01",
+    "pay_date": "2024-11-06"
+   }
+  ],
+  "splits": [],
+  "symbol": "TEST"
+ },
+ "transactions": [
+  {
+   "amount": "55.03",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-12-11",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "68.82",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-10-03",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "87.15",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-11-26",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "78.14",
+   "description": "COFFEE",
+   "direction": "credit",
+   "posted_date": "2024-11-19",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "74.72",
+   "description": "COFFEE",
+   "direction": "credit",
+   "posted_date": "2024-10-16",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "79.99",
+   "description": "GROCERY",
+   "direction": "credit",
+   "posted_date": "2024-10-05",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "76.05",
+   "description": "GROCERY",
+   "direction": "credit",
+   "posted_date": "2024-10-01",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "56.94",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-10-30",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "0.92",
+   "description": "ATM WITHDRAWAL",
+   "direction": "debit",
+   "posted_date": "2024-11-16",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "29.27",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-10-16",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "30.21",
+   "description": "ATM WITHDRAWAL",
+   "direction": "debit",
+   "posted_date": "2024-11-05",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "94.48",
+   "description": "GROCERY",
+   "direction": "credit",
+   "posted_date": "2024-10-21",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "66.37",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-10-11",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "97.46",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-10-20",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "84.56",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-09-30",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.58",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-10-30",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "59.64",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-11-27",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "49.63",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-11-05",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "69.40",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-11-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "78.76",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-09-18",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "4.02",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-09-25",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "44.01",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-11-13",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "21.43",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-11-14",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "42.98",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-11-20",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "1.57",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-09-20",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "50.87",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-12-06",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "40.20",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-10-28",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "92.99",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-11-24",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "31.94",
+   "description": "GROCERY",
+   "direction": "credit",
+   "posted_date": "2024-09-17",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "22.75",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-12-07",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "85.40",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-11-04",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "67.83",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-12-01",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "34.57",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-11-06",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "16.18",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-12-08",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "58.99",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-10-29",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "39.40",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-12-12",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "70.78",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-09-16",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "54.50",
+   "description": "COFFEE",
+   "direction": "credit",
+   "posted_date": "2024-12-04",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "92.59",
+   "description": "GROCERY",
+   "direction": "credit",
+   "posted_date": "2024-10-20",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "98.88",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-10-04",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "25.03",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-11-18",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "14.06",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-11-13",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "8.81",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-11-02",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "69.80",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-10-04",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "74.48",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-11-08",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "19.30",
+   "description": "COFFEE",
+   "direction": "debit",
+   "posted_date": "2024-11-24",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "86.75",
+   "description": "GROCERY",
+   "direction": "debit",
+   "posted_date": "2024-09-29",
+   "status": "posted",
+   "type": ""
+  }
+ ]
+}

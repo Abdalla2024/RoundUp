@@ -1,0 +1,5 @@
+{"status":"ok","error_code":null,
+ "summary":{"contributed":"1.20","roundup_buys":"1","dividend_buys":"0","dividends_earned":"0.00","dividends_paid":"0.00","shares":"0.100000","holdings_value":"0.50","uninvested_cash":"0.70","receivables":"0.00","ending_value":"1.20","gain":"0.00","gain_pct":"0.00","as_of":"2024-02-02"},
+ "buys":[{"date":"2024-02-01","kind":"roundup","cash":"0.50","price":"5.00","shares":"0.100000","delayed_by_data_gap":"false"}],
+ "series":[{"date":"2024-01-30","value":"0.40","carried":"false"},{"date":"2024-01-31","value":"0.50","carried":"true"},{"date":"2024-02-01","value":"0.50","carried":"false"},{"date":"2024-02-02","value":"1.20","carried":"false"}],
+ "transactions_used":"3","transactions_ignored":"0"}

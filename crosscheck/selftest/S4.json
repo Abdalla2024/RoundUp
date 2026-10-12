@@ -1,0 +1,10 @@
+{"id": "S4", "description": "monthly. Jan round-ups 40+10 cut off 01-31 (a gap day), first calendar day after is 02-01 (has close) -> not delayed; 0.50@5 = 0.1 sh. Feb round-up 70c cut-off 02-29 > end -> cash.",
+ "covers": ["R-5.2","R-6.2","R-6.4"],
+ "market": {"symbol": "T", "calendar": ["2024-01-30","2024-01-31","2024-02-01","2024-02-02"],
+   "closes": {"2024-01-30":"4.00","2024-02-01":"5.00","2024-02-02":"5.00"}, "dividends": [], "splits": []},
+ "transactions": [
+  {"posted_date":"2024-01-30","amount":"0.60","direction":"debit","status":"posted","type":"","description":"a"},
+  {"posted_date":"2024-01-31","amount":"0.90","direction":"debit","status":"posted","type":"","description":"b"},
+  {"posted_date":"2024-02-02","amount":"0.30","direction":"debit","status":"posted","type":"","description":"c"}
+ ],
+ "config": {"strategy":"monthly","start":"2024-01-30","end":"2024-02-02","reinvest":"true"}}

@@ -1,0 +1,230 @@
+{
+ "config": {
+  "end": "2013-11-08",
+  "reinvest": "true",
+  "start": "2013-10-14",
+  "strategy": "threshold"
+ },
+ "covers": [
+  "R-7.4",
+  "R-7.5"
+ ],
+ "description": "VOO-shaped 1-for-2 reverse split (sample prices): shares halve, value continuous",
+ "id": "G-VOO-2013",
+ "market": {
+  "calendar": [
+   "2013-10-14",
+   "2013-10-15",
+   "2013-10-16",
+   "2013-10-17",
+   "2013-10-18",
+   "2013-10-21",
+   "2013-10-22",
+   "2013-10-23",
+   "2013-10-24",
+   "2013-10-25",
+   "2013-10-28",
+   "2013-10-29",
+   "2013-10-30",
+   "2013-10-31",
+   "2013-11-01",
+   "2013-11-04",
+   "2013-11-05",
+   "2013-11-06",
+   "2013-11-07",
+   "2013-11-08"
+  ],
+  "closes": {
+   "2013-10-14": "80.00",
+   "2013-10-15": "80.00",
+   "2013-10-16": "80.00",
+   "2013-10-17": "80.00",
+   "2013-10-18": "80.00",
+   "2013-10-21": "80.00",
+   "2013-10-22": "80.00",
+   "2013-10-23": "80.00",
+   "2013-10-24": "80.00",
+   "2013-10-25": "160.00",
+   "2013-10-28": "160.00",
+   "2013-10-29": "160.00",
+   "2013-10-30": "160.00",
+   "2013-10-31": "160.00",
+   "2013-11-01": "160.00",
+   "2013-11-04": "160.00",
+   "2013-11-05": "160.00",
+   "2013-11-06": "160.00",
+   "2013-11-07": "160.00",
+   "2013-11-08": "160.00"
+  },
+  "dividends": [],
+  "splits": [
+   {
+    "ex_date": "2013-10-25",
+    "ratio": "0.5"
+   }
+  ],
+  "symbol": "TEST"
+ },
+ "transactions": [
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-15",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-15",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-15",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-15",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-15",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-15",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-15",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-15",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-15",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-15",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-28",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-28",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-28",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-28",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-28",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-28",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-28",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-28",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-28",
+   "status": "posted",
+   "type": ""
+  },
+  {
+   "amount": "3.40",
+   "description": "SHOP",
+   "direction": "debit",
+   "posted_date": "2013-10-28",
+   "status": "posted",
+   "type": ""
+  }
+ ]
+}
