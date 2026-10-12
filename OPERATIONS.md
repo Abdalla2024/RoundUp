@@ -16,6 +16,8 @@
 | AI explainer | Claude Haiku 5.5, capped | **≤ $5** (hard cap) | §2–3 |
 | **Total** | | **$0–5/month** (+ optional $19.99 once) | |
 
+**Stage 3 cost impact: none.** The API runs on the same Vercel Hobby project budget, the scenarios are generated from code (no storage), and no paid service was added. Measured cost per request locally: ≈ 0.15 CPU-seconds for a full-range simulation, so 4 active CPU-hours ≈ 96,000 such requests a month. Responses are large (≈ 0.7–1 MB for a full-range run with its daily series), which counts against the 100 GB transfer allowance: ≈ 100,000 full-range responses a month.
+
 **Compute budget check.** Hobby includes 4 active CPU-hours (14,400 CPU-seconds) a month. The engine runs one fund × strategy over ~3,700 calendar-open days (2012 → 2026). Phase 3 will measure the actual cost per run on Vercel. If one full comparison (2 funds × 4 strategies) costs ≤ 1 CPU-second, the allowance covers ≥ 14,000 comparisons a month, far beyond an invite-only cohort. Exceeding it pauses the feature for up to 30 days ([Hobby docs](https://vercel.com/docs/plans/hobby)), so the API caches results by input hash.
 
 ## 2. AI cost per request
@@ -53,6 +55,16 @@ Prices verified on the [pricing page](https://platform.claude.com/docs/en/about-
 | API errors | Sentry free (optional) | new issue |
 | AI spend | Anthropic workspace limit + app counter | at the cap (fallback engages automatically) |
 | Hobby usage | Vercel usage page | checked weekly during the demo |
+
+## 5a. Detecting failed or slow API requests
+
+| Signal | Where it comes from | How it is noticed |
+|---|---|---|
+| **Every request** | One JSON log line per request in Vercel runtime logs: `request_id`, `route`, `status`, `latency_ms`, `slow`, `error_code`, salted client hash. No bodies, IPs, amounts or descriptions. | Filter the Vercel logs by `status >= 500`, `slow: true`, or `error_code`. Hobby keeps logs for 1 hour, so check soon after testing. |
+| **Failed request (5xx)** | The error handler always returns `INTERNAL` or `STORAGE_UNAVAILABLE` with an `X-Request-ID`; the log line has the same id. | A user can quote the request id. Sentry free (optional) alerts on new server errors. |
+| **Slow request** | `latency_ms ≥ 2000` sets `slow: true`. Every response also has a `Server-Timing: app;dur=<ms>` header, visible in browser dev tools. | Filter on `slow: true`. Measured locally: full-range simulate ≈ 144 ms and compare ≈ 272 ms median (2012–2026, about 8,000 generated purchases), so a slow line means something is wrong. |
+| **API down or engine broken** | `GET /v1/health` runs a tiny engine self-check (the G-11 case) and returns 503 `degraded` if it fails. | UptimeRobot (free, 5-minute checks) on `/v1/health`, emailing after 2 failures. |
+| **Abuse** | 429 `RATE_LIMITED` responses in the logs. | Many 429s from one client hash suggest abuse. Rate limits are per server instance (Vercel may run several), so they slow abuse rather than stop it. Vercel's WAF custom rules (Hobby: up to 3) are the next step if needed. |
 
 ## 6. Backups and recovery
 
