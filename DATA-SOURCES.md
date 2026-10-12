@@ -111,16 +111,16 @@ The engine accepts any market series that passes its own validation (FINANCE-RUL
 
 | Mode | Data | Who sees results | Storage | Label |
 |---|---|---|---|---|
-| **Sample** (shared demo default) | Deterministic **synthetic** series generated from a seed: a NYSE trading calendar, a random walk in integer basis points, quarterly dividends with ex- and pay dates, one reverse split and one forward split. No real prices are copied or derived. | Anyone with the invite link | Generated at build time; committed to the repo | "Illustrative sample data — not real prices". Fund names are "Sample broad-market fund" and "Sample dividend fund", **never VOO/SCHD**, so fake prices are never attached to real tickers. |
+| **Synthetic scenarios** (shared demo; D-7 as amended by the owner) | Four named market scenarios (steady growth, crash and recovery, sideways, high volatility) × two styles (broad-market, dividend). They are produced by the documented seeded model in [SCENARIO-MODEL.md](SCENARIO-MODEL.md), with quarterly dividends and at least one split per series. No real prices are copied or derived. | Anyone with the invite link | Regenerated deterministically from code + published seeds; nothing stored | "Synthetic scenario. Not a real fund, not real prices, and not a forecast." Symbols are `SYN-…`. A test rejects real ticker names. |
 | **Local real** (developer only) | A licensed provider, fetched on the developer's machine | Only the developer | Only as the provider's plan allows (see below). **Never committed** to the repo or used in test fixtures. | "Real data, local only" |
 | **Shared real** (future) | A provider that has confirmed in writing (§7) | Invitees | As the written permission allows | Provider attribution as required |
 
 **Local real data, cheapest compliant path.** EODHD personal ($19.99/mo) is the only plan we read that reaches 2012, has pay dates, and allows storage "for private, non-commercial purposes". One month is enough to build and test the adapter. Whether data may be kept after cancelling is **UNVERIFIED** (it is asked in the email). Tiingo's free plan allows in-memory use only, and its dividends lack pay dates, so R-8.8 would reject them. It is therefore not usable for dividend scenarios without a second pay-date source.
 
-**Sample-series rules:**
-- The generator is part of the repo, seeded and deterministic, with Decimal and integer arithmetic only.
-- The sample's split dates and ratios **mirror** the real events, so the same golden scenarios apply to both: a 1-for-2 reverse split effective after the close on 2013-10-24 (VOO) and a 3-for-1 split with post-split trading from 2024-10-11 (SCHD). The dates are calendar facts from issuer and SEC documents (§2), not provider data.
-- The UI never shows a sample series next to a real ticker or logo.
+**Synthetic-scenario rules:**
+- The generator (`engine/src/roundup_scenarios/`) is seeded and deterministic, with Decimal and integer arithmetic only. Its model and parameters are documented in SCENARIO-MODEL.md.
+- Split dates in scenarios are seeded (40–60% through the range), not copied from real events. The real VOO 2013 reverse split and SCHD 2024 forward split are exercised separately, by golden tests on synthetic prices (TEST-STRATEGY.md §0).
+- The UI never shows a scenario next to a real ticker or logo, and never calls one a forecast.
 
 **Why not use the real data anyway "since it's invite-only"?** The quoted terms make no exception for private audiences. The cost of being wrong is a terms violation attached to a portfolio piece. A labelled sample teaches the same mechanics: timing, dividends, splits and the threshold rule.
 

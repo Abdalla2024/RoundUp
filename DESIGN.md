@@ -22,10 +22,10 @@
 ### 3.1 Scenario setup
 - Step 1 **Transactions**: three choices as large cards: "Generate sample spending" (pick a profile such as Student, Commuter or Family, and a period), "Upload a CSV" and "Use last saved".
 - Upload opens a column-mapping step, then the **import summary**: "312 purchases used · 18 rows ignored (14 card payments, 4 refunds) · 2 possible duplicates". Each count expands to the rows behind it.
-- Step 2 **Funds**: a card per fund with name, ticker, one-line description ("Tracks about 500 large US companies"), expense ratio with its as-of date, and the date its data starts. Pick 1–2.
+- Step 2 **Market scenario**: a card per synthetic scenario (Steady growth, Crash and recovery, Sideways, High volatility) with a one-line description, a small preview line, and the label "Synthetic scenario. Not a real fund, not real prices, and not a forecast." Then pick a style (broad-market or dividend). No tickers or fund logos ever appear (D-7).
 - Step 3 **How round-ups invest**: a timing choice (next trading day / weekly / monthly / every $5) and a "Reinvest dividends" toggle (default on). Each option has a one-line explanation.
-- Step 4 **Dates**: start and end within the data's coverage. Invalid dates are explained ("SCHD data starts on …").
-- Primary button: "Run simulation". The setup collapses into a summary chip row above the results ("312 purchases · VOO · Next trading day · Dividends reinvested · Jan 2015 – Sep 2026 · Edit").
+- Step 4 **Dates**: start and end within the data's coverage. Invalid dates are explained ("This scenario starts on 3 Jan 2012").
+- Primary button: "Run simulation". The setup collapses into a summary chip row above the results ("312 purchases · Steady growth, broad style · Next trading day · Dividends reinvested · Jan 2015 – Sep 2026 · Edit").
 
 ### 3.2 Results (one fund, one strategy)
 - **Headline sentence:** "Your **$1,284.37** of round-ups would have been worth **$2,019.88** on Sep 30, 2026, a difference of **+$735.51**." (Illustrative numbers only.)
@@ -90,7 +90,7 @@ Defined as CSS tokens on `:root`, with dark mode redefined under `prefers-color-
 
 - Forms: a line for value over time; a step line for cumulative round-ups added; small multiples for comparison; stat tiles for headline numbers. No pie charts, no dual axes, no 3D.
 - Marks: 2 px lines, 8 px hover markers, recessive grid (horizontal only), y-axis starting at $0 for value charts.
-- Direct labels at the line ends ("VOO", "Added"), plus a legend when there are ≥ 2 series.
+- Direct labels at the line ends ("Steady growth", "Added"), plus a legend when there are ≥ 2 series.
 - Hover: a crosshair and one tooltip listing all series at that date. On touch, tap-and-drag. Keyboard: arrow keys move the crosshair when the chart has focus.
 - Every chart has a "Show as table" alternative and a one-sentence text summary for screen readers.
 - Library: decided in Phase 3 (OPEN-QUESTIONS.md). It needs SVG output, keyboard access and custom tooltips.

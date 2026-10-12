@@ -14,7 +14,7 @@ You asked for the most conservative reasonable default on everything you did not
 | D-4 | Identical rows within a file: kept and flagged; overlapping files: matches excluded by default | R-4.2, R-4.3 | Never silently drops or double-counts |
 | D-5 | A run fails at 4+ consecutive missing price days, or a missing price on any split/dividend day | R-6.3 | Prefers no answer over a wrong one |
 | D-6 | Threshold fixed at $5.00 (not user-configurable); other strategies kept as comparisons | R-5.2 | Your rule; less test surface |
-| D-7 | Shared demo uses **labelled synthetic sample series**, named "Sample broad-market fund" and "Sample dividend fund", never tied to real tickers | DATA-SOURCES §5 | Quoted terms don't permit showing results from real data to others |
+| D-7 | **Accepted with change:** the shared demo uses four **named synthetic market scenarios** (steady growth, crash and recovery, sideways, high volatility) from a documented seeded model, each labelled "Synthetic scenario. Not a real fund, not real prices, and not a forecast." Real-data mode stays local-only and provider-agnostic | SCENARIO-MODEL.md, DATA-SOURCES §5 | Quoted terms don't permit showing results from real data to others |
 | D-8 | Merchant descriptions are never stored | SECURITY-PRIVACY §2 | Most sensitive field |
 | D-9 | Sign-in by email magic link only | SECURITY-PRIVACY §3 | No third-party OAuth |
 | D-10 | AI explainer for signed-in users only, fixed questions, $5/month hard cap | PLAN §4, OPERATIONS §3 | Abuse and cost control |

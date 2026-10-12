@@ -9,7 +9,7 @@ The engine is the product. If its numbers are wrong, nothing else matters. This 
 | Golden cases | **40** hand-computed scenarios in `engine/tests/golden_cases.py`. Each of the five serious review findings has its own case (G-H1-div/-split/-outside, G-H2, G-H3, G-H4, G-05-H5). The VOO 2013 reverse split and SCHD 2024 forward split are cases on synthetic prices. A rule-coverage test checks every engine rule is covered. |
 | Property tests | 10 Hypothesis properties at 150 examples each (`test_properties.py`): round-ups never negative; contributions = Σ round-ups; no money created or lost (independent per-buy identity); execution after cut-off; order independence; truncation (no look-ahead); split invariance; constant-price identity; dividend conservation; independent runs. |
 | Independent cross-check | `crosscheck/` (Fraction arithmetic, written blind). Agrees **exactly at display precision** on 70 fixtures + 2,303 random scenarios. One real engine bug was found and fixed (half-cent tie, R-0.4). Agreement is enforced in CI by `test_crosscheck.py`. |
-| Fault injection | `engine/tools/fault_injection.py`: 36 single-rule mutations, all caught. |
+| Fault injection | `engine/tools/fault_injection.py`: **37** single-rule mutations, all caught by real test failures. (The commit message of `f3189ab` says 36; one mutation was added afterwards. The commit message of `a472796` says 43 golden cases; the correct count is **40**. Commit messages are left as recorded history.) |
 | Hand calculations | 5 spreadsheet-ready cases in HAND-CALCULATIONS.md, awaiting owner verification. |
 | Real-data golden cases, pipeline checks, API/RLS, AI explainer, frontend | Later stages (unchanged plan below). |
 

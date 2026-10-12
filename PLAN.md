@@ -36,13 +36,13 @@ Vercel Hobby
 │    ├─ Supabase Auth (magic link)                     [managed]
 │    └─ reads own saved scenarios via supabase-js       [RLS: own rows only]
 └─ api: FastAPI on the Vercel Python runtime
-     ├─ POST /simulate (anonymous ok)  → roundup_engine on bundled sample series
+     ├─ POST /simulate (anonymous ok)  → roundup_engine on synthetic scenarios (roundup_scenarios)
      ├─ POST /scenarios (signed in)    → compute → insert via Supabase Data API
      │                                    *with the user's own JWT* (RLS applies to the write)
      ├─ POST /explain (signed in)      → load own result (user JWT) → Claude Haiku → validator
      └─ DELETE /account                → the only use of the server-side admin key
 Supabase Free: Postgres + Auth
-Market data: sample series files bundled with the API (demo mode). No database tables, no nightly job.
+Market data: named synthetic scenarios generated from code + published seeds (SCENARIO-MODEL.md). No database tables, no nightly job.
 ```
 
 | Decision | Choice | Why / trade-off |
@@ -76,12 +76,12 @@ All quotes were checked by me on 2026-10-12 unless marked "(agent)", meaning rea
 - Both: whether a daily ping prevents free-tier pausing.
 - Vercel: `psycopg` wheel support (no longer needed with the Data API), and cold-start figures.
 
-## 5. Data model (Supabase, schema `app`, RLS on every table)
+## 5. Data model (Supabase, schema `public` (the Data API's default schema), RLS on every table)
 
 | Table | Fields | RLS |
 |---|---|---|
 | `scenarios` | `id` uuid PK, `user_id` → `auth.users` ON DELETE CASCADE, `name`, `config` jsonb (funds, strategies, start/end, reinvest, generator seed, import summary counts), `transactions` jsonb **null unless the user ticked "also save my transactions"** (date, amount cents, direction, category; no descriptions), `created_at`, `updated_at` | select/insert/update/delete where `(select auth.uid()) = user_id` |
-| `scenario_results` | `id`, `scenario_id` (cascade), `user_id`, `fund`, `strategy`, `reinvest`, `result` jsonb (engine output), `engine_version`, `data_kind` (`sample`/`real`), `data_end`, `market_checksum` (SHA-256), `created_at` | same; **no update policy** (results are immutable; re-run inserts new rows) |
+| `scenario_results` | `id`, `scenario_id` (cascade), `user_id`, `market_scenario`, `style`, `strategy`, `reinvest`, `result` jsonb (engine output), `engine_version`, `model_version`, `scenario_seed`, `data_kind` (`sample`/`real`), `data_end`, `market_checksum`, `input_checksum` (SHA-256), `created_at` | same; **no update policy** (results are immutable; re-run inserts new rows) |
 | `explainer_usage` | `user_id`, `day`, `requests`, `input_tokens`, `output_tokens` | select own; insert/update only via a narrow `security definer` function |
 
 Removed from revision 1: all `market.*` tables, dataset versions, ingestion runs, and the `signature` field.
@@ -106,8 +106,8 @@ Removed from revision 1: all `market.*` tables, dataset versions, ingestion runs
 |---|---|---|
 | 0. Decisions | Plan revision 2 | Done; owner approval pending for §17 defaults |
 | **1. Engine** (this stage) | `roundup_engine`, golden/property tests, independent cross-check, fault injection, hand calculations | All golden and property tests pass; the cross-check agrees exactly at display precision on ≥ 20 scenarios; every injected fault is caught; owner verifies HAND-CALCULATIONS.md |
-| 2. Sample data | Seeded sample-series generator (mirrors the VOO 2013 and SCHD 2024 split dates); optional local real adapter | Generated series pass engine validation; golden split cases pass on them; no real prices in the repo |
-| 3. App core | FastAPI on Vercel + Next.js setup/results/compare/assumptions; anonymous only | 3 Playwright flows; axe clean; `/simulate` p95 < 2 s on Vercel for 5,000 transactions × 2 funds × 4 strategies |
+| 2. Synthetic scenarios + API (done in stage 3) | Seeded scenario generator; FastAPI service (API.md) | Generator tests and ≥ 200-scenario cross-check pass; API contract, abuse and auth tests pass; API results equal engine results |
+| 3. App core | Deploy FastAPI on Vercel + Next.js setup/results/compare/assumptions; anonymous only | 3 Playwright flows; axe clean; `/simulate` p95 < 2 s on Vercel for 5,000 transactions × 2 funds × 4 strategies |
 | 4. Accounts | Supabase Auth, save/re-run/delete, RLS | Cross-user RLS tests pass for every table, including API writes; deletion removes all rows |
 | 5. Explainer | `/explain`, validator, caps | Deterministic checks 100%; refusal set 100%; cap → fallback text |
 | 6. Demo launch | Invite-only links | SECURITY-PRIVACY.md §10 demo checklist done |
