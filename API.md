@@ -168,7 +168,7 @@ Signed-out users can use every endpoint except this one.
 
 ## Configuration and testing hooks
 
-Production configuration comes from environment variables: `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `LOG_SALT`. Without `SUPABASE_URL`, `POST /v1/saved` returns 503 `STORAGE_UNAVAILABLE`; everything else works.
+Production configuration comes from environment variables: `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `LOG_SALT`, and `ROUNDUP_TRUST_PROXY=1` on Vercel. That last one makes the client IP come from `X-Forwarded-For`, which Vercel overwrites to prevent spoofing ([Vercel request headers](https://vercel.com/docs/headers/request-headers)). Without it, the socket address is used. Without `SUPABASE_URL`, `POST /v1/saved` returns 503 `STORAGE_UNAVAILABLE`; everything else works.
 
 Tests build an app with the factory:
 
@@ -180,6 +180,7 @@ app = create_app(
     jwks={"keys": [...]},              # use this JWKS instead of fetching <supabase_url>/auth/v1/.well-known/jwks.json
     storage_transport=httpx.MockTransport(handler),  # receives the Data API calls (POST <supabase_url>/rest/v1/<table>)
     rate_limits=None,                  # optional dict overriding per-route limits, e.g. {"simulate": 3}
+    slow_ms=2000,                      # requests at or above this latency are logged with "slow": true
 )
 ```
 

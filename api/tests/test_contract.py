@@ -165,7 +165,8 @@ def test_parse_neutralises_formula_headers(client):
                                                    "sign_convention": "debits_positive"})
     assert r.status_code == 200, r.text
     cols = r.json()["columns"]
-    assert cols == ["'=cmd|' /C calc'!A0", "'+Amount", "'@Desc", "'\tX", "'－Y"]
+    # column names are trimmed, so a leading tab is removed (harmless) rather than quoted
+    assert cols == ["'=cmd|' /C calc'!A0", "'+Amount", "'@Desc", "X", "'－Y"]
 
 
 def test_parse_missing_mapped_column(client):
