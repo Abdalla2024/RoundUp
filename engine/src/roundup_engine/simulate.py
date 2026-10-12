@@ -1,5 +1,6 @@
 """The simulation: one fund, one strategy (FINANCE-RULES §5-§13)."""
 
+from bisect import bisect_left, bisect_right
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal, localcontext
@@ -89,10 +90,9 @@ class RunResult:
 
 
 def _first_after(days, after: date, inclusive: bool):
-    for d in days:
-        if d > after or (inclusive and d == after):
-            return d
-    return None
+    """First day in sorted `days` that is > `after` (or >= when inclusive), else None."""
+    i = bisect_left(days, after) if inclusive else bisect_right(days, after)
+    return days[i] if i < len(days) else None
 
 
 def simulate(market: MarketSeries, rows: list[dict], config: Config) -> RunResult:
@@ -140,8 +140,13 @@ def _simulate(m: MarketSeries, rows, cfg: Config) -> RunResult:
     last_day = m.last_close_on_or_before(cfg.start)
     last_price = m.closes[last_day]
 
+    rdays = sorted(roundup_by_day)
+    rcum = [0]
+    for day in rdays:
+        rcum.append(rcum[-1] + roundup_by_day[day])
+
     def cash_and_receivables(asof: date):
-        rcash = sum(c for d, c in roundup_by_day.items() if d <= asof) - bought_cents
+        rcash = rcum[bisect_right(rdays, asof)] - bought_cents
         dcash = sum((e.amount for e in earned if e.pay_date <= asof and not e.reinvested), Decimal(0))
         recv = sum((e.amount for e in earned if e.pay_date > asof), Decimal(0))
         return rcash, dcash, recv
