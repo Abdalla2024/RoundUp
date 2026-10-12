@@ -1,5 +1,7 @@
 # RoundUp — Data Sources
 
+**Revision 2 (2026-10-12).** RoundUp is now a **free, non-commercial, invite-only portfolio demo** (owner decision). This revision redesigns data use around that. §1–3 (needs, fund facts, provider terms) are unchanged research. §4–7 are new.
+
 All pages accessed **2026-10-12**. Quotes are verbatim from the URL given. "Verified" means checked directly from the official page or a live call. **UNVERIFIED** means it could not be confirmed and nothing may be decided on it. Licence facts change: re-check before signing anything.
 
 ## 1. What we need
@@ -90,72 +92,76 @@ Twelve Data was also checked. Free is "Internal non-display usage". External dis
 
 Yahoo's terms prohibit attempts to "access or collect data… from our Services using any automated means… without our express, prior permission". They also say "you may not access or reuse the Services, or any portion thereof, for any commercial purpose" ([legal.yahoo.com](https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html) §2(d)(ix), §2(e)). yfinance is automated collection, so it is excluded. Only part of the page was read, so any finance-specific supplemental terms are UNVERIFIED.
 
-## 4. Recommendation
+## 4. What the terms allow for a free demo
 
-**No provider is safe to *publish* with until a licence is confirmed in writing.** The decision rests on licence terms we cannot see (quote-only prices, how "display" and "derived data" are defined), so it is **OPEN** (OPEN-QUESTIONS.md). The recommendation below is conditional.
+Based only on the passages quoted in §3:
 
-**Recommended: EODHD, provided its Custom display quote is acceptable.**
-- It is the only provider whose data I verified for our exact needs: a raw 2012 close, dividends with **pay date**, and an explicit **unadjusted** dividend value. That matches the finance rules without workarounds. R-8.8 (the no-pay-date fallback) becomes unnecessary.
-- Its personal plan ($19.99/mo) explicitly allows storing data for private, non-commercial use. A private development environment is plausibly covered, but that should be confirmed (OQ).
-- Risk: the display price is unknown ("from $399/mo").
+| Use | Tiingo free | EODHD free | EODHD personal ($19.99/mo) | Alpha Vantage free |
+|---|---|---|---|---|
+| Reaches 2012 | Yes | No (1 year) | Yes | No (full history is premium) |
+| Store in a database | **No**. Only "transiently in volatile memory… only to complete the calculation" (ToS §1.6(a)) | — | Yes: "store, manipulate, and analyze the data for private, non-commercial purposes" | Not addressed |
+| Show to other people | **No**. "Internal use… you may not display or share the data with another person" | **No** ("displaying… or granting access" prohibited) | **No** | Personal, non-commercial only; "educational projects" wording is ambiguous |
+| Dividend pay dates | **No** (ex-date only), so R-8.8 rejects its dividends | — | Yes | Yes (DIVIDENDS endpoint) |
 
-**Runner-up: Tiingo with the Display Redistribution licence ($250/mo, published).**
-- Cheaper and published, and its adjusted series uses a documented method.
-- But it has **no dividend pay dates**, which forces R-8.8, and its coverage of our ETFs is unverified.
-- Its **free plan forbids storing data at all**, so development would need Power ($30/mo, internal only).
+**Conclusion.** No free or near-free plan we read permits showing results derived from real prices to other people, even invite-only and non-commercial. Whether *simulation results* (not price tables) count as display or redistribution is exactly what the emails in §7 ask. Until a provider says yes in writing, the shared demo uses sample data.
 
-**How to decide:** get written answers to the questions in §6 from both. If EODHD's display quote is ≤ ~$400/mo, choose EODHD. If not, choose Tiingo, decide R-8.8, and get pay dates from issuer distribution histories. Issuer pages as a source are not yet researched and must not be scraped without checking their terms.
+## 5. Demo-mode design
 
-## 5. Adapter design (provider is replaceable)
+The engine accepts any market series that passes its own validation (FINANCE-RULES R-6, R-7.5, R-8.7, R-8.8). Where the series comes from is outside the engine.
+
+| Mode | Data | Who sees results | Storage | Label |
+|---|---|---|---|---|
+| **Sample** (shared demo default) | Deterministic **synthetic** series generated from a seed: a NYSE trading calendar, a random walk in integer basis points, quarterly dividends with ex- and pay dates, one reverse split and one forward split. No real prices are copied or derived. | Anyone with the invite link | Generated at build time; committed to the repo | "Illustrative sample data — not real prices". Fund names are "Sample broad-market fund" and "Sample dividend fund", **never VOO/SCHD**, so fake prices are never attached to real tickers. |
+| **Local real** (developer only) | A licensed provider, fetched on the developer's machine | Only the developer | Only as the provider's plan allows (see below). **Never committed** to the repo or used in test fixtures. | "Real data, local only" |
+| **Shared real** (future) | A provider that has confirmed in writing (§7) | Invitees | As the written permission allows | Provider attribution as required |
+
+**Local real data, cheapest compliant path.** EODHD personal ($19.99/mo) is the only plan we read that reaches 2012, has pay dates, and allows storage "for private, non-commercial purposes". One month is enough to build and test the adapter. Whether data may be kept after cancelling is **UNVERIFIED** (it is asked in the email). Tiingo's free plan allows in-memory use only, and its dividends lack pay dates, so R-8.8 would reject them. It is therefore not usable for dividend scenarios without a second pay-date source.
+
+**Sample-series rules:**
+- The generator is part of the repo, seeded and deterministic, with Decimal and integer arithmetic only.
+- The sample's split dates and ratios **mirror** the real events, so the same golden scenarios apply to both: a 1-for-2 reverse split effective after the close on 2013-10-24 (VOO) and a 3-for-1 split with post-split trading from 2024-10-11 (SCHD). The dates are calendar facts from issuer and SEC documents (§2), not provider data.
+- The UI never shows a sample series next to a real ticker or logo.
+
+**Why not use the real data anyway "since it's invite-only"?** The quoted terms make no exception for private audiences. The cost of being wrong is a terms violation attached to a portfolio piece. A labelled sample teaches the same mechanics: timing, dividends, splits and the threshold rule.
+
+## 6. Adapter design (provider is replaceable)
 
 ```
-roundup_data/
-  ports.py        # MarketDataSource protocol (no provider names)
-  adapters/eodhd.py, adapters/tiingo.py, adapters/fixture.py
-  ingest.py       # provider-agnostic: fetch → validate → version → upsert
-  checks.py       # data-quality checks (TEST-STRATEGY §5)
+roundup_engine/          # this stage: pure library, no I/O
+  market.py              # MarketSeries: calendar, closes, dividends, splits + validation
+roundup_data/            # data stage (not built yet)
+  ports.py               # MarketDataSource protocol (no provider names)
+  adapters/sample.py     # synthetic generator (demo mode)
+  adapters/eodhd.py      # local real mode
+  checks.py              # data-quality checks (TEST-STRATEGY §5)
 ```
 
 ```python
 class MarketDataSource(Protocol):
     name: str
-    def daily_bars(self, symbol: str, start: date, end: date) -> list[RawBar]: ...
+    kind: Literal["sample", "real"]                 # drives the R-12.5 label
+    def daily_closes(self, symbol: str, start: date, end: date) -> list[Close]: ...
     def dividends(self, symbol: str, start: date, end: date) -> list[DividendEvent]: ...
     def splits(self, symbol: str, start: date, end: date) -> list[SplitEvent]: ...
-    def adjusted_closes(self, symbol: str, start: date, end: date) -> list[AdjClose]: ...  # cross-check only
-    def capabilities(self) -> Capabilities: ...  # e.g. has_pay_date, raw_dividends
-
-@dataclass(frozen=True)
-class RawBar:        symbol: str; day: date; close: Decimal; source: str
-class DividendEvent: symbol: str; ex_date: date; pay_date: date | None; amount_raw: Decimal; kind: str; source: str
-class SplitEvent:    symbol: str; ex_date: date; ratio: Decimal; source: str   # new ÷ old
+    def calendar(self, start: date, end: date) -> list[date]: ...   # calendar-open days
+    def capabilities(self) -> Capabilities: ...     # has_pay_date, raw_dividends, may_store, may_display
 ```
 
 Rules:
-- Adapters parse numbers from **strings** into Decimal (JSON `parse_float=Decimal`) (R-0.5). They convert provider basis to raw basis, or raise.
-- The engine never imports an adapter. It reads only our versioned tables.
-- `capabilities()` makes gaps explicit. Ingestion refuses to publish if `has_pay_date` is false and R-8.8 is undecided.
-- **Swapping providers** = new adapter + contract tests on recorded fixtures. Then a parallel run: both providers ingest into a staging dataset version, and every check plus a diff report must pass before switching. A switch creates a new dataset version (R-12.4).
-- Attribution text and link per provider are config, shown in the UI footer and the chart captions as the licence requires.
-- Licence constraints live in config too (e.g. `may_display_raw_ohlc`, `retention_on_termination`). The UI respects them, e.g. by hiding raw price tables if they are not licensed.
+- Adapters parse numbers from **strings** into Decimal (R-0.5) and convert dividends to the raw basis (EODHD: `unadjustedValue`), or raise.
+- The engine never imports an adapter. It receives a `MarketSeries` object.
+- `capabilities().may_store` and `may_display` are set from the licence as we read it. The app refuses to persist or show data whose flags are false. Every flag starts **false** for real providers until written permission arrives.
+- Swapping providers = new adapter + contract tests on recorded **sample-shaped** fixtures. Real responses are not recorded into the repo unless the licence allows it.
 
-## 6. Questions to send providers before public launch
+## 7. Draft emails to providers
 
-For **EODHD** (Custom quote) and **Tiingo** (Display Redistribution):
-1. Does the licence cover a public website showing charts and numbers derived from EOD data, to anonymous and logged-in users? Does it still apply if we later charge or show ads? What is the price?
-2. May we store EOD prices, dividends and splits for VOO, VTI, SCHD and VYM (2012 → present) in our own database? What must be deleted on termination?
-3. Are simulated portfolio values "derived data" that we may keep and show after termination?
-4. May we show raw closes and dividend amounts in tables, or only charts and derived values? Are user CSV downloads allowed?
-5. What attribution is required, and where?
-6. Are there exchange fees or subscriber reporting for showing ETF EOD data?
-7. Tiingo only: confirm coverage from 2012-01-03 for all four tickers, and whether dividend pay dates are available.
-8. Both: may a private, non-public development environment use the cheaper personal or internal plan before the display licence starts?
+Drafts (not sent) are in [drafts/provider-emails.md](drafts/provider-emails.md). The owner will send them.
 
-For **Alpha Vantage**: does a free public educational site qualify for the educational programme, and does that include public display?
+## 8. Verification gaps
 
-## 7. Verification gaps
-
-- Coverage of VOO, SCHD and VYM at either leading provider: UNVERIFIED until we hold a key.
-- Tiingo's $250 redistribution price: read by the subagent from the product page's JavaScript bundle. My own attempt to find the string in the bundle failed, so treat it as **UNVERIFIED** until Tiingo confirms it in writing.
-- FMP field names, Alpha Vantage's adjustment method, and Twelve Data's details: UNVERIFIED.
-- The new VTI index name: UNVERIFIED (doesn't affect the maths).
+- Coverage of VOO and SCHD at either provider: UNVERIFIED until we hold a key.
+- Tiingo's $250 redistribution price: UNVERIFIED (not needed for the demo).
+- Whether EODHD personal-plan data may be kept after cancelling: UNVERIFIED.
+- Whether "simulation results without price tables" counts as display or redistribution under each provider's terms: UNVERIFIED (the subject of the emails).
+- FMP field names, Alpha Vantage's adjustment method, Twelve Data's details: UNVERIFIED (not needed).
+- The new VTI index name: UNVERIFIED (VTI is no longer a v1 fund).
