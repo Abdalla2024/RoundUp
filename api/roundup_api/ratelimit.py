@@ -6,7 +6,7 @@ import time
 from collections import defaultdict, deque
 
 DEFAULT_LIMITS = {"simulate": 30, "compare": 30, "parse": 10, "saved": 10, "read": 120}   # per minute
-WINDOW = 60.0
+WINDOW = 60                     # seconds
 MAX_TRACKED = 50_000
 
 

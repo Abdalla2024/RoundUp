@@ -1,4 +1,5 @@
-"""Read and parse a JSON request body safely: size cap before parsing, no floats/NaN/duplicate keys."""
+"""Read and parse a JSON request body safely: size cap before parsing; NaN/Infinity and duplicate keys rejected.
+JSON numbers with decimals parse here but are then rejected by the strict schemas (amounts must be strings)."""
 
 import json
 
