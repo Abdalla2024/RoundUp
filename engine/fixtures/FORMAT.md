@@ -28,7 +28,7 @@ Each file in `fixtures/scenarios/` is one JSON scenario, a single-fund run (FINA
 - `closes`: raw closing price per day. A calendar-open day with no entry is a **data gap** (R-6.2).
 - `dividends[].pay_date` may be `null` (tests R-8.8).
 - `splits[].ratio` = new shares ÷ old shares (R-7.4).
-- `transactions[].amount`: a positive decimal string with up to 2 decimal places. Strings with more than 2 decimals, or that are not numbers, are invalid (R-0.1). `direction` is `debit` or `credit`. `status` is `posted`, `pending` or `cancelled`. `type` may be empty.
+- `transactions[].amount`: a positive decimal string with up to 2 decimal places. Strings with more than 2 decimals, or that are not numbers, are invalid (R-0.1). `direction` is `debit` or `credit`. `status` is `posted`, `pending` or `cancelled`. `type` may be empty. Optional `category` (`purchase` or `non_purchase`) overrides keyword classification (R-1.4 reclassification).
 - `config.strategy` is one of `threshold`, `next_session`, `weekly`, `monthly`. The threshold is fixed at $5.00. `reinvest` is `"true"` or `"false"`.
 
 ## Output

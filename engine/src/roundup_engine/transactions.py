@@ -74,8 +74,10 @@ def select_purchases(rows, start: date, end: date):
             reason = "cancelled"                   # R-3.2
         elif cents == 0:
             reason = "zero_amount"                 # R-1.5
-        elif is_non_purchase(row.get("type") or "", row.get("description") or ""):
-            reason = "non_purchase"                # R-1.4
+        elif row.get("category") == "non_purchase" or (
+                row.get("category") != "purchase"
+                and is_non_purchase(row.get("type") or "", row.get("description") or "")):
+            reason = "non_purchase"                # R-1.4 (an explicit category overrides keywords)
         elif not (start <= day <= end):
             reason = "outside_window"              # R-1.6
         else:

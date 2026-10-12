@@ -1,5 +1,7 @@
 """Scenario JSON (fixtures/FORMAT.md) in, result JSON out."""
 
+import hashlib
+import json
 from datetime import date
 
 from . import ENGINE_VERSION
@@ -35,13 +37,28 @@ def _b(x: bool) -> str:
     return "true" if x else "false"
 
 
+def input_checksum(s: dict) -> str:
+    """SHA-256 of the canonical scenario input: market checksum + transactions + config (R-12.4)."""
+    market, rows, _ = parse_scenario(s)
+    payload = {"market": market.checksum(), "transactions": rows, "config": s["config"]}
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def error_result(code: str) -> dict:
+    return {"status": "error", "error_code": code, "summary": None, "buys": None, "series": None,
+            "transactions_used": None, "transactions_ignored": None, "engine_version": ENGINE_VERSION}
+
+
 def run_scenario(s: dict) -> dict:
     market, rows, cfg = parse_scenario(s)
     try:
         r = simulate(market, rows, cfg)
     except DataError as e:
-        return {"status": "error", "error_code": e.code, "summary": None, "buys": None, "series": None,
-                "transactions_used": None, "transactions_ignored": None, "engine_version": ENGINE_VERSION}
+        return error_result(e.code)
+    return result_dict(r)
+
+
+def result_dict(r) -> dict:
     pct = r.gain_pct
     return {
         "status": "ok",
