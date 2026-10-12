@@ -1,12 +1,14 @@
 # RoundUp — Security and Privacy
 
-**Not legal advice.** This document is an engineering plan written without legal review. Everything in §8–§10 must be reviewed by a qualified lawyer before any public launch. That covers the privacy policy, the disclaimer wording, consumer-protection and financial-promotion questions, and data-protection obligations in each country where users may be located.
+**Not legal advice.** This document is an engineering plan written without legal review.
+
+**Revision 2 (2026-10-12).** RoundUp is a free, non-commercial, **invite-only portfolio demo**. The owner has decided that **legal review is not needed for the invite-only demo**. The disclaimer and privacy outline are kept and shown in the app anyway. If RoundUp ever opens to the public or becomes commercial, §8–§10 must be reviewed by a qualified lawyer first. That covers the privacy policy, the disclaimer wording, consumer-protection and financial-promotion questions, and data-protection obligations in each country where users may be located.
 
 ## 1. Principles
 
 1. Collect as little as possible. A simulation needs dates and amounts, not who the user paid.
 2. Uploaded transactions are processed in memory and discarded unless the user explicitly chooses to save them.
-3. The API server cannot read or write other users' data, even if it has a bug (PLAN.md §4).
+3. The API writes saved results with the **user's own access token**, so row-level security limits even the API to that user's rows (PLAN.md §4). The admin key is used for one thing only: account deletion.
 4. Deletion is real, immediate and complete.
 
 ## 2. What is stored and what is not
@@ -15,28 +17,31 @@
 |---|---|---|---|
 | Email, auth identifiers, sessions | Yes | Supabase Auth (managed) | We never see or store passwords |
 | Scenario configuration (funds, strategy, dates, seed, import counts) | Yes, if saved | `app.scenarios` | |
-| Simulation results | Yes, if saved | `app.scenario_runs` | Derived numbers only |
+| Simulation results | Yes, if saved | `app.scenario_results` | Computed by the API; immutable; derived numbers only |
 | Uploaded CSV file | **No** | — | Parsed in API memory; the request body is not logged; temp files are not written |
-| Transactions (date, amount cents, direction, category) | **Only if** the user ticks "Also save my transactions" | `app.scenario_transactions` | Off by default |
-| Merchant descriptions | **No** by default (OPEN whether to offer it) | — | Used in memory for duplicate detection and classification, then dropped |
+| Transactions (date, amount cents, direction, category) | **Only if** the user ticks "Also save my transactions" | `app.scenarios.transactions` | Off by default |
+| Merchant descriptions | **No** (conservative default; listed for confirmation) | — | Used in memory for duplicate detection and classification, then dropped |
 | Account numbers, card numbers, balances | **No** | — | The importer drops unknown columns; values that look like a full account or card number cause a warning and are never echoed back |
 | Explainer prompts and outputs | Metadata only (tokens, question id, validator result) for 30 days | Logs | The prompt contains engine numbers only, no transactions |
 | IP addresses | Short-lived, in host and rate-limit logs | Hosting providers | Retention set to the minimum each host allows (OPEN: verify per host) |
 | Analytics | None in v1 beyond aggregate host metrics | — | No third-party trackers, no ads |
+| Anonymous simulations | **No** | — | Computed and returned; nothing written |
 
 ## 3. Authentication
 
-- **Managed auth only: Supabase Auth.** Email magic link and/or OAuth (Google) is OPEN. We do not implement password storage, reset flows or session crypto ourselves.
-- The browser sends the Supabase access token to FastAPI. FastAPI verifies the signature against Supabase's published keys, plus expiry and audience, and uses only the `sub` claim as the user id.
+- **Managed auth only: Supabase Auth, email magic link only** (conservative default: no third-party OAuth provider, listed for confirmation). We do not implement password storage, reset flows or session crypto ourselves.
+- The browser sends the Supabase access token to FastAPI. FastAPI verifies the signature against Supabase's published JWKS, plus expiry and audience, and uses only the `sub` claim as the user id. It then **forwards the same token** to the Supabase Data API for reads and writes. Supabase: "A secret key bypasses RLS only when the request carries no user access token. If the request carries one, it runs under the RLS policies of that signed-in user" ([RLS docs](https://supabase.com/docs/guides/database/postgres/row-level-security)).
 - Supabase docs: deleting a user does not sign them out. Their existing JWT stays valid until it expires (paraphrased from [managing user data](https://supabase.com/docs/guides/auth/managing-user-data)). We keep access-token lifetimes short, and the API refuses tokens for users that no longer exist.
 
 ## 4. Authorization and row-level security
 
 - RLS is enabled on **every** table in exposed schemas. Supabase: "Enable RLS on every table in an exposed schema" ([RLS docs](https://supabase.com/docs/guides/database/postgres/row-level-security)).
 - `app.*` policies: `select/insert/update/delete` only where `(select auth.uid()) = user_id`. Inserts check `user_id` too (`with check`).
-- `market.*`: read-only for `anon` and `authenticated`. Writes only by the ingestion role used by the nightly job.
+- There are no market tables: the demo's sample series are bundled with the API.
+- `app.scenario_results`: no `update` policy; results are immutable.
+- Supabase also advises: "On projects that still grant anon and authenticated by default, revoke those grants. Adding policies doesn't remove them." The migrations revoke default grants and grant only what each policy needs.
 - `app.explainer_usage`: no direct client access. It is updated only through a narrow `security definer` function the API calls.
-- FastAPI's database credentials are a read-only `market` role. It **does not** use the service-role key for normal requests.
+- FastAPI holds **no database password**. It talks to Supabase over HTTPS with the user's token. It uses the secret key only in `DELETE /account`.
 - Tests: TEST-STRATEGY.md §7 (cross-user reads and writes return nothing or fail for every table).
 
 ## 5. Secrets
@@ -45,11 +50,9 @@
 |---|---|---|
 | Supabase publishable (anon) key | Frontend env (public by design: "Safe to expose online", [API keys](https://supabase.com/docs/guides/api/api-keys)) | — |
 | Supabase secret/service-role key | API host env var, used **only** by `DELETE /account` | Frontend, repo, logs. Supabase: "Never put one in a browser, a shipped application, or source control." |
-| Market-data API key | GitHub Actions encrypted secret (nightly job) | API host, frontend |
-| Ingestion DB role password | GitHub Actions secret | API host |
-| Read-only market DB role | API host env | Frontend |
+| Market-data API key (local real mode only) | Developer's local `.env` | Repo, Vercel, frontend |
+| Vercel cron secret (`/healthz`) | Vercel env | Frontend |
 | Anthropic API key | API host env; key in a dedicated workspace with a spend limit | Frontend, job |
-| HMAC key for result signatures | API host env; rotated with a key id | Anywhere else |
 
 Controls:
 - Secret scanning in CI (e.g. gitleaks) and GitHub push protection.
@@ -67,16 +70,16 @@ Controls:
 
 ## 7. Account and data deletion
 
-- **Delete a scenario:** removes the scenario, its runs and any saved transactions (`on delete cascade`).
+- **Delete a scenario:** removes the scenario, its results and any saved transactions (`on delete cascade`).
 - **Delete account:** confirmed in the UI. Then `DELETE /account`:
   1. delete `app.*` rows for the user;
   2. call `auth.admin.deleteUser(uid)` (server-only; "Requires a `service_role` key", [docs](https://supabase.com/docs/reference/javascript/auth-admin-deleteuser));
   3. confirm by email.
 - Supabase notes that you "cannot delete a user if they are the owner of any objects in Supabase Storage". We use no Storage in v1.
-- **Backups:** deleted data persists in the provider's backups until they age out. On Supabase Pro, "Daily backups stored for 7 days" ([backups](https://supabase.com/docs/guides/platform/backups)). The privacy policy states this window.
+- **Backups:** the demo runs on Supabase Free, which has **no automatic backups**. Deleted data is therefore gone immediately. The trade-off: saved scenarios are not backed up either, and users are told so. If the project moves to Pro ("Daily backups stored for 7 days", [backups](https://supabase.com/docs/guides/platform/backups)), the privacy notice must state that window.
 - **Export:** "Download my data" (JSON of scenarios and runs). Recommended in v1 (cheap, and it supports data-access rights).
 
-## 8. Privacy policy outline (for legal review)
+## 8. Privacy policy outline (shown in the demo; legal review before any public launch)
 
 1. Who we are and how to contact us.
 2. What we collect: account email; saved scenarios and results; optionally saved transactions (dates, amounts, categories); technical logs.
@@ -89,7 +92,7 @@ Controls:
 9. Children: not intended for under-13s (or the higher local age). Age gate OPEN.
 10. Changes to the policy; effective date.
 
-## 9. Disclaimer wording (draft, for legal review)
+## 9. Disclaimer wording (shown in the demo; legal review before any public launch)
 
 **Short (on every results screen, above the numbers):**
 
@@ -105,12 +108,18 @@ Controls:
 >
 > Market data provided by [provider], used under licence. Data may contain errors; see "Data as of [date]".
 
-## 10. Launch blockers (must be reviewed or closed before public launch)
+**Sample-data label (demo mode, R-12.5), above every result that uses sample series:**
 
-1. Legal review of: the disclaimer, privacy policy, terms of use, and whether showing named real funds with hypothetical returns raises any advertising, financial-promotion or investment-adviser concerns in our target jurisdictions.
-2. A market-data **display licence** signed (DATA-SOURCES.md §6), with attribution implemented as the licence requires.
-3. Applicable data-protection regimes for our target users (e.g. GDPR/UK GDPR, US state laws). Determines DPAs, records of processing, hosting region and cookie notice. There are no non-essential cookies in v1.
-4. Data processing agreements with Supabase, Vercel, the API host and Anthropic, plus each vendor's retention terms.
-5. Age policy.
-6. Whether Vercel Hobby and Supabase Free terms allow our use (non-commercial question).
-7. A penetration-style review of RLS policies and the API before launch.
+> **Illustrative sample data — not real prices.** These results use a made-up price history designed to show how round-ups, timing, dividends and splits work. They do not describe any real fund.
+
+## 10. Checklists
+
+**Before inviting the cohort (demo):**
+1. The disclaimer and sample-data label appear on every results view; the privacy outline is linked in the footer.
+2. RLS cross-user tests pass for every table, including writes made by the API with a user's token.
+3. The secret key is absent from the frontend bundle; `.env*` is git-ignored; secret scanning is on.
+4. No real market data is shown to anyone unless a provider has permitted it in writing (DATA-SOURCES.md §5).
+5. Users are told: saved scenarios are not backed up; the site is a demo; data can be deleted at any time.
+6. The Anthropic workspace spend limit is set (OPERATIONS.md §3).
+
+**Before any public or commercial launch (not planned):** legal review of the disclaimer, privacy policy, terms and financial-promotion questions; a signed data display licence; data-protection regime analysis and DPAs; an age policy; Vercel Pro (Hobby is non-commercial); a penetration-style review of RLS and the API; backups (Supabase Pro).

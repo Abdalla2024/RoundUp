@@ -1,125 +1,133 @@
 # RoundUp — Plan
 
-RoundUp is an educational web app. It simulates "spare-change" round-up investing on real historical ETF data and shows how timing, fund choice, fees and dividends change outcomes. No money moves, no trades are executed, nothing is a forecast or advice.
+RoundUp is an educational web app. It simulates "spare-change" round-up investing on historical ETF data and shows how timing, fund choice, fees and dividends change outcomes. No money moves, no trades are executed, nothing is a forecast or advice.
 
-Companion documents: FINANCE-RULES.md (the rules), DATA-SOURCES.md (data and licences), TEST-STRATEGY.md, SECURITY-PRIVACY.md, OPERATIONS.md, DESIGN.md, OPEN-QUESTIONS.md.
+**Revision 2 (2026-10-12).** RoundUp is a **free, non-commercial, invite-only portfolio demo** for an AI-builder cohort (owner decision). Hosting is Vercel Hobby; everything should be as close to free as possible. Signed-out visitors can run simulations; accounts exist only to save scenarios. §9 lists what changed from revision 1 and the risks that remain.
+
+Companion documents: FINANCE-RULES.md, DATA-SOURCES.md, TEST-STRATEGY.md, SECURITY-PRIVACY.md, OPERATIONS.md, DESIGN.md, OPEN-QUESTIONS.md, HAND-CALCULATIONS.md.
 
 ## 1. Goals
 
-1. A user can generate or import transactions and see, in under a minute, what their round-ups would have become in a real ETF since 2012.
-2. Every number is reproducible: same inputs + same dataset version + same engine version = same output, to the cent.
-3. Side-by-side comparison of the things the user can change: fund (broad-market vs dividend-focused), timing strategy (next session / weekly / monthly / threshold), and dividend reinvestment on or off.
+1. A visitor can generate or import transactions and see, in under a minute, what their round-ups would have become.
+2. Every number is reproducible: same inputs + same market input + same engine version = same output, to the cent.
+3. Side-by-side comparison: fund (broad-market vs dividend-focused), timing strategy (threshold $5 default; next session, weekly, monthly), and dividend reinvestment on or off.
 4. Every assumption is visible in plain language next to the results.
 5. An AI explainer that describes only the engine's numbers and never calculates, predicts or advises.
-6. Accounts let users save scenarios. Uploaded transactions are not stored unless the user chooses.
+6. Signed-in users can save scenarios. Each saved scenario stores its own computed results, so they stay stable.
 
-## 2. Non-goals (v1)
+## 2. Non-goals
 
-Real money, brokerage or bank connections (no Plaid); trade execution; advice, recommendations or "best fund" rankings; forecasts or projections; taxes; funds beyond the first two (plus their alternates); multi-fund portfolios or rebalancing; intraday data; mobile apps; social or sharing features; a homegrown login.
+Commercial use; real money or bank connections; trade execution; advice or rankings; forecasts; taxes; funds beyond VOO and SCHD (and their sample stand-ins); multi-fund portfolios; intraday data; mobile apps; a homegrown login; showing real prices to anyone until a provider permits it in writing (DATA-SOURCES.md §4–5).
 
 ## 3. User flows
 
-1. **Try it (no account).** Landing → "Generate sample transactions" (choose a spending profile and period) → results for the default scenario: one broad-market fund, next session, reinvest on. Whether anonymous use is allowed is OPEN (it affects data licensing).
-2. **Import.** Upload CSV → column mapping and sign convention (R-1.3) → import summary (accepted, ignored with reasons, duplicates flagged) → results. The file is processed in memory and discarded.
-3. **Compare.** From results → add a fund or strategy → side-by-side table and chart → assumptions panel.
-4. **Explain.** On any result → "Explain this" buttons (fixed questions in v1) → plain-language explanation built only from that result.
-5. **Save.** Sign in (managed auth) → save scenario (configuration; transactions only if the user ticks "also save my transactions") → saved scenarios list → reopen shows stored results with their "as of" date and dataset version → "Re-run with latest data".
-6. **Delete.** Delete a scenario; delete the account and all data (immediate, irreversible, confirmed).
+1. **Try it (no account).** Landing → "Generate sample spending" → results for the default scenario (sample broad-market fund, $5 threshold, dividends reinvested). Nothing is stored.
+2. **Import.** Upload a CSV → column mapping and sign convention → import summary (used, ignored with reasons, duplicates flagged) → results. The file is processed in memory and discarded.
+3. **Compare.** Add a fund or strategy → side-by-side table and small-multiple charts → assumptions panel.
+4. **Save (signed in).** Sign in (Supabase magic link) → Save → the API computes and stores the results → saved list → reopen shows the stored results with their engine version, data label and data end → "Re-run".
+5. **Explain (signed in).** "Explain this" on a saved result → fixed questions → validated explanation.
+6. **Delete.** Delete a scenario; delete the account and all data.
 
 ## 4. Architecture
 
 ```
-Browser (Next.js on Vercel)
-  ├─ Supabase Auth (sign-in, sessions)          [managed]
-  ├─ Supabase Postgres via supabase-js          [RLS: own scenarios/runs only]
-  └─ FastAPI (small host) with the user's access token
-        ├─ parse CSV / generate transactions    [in memory, nothing stored]
-        ├─ simulate  → roundup_engine (pure Python library, Decimal)
-        │                reads market data (read-only DB role)
-        │                returns result + HMAC signature
-        ├─ explain   → verifies signature → Claude API → output validator
-        └─ delete account (server-only admin key)
-Nightly job (GitHub Actions cron)
-  └─ roundup_data: provider adapter → checks → new dataset version → publish
+Vercel Hobby
+├─ web: Next.js (TypeScript)
+│    ├─ Supabase Auth (magic link)                     [managed]
+│    └─ reads own saved scenarios via supabase-js       [RLS: own rows only]
+└─ api: FastAPI on the Vercel Python runtime
+     ├─ POST /simulate (anonymous ok)  → roundup_engine on bundled sample series
+     ├─ POST /scenarios (signed in)    → compute → insert via Supabase Data API
+     │                                    *with the user's own JWT* (RLS applies to the write)
+     ├─ POST /explain (signed in)      → load own result (user JWT) → Claude Haiku → validator
+     └─ DELETE /account                → the only use of the server-side admin key
+Supabase Free: Postgres + Auth
+Market data: sample series files bundled with the API (demo mode). No database tables, no nightly job.
 ```
-
-Key decisions:
 
 | Decision | Choice | Why / trade-off |
 |---|---|---|
-| Engine | Standalone Python package `roundup_engine`, no I/O, no framework imports, Decimal with `FloatOperation` trapped | Testable in isolation and reusable by the cross-check. Cost: data must be passed in explicitly. |
-| Hosted DB + auth | **Supabase** (Postgres + Auth in one, RLS with `auth.uid()`) | One vendor for auth and data. RLS is documented with `(select auth.uid()) = user_id` ([Supabase RLS docs](https://supabase.com/docs/guides/database/postgres/row-level-security)). Neon is a good database but would need a separate auth vendor. |
-| Who writes user data | **The browser, through Supabase with RLS.** FastAPI has **no** write access to user tables; it holds a read-only role for market data, plus the admin key only for account deletion | A bug in the API cannot leak or overwrite another user's scenarios. Results the browser saves are signed by the API, so the explainer can trust them. |
-| API host | Render Starter ($7/mo, always-on). Fly.io is the alternative at about $2.19 per 30 days for 256 MB | Simplest always-on Python host. Free tiers sleep after 15 minutes idle (Render) or no longer exist for new organizations (Fly). See OPERATIONS.md. |
-| Frontend host | Vercel. Hobby only while the project is non-commercial ("the Hobby plan restricts users to non-commercial, personal use only", [Vercel docs](https://vercel.com/docs/plans/hobby)); Pro ($20/mo) before any monetization | Brief. Whether a free educational site counts as "commercial" is OPEN. |
-| Nightly job | GitHub Actions `schedule` in a **private** repo | Free minutes are enough (job ~2–5 min/night). Caveat: scheduled runs "can be delayed during periods of high loads". Freshness monitoring covers that. |
-| Market data | Provider behind an adapter (DATA-SOURCES.md §5). Conditional recommendation: EODHD; runner-up: Tiingo | Licence for public display not yet confirmed (OPEN). |
-| Explainer model | Claude Haiku 5.5 (`claude-haiku-5-5`), fixed questions in v1 | Cheapest current model ($0.10 / $0.50 per MTok in/out, prompts ≤100k tokens, [pricing](https://platform.claude.com/docs/en/about-claude/pricing)). The task is narrow; output is validated anyway. Sonnet 5.5 can be evaluated if quality falls short. |
+| Engine | `roundup_engine`: pure Python, no I/O, Decimal with `FloatOperation` trapped, works on any validated series | Built and tested in this stage. Independent of where data comes from. |
+| Database + auth | **Supabase Free** (§4.1) | Mature; documents JWKS token verification and `auth.uid()` RLS. Free plan equals InsForge's on limits. |
+| API → database | **Supabase Data API over HTTPS using the user's access token**, not a direct Postgres connection | "A secret key bypasses RLS only when the request carries no user access token. If the request carries one, it runs under the RLS policies of that signed-in user" ([Supabase RLS](https://supabase.com/docs/guides/database/postgres/row-level-security)). The API's writes are therefore also limited to the user's own rows. It also avoids native Postgres drivers on Vercel (psycopg support there is unverified) and IPv6 direct connections. |
+| API host | Vercel Python runtime, FastAPI zero-config: "Vercel looks for a `FastAPI` instance named `app` at supported entrypoints" ([Vercel FastAPI](https://vercel.com/docs/frameworks/backend/fastapi)) | $0. Hobby limits (agent-read from [Vercel limitations](https://vercel.com/docs/functions/limitations)): 300 s max duration, 2 GB memory, 4.5 MB request body, 4 active CPU-hours/month. Ample for a demo (OPERATIONS.md). Deployed as a **separate Vercel project** in the same repo, which avoids relying on the "Services (Beta)" feature. |
+| Market data | Bundled, labelled **sample** series (DATA-SOURCES.md §5) | The only option the quoted licence terms clearly allow for showing results to other people. Real data stays local until a provider says yes. |
+| Explainer | Claude Haiku 5.5, fixed questions, signed-in users only, results loaded server-side | With no signed results, the explainer only ever sees results the server computed and stored. |
 
-## 5. Data model
+### 4.1 InsForge vs Supabase
 
-Postgres `numeric` for all money, prices and shares (exact). It maps to Python `Decimal`.
+All quotes were checked by me on 2026-10-12 unless marked "(agent)", meaning read by the research subagent from the official source.
 
-**Schema `market`** (readable by all authenticated and anonymous roles; writable only by the ingestion role):
+| | InsForge | Supabase |
+|---|---|---|
+| Postgres | "Every InsForge project comes with a full [Postgres] database" ([docs](https://docs.insforge.dev/core-concepts/database/overview), agent); Postgres 15 (agent, from its docker image) | Postgres; transaction pooler recommended "for serverless and edge functions" ([docs](https://supabase.com/docs/guides/database/connecting-to-postgres), agent) |
+| Auth | Email/password, magic link, one-time code, OAuth, OIDC (agent). JWKS endpoint exists in source code only; docs describe a shared JWT secret (agent) | Magic links/OTP enabled by default (agent). Asymmetric signing keys with a documented JWKS endpoint; HS256 shared secret "Not recommended for production applications" ([signing keys](https://supabase.com/docs/guides/auth/signing-keys), agent) |
+| RLS | Same `auth.uid()` (agent). "New tables have RLS on by default." "Anon Key… gated by RLS." "API Key: full-access admin key, server-only. Bypasses RLS." The connection string "connects as the privileged `postgres` role, so it isn't limited by row-level security" ([FAQ](https://docs.insforge.dev/faq)) | `(select auth.uid()) = user_id`; a secret key is subject to the user's RLS when the request carries their token (quoted above) |
+| Free tier | "500 MB database size", "50,000 monthly active users", "5 GB bandwidth", "1 GB file storage", "Free projects are paused after 1 week of inactivity" ([pricing](https://insforge.dev/pricing)) | 500 MB, 50,000 MAU, 5 GB egress, "paused after 1 week of inactivity", 2 active projects ([pricing](https://supabase.com/pricing), agent; previously verified) |
+| Backups | Free: "1 manual backup slot"; paid: "a full backup of every active project on a paid plan once a day, retained for 7 days" ([backups](https://docs.insforge.dev/core-concepts/database/backups)) | Free: none ("Not included"); Pro: daily, 7 days ([backups](https://supabase.com/docs/guides/platform/backups)) |
+| First paid tier | Pro "$25 month-to-month" ([pricing](https://insforge.dev/pricing)) | Pro "from $25/month" |
+| Maturity | Open source (Apache-2.0), repo created 2025-07-29, first release v0.3.0 2025-09-26 (agent); no SLA found | Open source, since 2019; SLA for Enterprise only (agent) |
 
-| Table | Fields |
-|---|---|
-| `funds` | `symbol` PK, `name`, `issuer`, `category` (broad/dividend), `inception_date`, `expense_ratio` numeric, `expense_ratio_as_of`, `expense_ratio_source_url` |
-| `dataset_versions` | `id` PK, `created_at`, `provider`, `status` (staging/published/rejected), `data_end` date, `checksum`, `notes` |
-| `prices` | `symbol`, `day`, `close` numeric(18,6), `valid_from_version`, `valid_to_version` (null = current), `source`. PK (`symbol`, `day`, `valid_from_version`) |
-| `dividends` | `symbol`, `ex_date`, `pay_date` (nullable), `amount_raw` numeric(18,8), `kind`, version fields, `source` |
-| `splits` | `symbol`, `ex_date`, `ratio` numeric, version fields, `source` |
-| `adjusted_closes` | `symbol`, `day`, `adj_close`, version fields (cross-check only, R-7.7) |
-| `ingestion_runs` | `id`, `started_at`, `finished_at`, `status`, `checks` jsonb, `dataset_version_id` |
+**Recommendation: Supabase.** The free tiers are effectively identical. Supabase's documented token verification and its rule that the user's token applies RLS even to server calls are exactly what the simplified architecture relies on. InsForge's one advantage is a manual backup slot on Free. I chose not to rely on InsForge because it is about a year old, has no SLA, and documents backend token verification less clearly. Note: InsForge's docs embed instructions addressed to AI agents (agent report); these were not followed.
 
-The version fields mean a provider correction never overwrites a row. The old row is closed (`valid_to_version`) and a new one is opened. Any dataset version can be rebuilt (R-12.4).
+**Could not verify:**
+- Supabase: the Postgres version and signing-key type for new projects.
+- InsForge: JWKS verification in its docs, its free project count, and PITR.
+- Both: whether a daily ping prevents free-tier pausing.
+- Vercel: `psycopg` wheel support (no longer needed with the Data API), and cold-start figures.
 
-**Schema `app`** (RLS on every table: `user_id = (select auth.uid())`):
+## 5. Data model (Supabase, schema `app`, RLS on every table)
 
-| Table | Fields |
-|---|---|
-| `scenarios` | `id` uuid PK, `user_id` → `auth.users` ON DELETE CASCADE, `name`, `config` jsonb (funds, strategies, threshold, start/end, reinvest, generator seed, import summary counts), `created_at`, `updated_at` |
-| `scenario_transactions` | only if the user opts in: `id`, `scenario_id` (cascade), `user_id`, `day`, `amount_cents` bigint, `direction`, `category`. **No merchant description by default.** Storing descriptions is OPEN |
-| `scenario_runs` | `id`, `scenario_id` (cascade), `user_id`, `dataset_version_id`, `engine_version`, `created_at`, `result` jsonb, `signature` |
-| `explainer_usage` | `user_id`, `day`, `requests`, `input_tokens`, `output_tokens` (written by the API through a narrow security-definer function, used for per-user caps) |
+| Table | Fields | RLS |
+|---|---|---|
+| `scenarios` | `id` uuid PK, `user_id` → `auth.users` ON DELETE CASCADE, `name`, `config` jsonb (funds, strategies, start/end, reinvest, generator seed, import summary counts), `transactions` jsonb **null unless the user ticked "also save my transactions"** (date, amount cents, direction, category; no descriptions), `created_at`, `updated_at` | select/insert/update/delete where `(select auth.uid()) = user_id` |
+| `scenario_results` | `id`, `scenario_id` (cascade), `user_id`, `fund`, `strategy`, `reinvest`, `result` jsonb (engine output), `engine_version`, `data_kind` (`sample`/`real`), `data_end`, `market_checksum` (SHA-256), `created_at` | same; **no update policy** (results are immutable; re-run inserts new rows) |
+| `explainer_usage` | `user_id`, `day`, `requests`, `input_tokens`, `output_tokens` | select own; insert/update only via a narrow `security definer` function |
+
+Removed from revision 1: all `market.*` tables, dataset versions, ingestion runs, and the `signature` field.
 
 ## 6. API outline (FastAPI, `/v1`)
 
 | Method & path | Auth | Purpose |
 |---|---|---|
-| `GET /funds` | none | Funds, coverage start, data end, expense ratio + source |
-| `GET /market/status` | none | Latest published dataset version, data end, last ingestion status |
-| `POST /transactions/parse` | optional | Multipart CSV (≤ 2 MB, ≤ 20,000 rows) + mapping → normalized transactions + import summary. Not stored |
-| `POST /transactions/generate` | optional | `{seed, months, profile}` → synthetic transactions |
-| `POST /simulate` | optional | `{transactions, config}` → per-fund × per-strategy results, daily series, flags, `dataset_version`, `engine_version`, HMAC `signature` |
-| `POST /explain` | required (OPEN: allow anonymous?) | `{result, signature, question_id}` → validated explanation or fixed fallback text. Rate- and spend-capped |
-| `DELETE /account` | required | Deletes the user's rows and the auth user (admin API, server-only) |
-| `GET /healthz` | none | Liveness + DB reachability + data freshness |
-
-Scenario and run CRUD go browser → Supabase directly (RLS).
+| `GET /funds` | none | Available series (sample in the public demo), with label, data range, expense ratio + source |
+| `POST /transactions/parse` | none | CSV (≤ 2 MB, under Vercel's 4.5 MB body cap) + mapping → normalized transactions + import summary. Not stored |
+| `POST /transactions/generate` | none | `{seed, months, profile}` → synthetic transactions |
+| `POST /simulate` | none | `{transactions, config}` → results per fund × strategy. Not stored |
+| `POST /scenarios` | user JWT | Compute and store the scenario + results via the Data API with the user's JWT |
+| `POST /scenarios/{id}/rerun` | user JWT | Recompute and insert new results; report whether the numbers changed |
+| `POST /explain` | user JWT | `{result_id, question_id}` → loads the result with the user's JWT → explanation or fixed fallback |
+| `DELETE /account` | user JWT | Deletes the user's rows, then the auth user (admin key, server-only) |
+| `GET /healthz` | cron secret | Daily Vercel cron: engine self-check plus one tiny Data API read (keeps the free project active; effect unverified) |
 
 ## 7. Phases and acceptance criteria
 
 | Phase | Scope | Accepted when |
 |---|---|---|
-| **0. Decisions** (this) | Planning docs; licence emails sent | You approve the plan; OPEN items that block Phase 1 are decided (OPEN-QUESTIONS.md marks which ones) |
-| **1. Engine** | `roundup_engine` + synthetic fixtures + golden, property and cross-check tests | Every non-OPEN rule has ≥1 golden case; all property tests pass at 5,000 examples; the independent `Fraction` implementation agrees exactly at display precision; the `FloatOperation` trap is on; no I/O in the package |
-| **2. Data** | Adapter for the chosen provider (development plan only, private), ingestion, checks, versioning, backfill 2012 →, nightly job | Backfill for all candidate funds passes every check; the VOO 2013 and SCHD 2024 split cases pass; the adjusted-close cross-check passes within the decided tolerance; 7 consecutive green nightly runs; a deliberately corrupted fixture is caught |
-| **3. App core** | FastAPI endpoints; Next.js screens: setup, results, comparison, assumptions; no accounts | 3 Playwright flows pass (generate → results, import → results, compare); axe shows no serious/critical issues; `/simulate` p95 < 2 s for 5,000 transactions × 2 funds × 4 strategies on the chosen host |
-| **4. Accounts** | Supabase Auth, saved scenarios, opt-in transaction saving, deletion | RLS cross-user tests pass for every table; the service key is absent from the client bundle; account deletion removes every row (verified by test) |
-| **5. Explainer** | `/explain`, validator, caps | Deterministic checks 100% on the eval set; advice/prediction refusal set 100%; spend cap verified by test (cap hit → fallback text, no error page) |
-| **6. Launch readiness** | Licence signed; legal review of disclaimer, privacy policy and terms; monitoring; backups | Every launch blocker in SECURITY-PRIVACY.md §10 and OPEN-QUESTIONS.md is closed; restore-from-backup drill done once |
-
-Nothing is publicly visible before Phase 6. Phases 1–5 run on private or protected deployments.
+| 0. Decisions | Plan revision 2 | Done; owner approval pending for §17 defaults |
+| **1. Engine** (this stage) | `roundup_engine`, golden/property tests, independent cross-check, fault injection, hand calculations | All golden and property tests pass; the cross-check agrees exactly at display precision on ≥ 20 scenarios; every injected fault is caught; owner verifies HAND-CALCULATIONS.md |
+| 2. Sample data | Seeded sample-series generator (mirrors the VOO 2013 and SCHD 2024 split dates); optional local real adapter | Generated series pass engine validation; golden split cases pass on them; no real prices in the repo |
+| 3. App core | FastAPI on Vercel + Next.js setup/results/compare/assumptions; anonymous only | 3 Playwright flows; axe clean; `/simulate` p95 < 2 s on Vercel for 5,000 transactions × 2 funds × 4 strategies |
+| 4. Accounts | Supabase Auth, save/re-run/delete, RLS | Cross-user RLS tests pass for every table, including API writes; deletion removes all rows |
+| 5. Explainer | `/explain`, validator, caps | Deterministic checks 100%; refusal set 100%; cap → fallback text |
+| 6. Demo launch | Invite-only links | SECURITY-PRIVACY.md §10 demo checklist done |
 
 ## 8. What could change
 
-| Assumption | What changes if it breaks |
+| Assumption | If it breaks |
 |---|---|
-| A display licence is affordable from EODHD or Tiingo | Phase 2 provider choice; possibly a smaller public feature set (e.g. charts of derived values only) or a closed beta |
-| The provider supplies pay dates | If not, R-8.8 must be decided (and disclosed) before Phase 1 is complete |
-| Free educational use is "non-commercial" for Vercel and data licences | Plan costs rise (Vercel Pro, commercial licences) |
-| Anonymous users may run simulations | If not, the "Try it" flow requires sign-in |
-| Haiku 5.5 is good enough for explanations | Switch to Sonnet 5.5: about 20× per-token cost (OPERATIONS.md) |
-| Supabase Free is enough during development | Pro ($25/mo) before launch is already assumed, because Free has no automatic backups and pauses after 1 week of inactivity |
-| Fixed explainer questions are enough | Free-text questions would need a bigger eval set and a higher spend cap |
+| A provider permits results-only display for a free invite-only demo | Real data can replace the sample series behind the same engine; nothing else changes |
+| Free tiers stay as described | Supabase Pro ($25/mo) or InsForge as the alternative |
+| Vercel Hobby limits suffice | Cache results per input hash; reduce comparison breadth |
+| Daily cron keeps Supabase from pausing | Accept occasional pauses (restore manually) for an invite-only demo |
+| Fixed explainer questions suffice | Free text needs a larger eval set |
+
+## 9. Revision 2 changes, and the risk left
+
+| Removed or changed | Why | Risk left | Mitigation |
+|---|---|---|---|
+| **Signed (HMAC) results** | The API now computes and stores results itself; the browser never submits results | None for stored results. A user could still tamper with their own *anonymous* results in their browser, which affects only what they see | The explainer works only on server-stored results |
+| **Browser-only writes** → API writes | Owner decision | An API bug could write wrong data | The API writes with the **user's JWT**, so RLS confines it to that user's rows. The admin key is used only for account deletion |
+| **Full market-data versioning** (versioned tables, dataset versions, nightly ingestion) | Demo uses bundled sample series; saved scenarios store their own results | A past result cannot be recomputed exactly after a data change; there is no audit trail of data corrections | Each result stores `engine_version`, `data_kind`, `data_end` and a checksum of the market input, so a re-run can say *that* the inputs changed |
+| **Render host, GitHub Actions ingestion, market DB schema** | Vercel Python runtime + bundled data | Vercel Hobby compute limits; cold starts | Engine is fast; results can be cached |
+| **Backups** (Supabase Free has none) | Near-free | Saved scenarios could be lost | Accepted for an invite-only demo (scenarios can be re-run). Users are told saved data is not backed up. Listed for confirmation |
