@@ -1,0 +1,31 @@
+# Files never uploaded to Vercel (both projects deploy from the repository root; the web project's Root Directory
+# is "web"). Syntax as .gitignore (Vercel docs: https://vercel.com/docs/deployments/vercel-ignore).
+# Local environments and build output
+.venv
+**/__pycache__
+.hypothesis
+.pytest_cache
+**/build
+**/*.egg-info
+web/node_modules
+web/.next
+web/test-results
+web/playwright-report
+# Tests, fixtures, tools, mocks and test evidence: not needed to build or run either project
+engine/tests
+engine/fixtures
+engine/tools
+api/tests
+api/tests_independent
+crosscheck
+supabase
+tools
+drafts
+web/tests
+web/e2e
+web/mocks
+web/screenshots
+web/vitest.config.mts
+web/playwright.config.ts
+.github
+**/*.tsbuildinfo
