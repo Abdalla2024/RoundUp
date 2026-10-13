@@ -1,3 +1,5 @@
 # Test-only additions on top of requirements.txt
 pytest==9.1.1
 hypothesis==6.169.0
+uvicorn==0.54.0
+playwright==1.63.0
