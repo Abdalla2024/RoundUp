@@ -78,16 +78,6 @@ describe("Setup screen", () => {
     expect(txs.length).toBe(3);                              // rows without problems, as parsed by the API
     expect(JSON.stringify(txs)).not.toMatch(/COFFEE|REFUND|PAYMENT/);   // descriptions never sent on (D-8)
   });
-  test("CSV: unknown sign convention asks the question", async () => {
-    parse.mockImplementation(() => Promise.reject(new ApiError(422, "SIGN_CONVENTION_REQUIRED", "We can't tell which amounts are purchases.")));
-    renderWith(<SetupForm />);
-    await waitFor(() => screen.getByRole("radio", { name: /Crash and recovery/ }));
-    fireEvent.click(screen.getByRole("radio", { name: /Upload a CSV/ }));
-    fireEvent.change(screen.getByLabelText("CSV file (up to 2 MB)"), { target: { files: [new File([parseFx.csv], "b.csv")] } });
-    await waitFor(() => screen.getByLabelText("Date column"));
-    fireEvent.click(screen.getByRole("button", { name: "Check this file" }));
-    await waitFor(() => expect(screen.getByText("In this file, are purchases positive or negative numbers?")).toBeTruthy());
-  });
   test("CSV: oversize file is refused with a plain message", async () => {
     renderWith(<SetupForm />);
     await waitFor(() => screen.getByRole("radio", { name: /Crash and recovery/ }));
@@ -224,5 +214,97 @@ describe("Setup screen", () => {
       await vi.advanceTimersByTimeAsync(2100);
       await waitFor(() => expect((screen.getByRole("button", { name: "Run simulation" }) as HTMLButtonElement).disabled).toBe(false));
     } finally { vi.useRealTimers(); }
+  });
+
+  // ---- stage 6: the sign-convention control (owner's testing on the deployed preview) ----
+  const signing = () => screen.getByLabelText("How are amounts signed?") as HTMLSelectElement;
+
+  test("the sign control starts on a neutral prompt, with plain-language help beside it", async () => {
+    renderWith(<SetupForm />);
+    await ready();
+    await upload(parseFx.csv);                                // one signed Amount column
+    await waitFor(() => screen.getByLabelText("Date column"));
+    expect(signing().value).toBe("");
+    expect(signing().options[0].textContent).toBe("Choose how amounts are signed");
+    expect(screen.queryByText("Work it out from the columns")).toBeNull();
+    const help = document.getElementById("conv-help")!;
+    expect(help.textContent).toBe(COPY.signingHelp);
+    expect(signing().getAttribute("aria-describedby")).toContain("conv-help");
+    fireEvent.change(signing(), { target: { value: "debits_negative" } });
+    expect(document.getElementById("conv-help")!.textContent).toContain(COPY.signingOptionHelp.debits_negative);
+  });
+
+  test("checking without a choice sends nothing; the page points at the field and names the four options", async () => {
+    renderWith(<SetupForm />);
+    await ready();
+    await upload(parseFx.csv);
+    await waitFor(() => screen.getByLabelText("Date column"));
+    fireEvent.click(screen.getByRole("button", { name: "Check this file" }));
+    expect(parse).not.toHaveBeenCalled();                       // R-1.3: never guess silently
+    const banner = screen.getByRole("alert");
+    expect(banner.textContent).toBe(COPY.chooseSigning);
+    for (const t of ["Purchases are positive numbers", "Purchases are negative numbers",
+                     "Money out and money in columns", "A column says debit or credit"]) {
+      expect(banner.textContent).toContain(`“${t}”`);
+    }
+    expect(banner.textContent).toContain("How are amounts signed?");
+    expect(signing().getAttribute("aria-invalid")).toBe("true");
+    await waitFor(() => expect(document.activeElement).toBe(signing()));
+    expect(document.getElementById("conv-help")!.textContent).toContain(COPY.chooseSigningField);
+  });
+
+  test("two money columns: the matching option is chosen for you, and the page says why", async () => {
+    parse.mockResolvedValue(parseFx.response);
+    renderWith(<SetupForm />);
+    await ready();
+    await upload("Date,Description,Money out,Money in,Status\n2024-01-02,Coffee,6.16,,posted\n");
+    await waitFor(() => screen.getByLabelText("Date column"));
+    expect(signing().value).toBe("separate_columns");
+    expect(document.getElementById("conv-help")!.textContent).toContain(COPY.signingChosenBecause("Money out", "Money in"));
+    expect((screen.getByLabelText("Money out column") as HTMLSelectElement).value).toBe("Money out");
+    expect((screen.getByLabelText("Money in column") as HTMLSelectElement).value).toBe("Money in");
+    fireEvent.click(screen.getByRole("button", { name: "Check this file" }));
+    await waitFor(() => expect(parse).toHaveBeenCalled());
+    expect(parse.mock.calls[0][1]).toEqual({ date: "Date", description: "Description", debit: "Money out", credit: "Money in", status: "Status" });
+    expect(parse.mock.calls[0][2]).toBe("separate_columns");
+  });
+
+  test("a debit/credit type column next to the amount: that option is chosen, with the reason", async () => {
+    renderWith(<SetupForm />);
+    await ready();
+    await upload("Date,Description,Amount,Type\n2024-01-02,Coffee,6.16,debit\n");
+    await waitFor(() => screen.getByLabelText("Date column"));
+    expect(signing().value).toBe("type_column");
+    expect(document.getElementById("conv-help")!.textContent).toContain(COPY.signingChosenBecauseType("Type"));
+    expect((screen.getByLabelText("Debit or credit column") as HTMLSelectElement).value).toBe("Type");
+  });
+
+  test("a Status column is found and sent, so pending and cancelled rows are not counted", async () => {
+    parse.mockResolvedValue(parseFx.response);
+    renderWith(<SetupForm />);
+    await ready();
+    await upload("Date,Description,Amount,Status\n2024-01-02,Coffee,6.16,pending\n");
+    await waitFor(() => screen.getByLabelText("Status column (optional)"));
+    expect((screen.getByLabelText("Status column (optional)") as HTMLSelectElement).value).toBe("Status");
+    fireEvent.change(signing(), { target: { value: "debits_positive" } });
+    fireEvent.click(screen.getByRole("button", { name: "Check this file" }));
+    await waitFor(() => expect(parse).toHaveBeenCalled());
+    expect(parse.mock.calls[0][1]).toEqual({ date: "Date", amount: "Amount", description: "Description", status: "Status" });
+  });
+
+  test("the check says how many rows are money in, pending or cancelled, and whole-dollar", async () => {
+    const res = JSON.parse(JSON.stringify(parseFx.response));
+    res.summary = { ...res.summary, credits: 2, not_posted: 1, whole_dollar: 3 };
+    parse.mockResolvedValue(res);
+    renderWith(<SetupForm />);
+    await ready();
+    await upload(parseFx.csv);
+    await waitFor(() => screen.getByLabelText("Date column"));
+    fireEvent.change(signing(), { target: { value: "debits_positive" } });
+    fireEvent.click(screen.getByRole("button", { name: "Check this file" }));
+    const status = await screen.findByRole("status");
+    expect(status.textContent).toContain(COPY.checkCredits("2"));
+    expect(status.textContent).toContain(COPY.checkNotPosted("1"));
+    expect(status.textContent).toContain(COPY.checkWholeDollar("3"));
   });
 });

@@ -1,0 +1,2042 @@
+{
+ "setup-generate @320 light": [],
+ "setup-upload-before-file @320 light": [
+  {
+   "kind": "edge",
+   "detail": "input#csv is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “CSV file (up to 2 MB)” is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (386 > 320)"
+  }
+ ],
+ "setup-upload-after-file @320 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "input#csv is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…411 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-description “(none)Transaction posting date (UTC)Merc” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “CSV file (up to 2 MB)” is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…411 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Date column” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Amount column” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Description column (optional)” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (411 > 320)"
+  }
+ ],
+ "setup-upload-error @320 light": [
+  {
+   "kind": "clipped",
+   "detail": "p.small “Reference: 9a114602ac2945eb9b2e46843a582” spills out of its own box (266 > 260)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "input#csv is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…413 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-description “(none)Transaction posting date (UTC)Merc” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “CSV file (up to 2 MB)” is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…413 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "span#conv-help.small “In this file, are purchases positive or ” is drawn outside the window (16…413 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Date column” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Amount column” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Description column (optional)” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (413 > 320)"
+  }
+ ],
+ "setup-upload-split-columns @320 light": [
+  {
+   "kind": "edge",
+   "detail": "input#csv is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…413 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “CSV file (up to 2 MB)” is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…413 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "span#conv-help.small “In this file, are purchases positive or ” is drawn outside the window (16…413 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (413 > 320)"
+  }
+ ],
+ "setup-upload-checked @320 light": [
+  {
+   "kind": "edge",
+   "detail": "input#csv is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…411 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “CSV file (up to 2 MB)” is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…411 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (411 > 320)"
+  }
+ ],
+ "results @320 light": [
+  {
+   "kind": "edge",
+   "detail": "span.stat-value “+$1,159.45” is drawn outside the window (181…330 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (330 > 320)"
+  }
+ ],
+ "results-table-and-assumptions-open @320 light": [
+  {
+   "kind": "edge",
+   "detail": "span.stat-value “+$1,159.45” is drawn outside the window (181…330 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (330 > 320)"
+  }
+ ],
+ "results-signin-open @320 light": [
+  {
+   "kind": "edge",
+   "detail": "span.stat-value “+$1,159.45” is drawn outside the window (181…330 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (330 > 320)"
+  }
+ ],
+ "results-save-form @320 light": [
+  {
+   "kind": "edge",
+   "detail": "span.stat-value “+$1,159.45” is drawn outside the window (181…330 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (330 > 320)"
+  }
+ ],
+ "results-saved @320 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “See saved scenarios”  ×  bdi “Layout check”  (101×20 px)"
+  },
+  {
+   "kind": "edge",
+   "detail": "span.stat-value “+$1,159.45” is drawn outside the window (181…330 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (330 > 320)"
+  }
+ ],
+ "compare-before @320 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 271"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#strat-A “Invest each time round-ups reach $5Inves” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#strat-B “Invest each time round-ups reach $5Inves” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How round-ups are invested” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How round-ups are invested” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (354 > 320)"
+  }
+ ],
+ "compare-after @320 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 271"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#strat-A “Invest each time round-ups reach $5Inves” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#strat-B “Invest each time round-ups reach $5Inves” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How round-ups are invested” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How round-ups are invested” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (354 > 320)"
+  }
+ ],
+ "saved-signed-out @320 light": [],
+ "saved-empty @320 light": [],
+ "how @320 light": [],
+ "privacy @320 light": [],
+ "not-found @320 light": [],
+ "setup-generate @320 dark": [],
+ "setup-upload-before-file @320 dark": [
+  {
+   "kind": "edge",
+   "detail": "input#csv is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “CSV file (up to 2 MB)” is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (386 > 320)"
+  }
+ ],
+ "setup-upload-after-file @320 dark": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "input#csv is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…411 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-description “(none)Transaction posting date (UTC)Merc” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “CSV file (up to 2 MB)” is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…411 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Date column” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Amount column” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Description column (optional)” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (411 > 320)"
+  }
+ ],
+ "setup-upload-error @320 dark": [
+  {
+   "kind": "clipped",
+   "detail": "p.small “Reference: abe17ec6b6624b33afc98d3937b69” spills out of its own box (262 > 260)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "input#csv is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…413 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-description “(none)Transaction posting date (UTC)Merc” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “CSV file (up to 2 MB)” is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…413 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "span#conv-help.small “In this file, are purchases positive or ” is drawn outside the window (16…413 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Date column” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Amount column” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Description column (optional)” is drawn outside the window (16…389 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (413 > 320)"
+  }
+ ],
+ "setup-upload-split-columns @320 dark": [
+  {
+   "kind": "edge",
+   "detail": "input#csv is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…413 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “CSV file (up to 2 MB)” is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…413 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "span#conv-help.small “In this file, are purchases positive or ” is drawn outside the window (16…413 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (413 > 320)"
+  }
+ ],
+ "setup-upload-checked @320 dark": [
+  {
+   "kind": "edge",
+   "detail": "input#csv is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…411 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “CSV file (up to 2 MB)” is drawn outside the window (16…386 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…411 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (411 > 320)"
+  }
+ ],
+ "results @320 dark": [
+  {
+   "kind": "edge",
+   "detail": "span.stat-value “+$1,159.45” is drawn outside the window (181…330 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (330 > 320)"
+  }
+ ],
+ "results-table-and-assumptions-open @320 dark": [
+  {
+   "kind": "edge",
+   "detail": "span.stat-value “+$1,159.45” is drawn outside the window (181…330 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (330 > 320)"
+  }
+ ],
+ "results-signin-open @320 dark": [
+  {
+   "kind": "edge",
+   "detail": "span.stat-value “+$1,159.45” is drawn outside the window (181…330 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (330 > 320)"
+  }
+ ],
+ "results-save-form @320 dark": [
+  {
+   "kind": "edge",
+   "detail": "span.stat-value “+$1,159.45” is drawn outside the window (181…330 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (330 > 320)"
+  }
+ ],
+ "results-saved @320 dark": [
+  {
+   "kind": "overlap",
+   "detail": "a “See saved scenarios”  ×  bdi “Layout check”  (101×20 px)"
+  },
+  {
+   "kind": "edge",
+   "detail": "span.stat-value “+$1,159.45” is drawn outside the window (181…330 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (330 > 320)"
+  }
+ ],
+ "compare-before @320 dark": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 271"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#strat-A “Invest each time round-ups reach $5Inves” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#strat-B “Invest each time round-ups reach $5Inves” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How round-ups are invested” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How round-ups are invested” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (354 > 320)"
+  }
+ ],
+ "compare-after @320 dark": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 271"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#strat-A “Invest each time round-ups reach $5Inves” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#strat-B “Invest each time round-ups reach $5Inves” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How round-ups are invested” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How round-ups are invested” is drawn outside the window (33…354 of 320)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (354 > 320)"
+  }
+ ],
+ "saved-signed-out @320 dark": [],
+ "saved-empty @320 dark": [],
+ "how @320 dark": [],
+ "privacy @320 dark": [],
+ "not-found @320 dark": [],
+ "setup-generate @390 light": [],
+ "setup-upload-before-file @390 light": [],
+ "setup-upload-after-file @390 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…411 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…411 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (411 > 390)"
+  }
+ ],
+ "setup-upload-error @390 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…413 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…413 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "span#conv-help.small “In this file, are purchases positive or ” is drawn outside the window (16…413 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (413 > 390)"
+  }
+ ],
+ "setup-upload-split-columns @390 light": [
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…413 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…413 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "span#conv-help.small “In this file, are purchases positive or ” is drawn outside the window (16…413 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (413 > 390)"
+  }
+ ],
+ "setup-upload-checked @390 light": [
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…411 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…411 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (411 > 390)"
+  }
+ ],
+ "results @390 light": [],
+ "results-table-and-assumptions-open @390 light": [],
+ "results-signin-open @390 light": [],
+ "results-save-form @390 light": [],
+ "results-saved @390 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “See saved scenarios”  ×  bdi “Layout check”  (101×20 px)"
+  }
+ ],
+ "compare-before @390 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 274"
+  }
+ ],
+ "compare-after @390 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 274"
+  }
+ ],
+ "saved-signed-out @390 light": [],
+ "saved-empty @390 light": [],
+ "how @390 light": [],
+ "privacy @390 light": [],
+ "not-found @390 light": [],
+ "setup-generate @390 dark": [],
+ "setup-upload-before-file @390 dark": [],
+ "setup-upload-after-file @390 dark": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…411 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…411 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (411 > 390)"
+  }
+ ],
+ "setup-upload-error @390 dark": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…413 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…413 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "span#conv-help.small “In this file, are purchases positive or ” is drawn outside the window (16…413 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (413 > 390)"
+  }
+ ],
+ "setup-upload-split-columns @390 dark": [
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…413 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…413 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "span#conv-help.small “In this file, are purchases positive or ” is drawn outside the window (16…413 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (413 > 390)"
+  }
+ ],
+ "setup-upload-checked @390 dark": [
+  {
+   "kind": "edge",
+   "detail": "select#convention “Work it out from the columnsPurchases ar” is drawn outside the window (16…411 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “How are amounts signed?” is drawn outside the window (16…411 of 390)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (411 > 390)"
+  }
+ ],
+ "results @390 dark": [],
+ "results-table-and-assumptions-open @390 dark": [],
+ "results-signin-open @390 dark": [],
+ "results-save-form @390 dark": [],
+ "results-saved @390 dark": [
+  {
+   "kind": "overlap",
+   "detail": "a “See saved scenarios”  ×  bdi “Layout check”  (101×20 px)"
+  }
+ ],
+ "compare-before @390 dark": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 274"
+  }
+ ],
+ "compare-after @390 dark": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 274"
+  }
+ ],
+ "saved-signed-out @390 dark": [],
+ "saved-empty @390 dark": [],
+ "how @390 dark": [],
+ "privacy @390 dark": [],
+ "not-found @390 dark": [],
+ "setup-generate @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  }
+ ],
+ "setup-upload-before-file @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  }
+ ],
+ "setup-upload-after-file @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×24 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc” is drawn outside the window (488…861 of 768)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Amount column” is drawn outside the window (488…861 of 768)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (861 > 768)"
+  }
+ ],
+ "setup-upload-error @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×38 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc” is drawn outside the window (488…861 of 768)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Amount column” is drawn outside the window (488…861 of 768)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (861 > 768)"
+  }
+ ],
+ "setup-upload-split-columns @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateDescriptionMoney outMoney in”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)DateDescriptionMoney outMoney in”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  }
+ ],
+ "setup-upload-checked @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateAmount”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  }
+ ],
+ "results @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  }
+ ],
+ "results-table-and-assumptions-open @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  }
+ ],
+ "results-signin-open @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  }
+ ],
+ "results-save-form @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  }
+ ],
+ "results-saved @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  }
+ ],
+ "compare-before @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 276"
+  }
+ ],
+ "compare-after @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 276"
+  }
+ ],
+ "saved-signed-out @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  }
+ ],
+ "saved-empty @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  }
+ ],
+ "how @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  }
+ ],
+ "privacy @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  }
+ ],
+ "not-found @768 light": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  }
+ ],
+ "setup-generate @768 dark": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  }
+ ],
+ "setup-upload-before-file @768 dark": [
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  }
+ ],
+ "setup-upload-after-file @768 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×24 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc” is drawn outside the window (488…861 of 768)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Amount column” is drawn outside the window (488…861 of 768)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (861 > 768)"
+  }
+ ],
+ "setup-upload-error @768 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×24 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc” is drawn outside the window (488…861 of 768)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Amount column” is drawn outside the window (488…861 of 768)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (861 > 768)"
+  }
+ ],
+ "setup-upload-split-columns @768 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateDescriptionMoney outMoney in”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "a “Privacy”  ×  a “How this works”  (49×17 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  }
+ ],
+ "setup-generate @1024 light": [],
+ "setup-upload-before-file @1024 light": [],
+ "setup-upload-after-file @1024 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×24 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-description “(none)Transaction posting date (UTC)Merc” is drawn outside the window (724…1097 of 1024)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Description column (optional)” is drawn outside the window (724…1097 of 1024)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (1097 > 1024)"
+  }
+ ],
+ "setup-upload-error @1024 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×38 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×38 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-description “(none)Transaction posting date (UTC)Merc” is drawn outside the window (724…1097 of 1024)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Description column (optional)” is drawn outside the window (724…1097 of 1024)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (1097 > 1024)"
+  }
+ ],
+ "setup-upload-split-columns @1024 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateDescriptionMoney outMoney in”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)DateDescriptionMoney outMoney in”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  }
+ ],
+ "setup-upload-checked @1024 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateAmount”  (159×56 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×36 px)"
+  }
+ ],
+ "results @1024 light": [],
+ "results-table-and-assumptions-open @1024 light": [],
+ "results-signin-open @1024 light": [],
+ "results-save-form @1024 light": [],
+ "results-saved @1024 light": [],
+ "compare-before @1024 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 271"
+  }
+ ],
+ "compare-after @1024 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 271"
+  }
+ ],
+ "saved-signed-out @1024 light": [],
+ "saved-empty @1024 light": [],
+ "how @1024 light": [],
+ "privacy @1024 light": [],
+ "not-found @1024 light": [],
+ "setup-generate @1024 dark": [],
+ "setup-upload-before-file @1024 dark": [],
+ "setup-upload-after-file @1024 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×24 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-description “(none)Transaction posting date (UTC)Merc” is drawn outside the window (724…1097 of 1024)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Description column (optional)” is drawn outside the window (724…1097 of 1024)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (1097 > 1024)"
+  }
+ ],
+ "setup-upload-error @1024 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×38 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×38 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  },
+  {
+   "kind": "edge",
+   "detail": "select#map-description “(none)Transaction posting date (UTC)Merc” is drawn outside the window (724…1097 of 1024)"
+  },
+  {
+   "kind": "edge",
+   "detail": "label “Description column (optional)” is drawn outside the window (724…1097 of 1024)"
+  },
+  {
+   "kind": "edge",
+   "detail": "the page scrolls sideways (1097 > 1024)"
+  }
+ ],
+ "setup-upload-split-columns @1024 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateDescriptionMoney outMoney in”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)DateDescriptionMoney outMoney in”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  }
+ ],
+ "setup-upload-checked @1024 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateAmount”  (159×56 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×36 px)"
+  }
+ ],
+ "results @1024 dark": [],
+ "results-table-and-assumptions-open @1024 dark": [],
+ "results-signin-open @1024 dark": [],
+ "results-save-form @1024 dark": [],
+ "results-saved @1024 dark": [],
+ "compare-before @1024 dark": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 271"
+  }
+ ],
+ "compare-after @1024 dark": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 271"
+  }
+ ],
+ "saved-signed-out @1024 dark": [],
+ "saved-empty @1024 dark": [],
+ "how @1024 dark": [],
+ "privacy @1024 dark": [],
+ "not-found @1024 dark": [],
+ "setup-generate @1280 light": [],
+ "setup-upload-before-file @1280 light": [],
+ "setup-upload-after-file @1280 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×24 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  }
+ ],
+ "setup-upload-error @1280 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×38 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×38 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  }
+ ],
+ "setup-upload-split-columns @1280 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateDescriptionMoney outMoney in”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)DateDescriptionMoney outMoney in”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  }
+ ],
+ "setup-upload-checked @1280 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateAmount”  (159×56 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×36 px)"
+  }
+ ],
+ "results @1280 light": [],
+ "results-table-and-assumptions-open @1280 light": [],
+ "results-signin-open @1280 light": [],
+ "results-save-form @1280 light": [],
+ "results-saved @1280 light": [],
+ "compare-before @1280 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 276"
+  }
+ ],
+ "compare-after @1280 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 276"
+  }
+ ],
+ "saved-signed-out @1280 light": [],
+ "saved-empty @1280 light": [],
+ "how @1280 light": [],
+ "privacy @1280 light": [],
+ "not-found @1280 light": [],
+ "setup-generate @1280 dark": [],
+ "setup-upload-before-file @1280 dark": [],
+ "setup-upload-after-file @1280 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×24 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  }
+ ],
+ "setup-upload-error @1280 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×38 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×38 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  }
+ ],
+ "setup-upload-split-columns @1280 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateDescriptionMoney outMoney in”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)DateDescriptionMoney outMoney in”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  }
+ ],
+ "setup-upload-checked @1280 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateAmount”  (159×56 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×36 px)"
+  }
+ ],
+ "results @1280 dark": [],
+ "results-table-and-assumptions-open @1280 dark": [],
+ "results-signin-open @1280 dark": [],
+ "results-save-form @1280 dark": [],
+ "results-saved @1280 dark": [],
+ "compare-before @1280 dark": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 276"
+  }
+ ],
+ "compare-after @1280 dark": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 276"
+  }
+ ],
+ "saved-signed-out @1280 dark": [],
+ "saved-empty @1280 dark": [],
+ "how @1280 dark": [],
+ "privacy @1280 dark": [],
+ "not-found @1280 dark": [],
+ "setup-generate @1600 light": [],
+ "setup-upload-before-file @1600 light": [],
+ "setup-upload-after-file @1600 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×24 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  }
+ ],
+ "setup-upload-error @1600 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×38 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×38 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  }
+ ],
+ "setup-upload-split-columns @1600 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateDescriptionMoney outMoney in”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)DateDescriptionMoney outMoney in”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  }
+ ],
+ "setup-upload-checked @1600 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateAmount”  (159×56 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×36 px)"
+  }
+ ],
+ "results @1600 light": [],
+ "results-table-and-assumptions-open @1600 light": [],
+ "results-signin-open @1600 light": [],
+ "results-save-form @1600 light": [],
+ "results-saved @1600 light": [],
+ "compare-before @1600 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 276"
+  }
+ ],
+ "compare-after @1600 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 276"
+  }
+ ],
+ "saved-signed-out @1600 light": [],
+ "saved-empty @1600 light": [],
+ "how @1600 light": [],
+ "privacy @1600 light": [],
+ "not-found @1600 light": [],
+ "setup-generate @1600 dark": [],
+ "setup-upload-before-file @1600 dark": [],
+ "setup-upload-after-file @1600 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×24 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  }
+ ],
+ "setup-upload-error @1600 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×24 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  }
+ ],
+ "setup-upload-split-columns @1600 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateDescriptionMoney outMoney in”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  }
+ ],
+ "setup-generate @2000 light": [],
+ "setup-upload-before-file @2000 light": [],
+ "setup-upload-after-file @2000 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×24 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  }
+ ],
+ "setup-upload-error @2000 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×38 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×38 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  }
+ ],
+ "setup-upload-split-columns @2000 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateDescriptionMoney outMoney in”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)DateDescriptionMoney outMoney in”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  }
+ ],
+ "setup-upload-checked @2000 light": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateAmount”  (159×56 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×36 px)"
+  }
+ ],
+ "results @2000 light": [],
+ "results-table-and-assumptions-open @2000 light": [],
+ "results-signin-open @2000 light": [],
+ "results-save-form @2000 light": [],
+ "results-saved @2000 light": [],
+ "compare-before @2000 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 276"
+  }
+ ],
+ "compare-after @2000 light": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 276"
+  }
+ ],
+ "saved-signed-out @2000 light": [],
+ "saved-empty @2000 light": [],
+ "how @2000 light": [],
+ "privacy @2000 light": [],
+ "not-found @2000 light": [],
+ "setup-generate @2000 dark": [],
+ "setup-upload-before-file @2000 dark": [],
+ "setup-upload-after-file @2000 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (159×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×44 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×24 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  }
+ ],
+ "setup-upload-error @2000 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)Transaction posting date (UTC)Merc”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  select#map-amount “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)Transaction posting date (UTC)Merc”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-amount “(none)Transaction posting date (UTC)Merc”  ×  select#map-description “(none)Transaction posting date (UTC)Merc”  (137×58 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Date column”  ×  label “Amount column”  (137×38 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “Amount column”  ×  label “Description column (optional)”  (137×38 px)"
+  },
+  {
+   "kind": "clipped",
+   "detail": "select div.field “Description column (optional)(none)Trans”: “Merchant description as shown by the ban” needs 330 px, has 323"
+  }
+ ],
+ "setup-upload-split-columns @2000 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateDescriptionMoney outMoney in”  (161×33 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  label “Date column”  (161×10 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "select#map-date “(none)DateDescriptionMoney outMoney in”  ×  span#conv-help.small “In this file, are purchases positive or ”  (161×21 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (161×24 px)"
+  }
+ ],
+ "setup-upload-checked @2000 dark": [
+  {
+   "kind": "overlap",
+   "detail": "select#convention “Work it out from the columnsPurchases ar”  ×  select#map-date “(none)DateAmount”  (159×56 px)"
+  },
+  {
+   "kind": "overlap",
+   "detail": "label “How are amounts signed?”  ×  label “Date column”  (159×36 px)"
+  }
+ ],
+ "results @2000 dark": [],
+ "results-table-and-assumptions-open @2000 dark": [],
+ "results-signin-open @2000 dark": [],
+ "results-save-form @2000 dark": [],
+ "results-saved @2000 dark": [],
+ "compare-before @2000 dark": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 276"
+  }
+ ],
+ "compare-after @2000 dark": [
+  {
+   "kind": "clipped",
+   "detail": "select div.field “How round-ups are investedInvest each ti”: “Invest each time round-ups reach $5” needs 279 px, has 276"
+  }
+ ],
+ "saved-signed-out @2000 dark": [],
+ "saved-empty @2000 dark": [],
+ "how @2000 dark": [],
+ "privacy @2000 dark": [],
+ "not-found @2000 dark": []
+}

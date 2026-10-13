@@ -55,6 +55,9 @@
     "zero_amount": 0
    },
    "non_purchases": 1,
+   "credits": 1,
+   "not_posted": 0,
+   "whole_dollar": 0,
    "possible_duplicates": 0
   }
  }

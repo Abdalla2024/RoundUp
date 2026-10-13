@@ -35,6 +35,29 @@ export const COPY = {
   chartKeys: "To read values with the keyboard, select the chart, then use the arrow keys, Home, End, Page Up and Page Down.",
   linkSentKeepTab: "Check your email for a sign-in link. It works once. Keep this tab open: your results stay here, " +
     "and you can save them once you\u2019re signed in.",
+  // Sign convention (stage 6; wording in COPY.md "Upload step, after the owner's testing on the preview")
+  signingPrompt: "Choose how amounts are signed",
+  signingHelp: "Banks write purchases in different ways. Look at one purchase in your file. If it is a positive number " +
+    "(like 6.16), choose \u201cPurchases are positive numbers\u201d. If it has a minus sign (like -6.16), choose " +
+    "\u201cPurchases are negative numbers\u201d. If money out and money in are in two columns, or a column says debit " +
+    "or credit, choose the matching option.",
+  signingOptionHelp: {
+    debits_positive: "Purchases are positive numbers, like 6.16. Refunds and other money coming in are negative, like -12.50, and never add round-ups.",
+    debits_negative: "Purchases are negative numbers, like -6.16. Money coming in is positive, like 12.50, and never adds round-ups.",
+    separate_columns: "Purchases are in the money out column. Money coming in is in the money in column and never adds round-ups.",
+    type_column: "A column says debit or credit for each row. Debits are purchases. Credits are money coming in and never add round-ups.",
+  } as Record<string, string>,
+  signingChosenBecause: (out: string, inn: string) =>
+    `We chose this because your file has columns named \u201c${out}\u201d and \u201c${inn}\u201d. Change it if that is wrong.`,
+  signingChosenBecauseType: (col: string) =>
+    `We chose this because your file has a column named \u201c${col}\u201d next to the amount. Change it if that is wrong.`,
+  chooseSigning: "Choose how amounts are signed in this file, in the box named \u201cHow are amounts signed?\u201d. Your options are: " +
+    "\u201cPurchases are positive numbers\u201d, \u201cPurchases are negative numbers\u201d, " +
+    "\u201cMoney out and money in columns\u201d, or \u201cA column says debit or credit\u201d.",
+  chooseSigningField: "Choose one of the four options.",
+  checkCredits: (n: string) => `Money coming in (refunds, deposits): ${n}. These never add round-ups.`,
+  checkNotPosted: (n: string) => `Pending or cancelled rows: ${n}. These are left out.`,
+  checkWholeDollar: (n: string) => `Purchases of an exact dollar amount: ${n}. These add $0.00, because there is no spare change.`,
   seedHint: "A whole number from 0 to 2,147,483,647.",
   seedError: "Use a whole number from 0 to 2,147,483,647 for the sample number.",
   perDayError: "Use 1, 2 or 3 for purchases per day.",

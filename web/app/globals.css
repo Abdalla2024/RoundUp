@@ -239,3 +239,29 @@ footer div { max-width: 1120px; margin: 0 auto; padding: 16px; font-size: 14px; 
 .inline-form .field { text-align: left; }                                       /* L11: label aligned with its field */
 .chart-box:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
 .chart-readout { min-height: 1.5em; margin: 4px 0 0; }
+
+/* stage 6, layout fix. ROOT CAUSE of the overlapping CSV controls: selects and the file input were sized by their
+   own content (the longest option, e.g. "Separate columns for money out and money in") inside grid columns with a
+   fixed maximum (220 px), and grid items could not shrink below that content. So a control ran past its column,
+   over the next field, and past the window edge on phones. Fix: grid items may shrink (min-width: 0) and every
+   control fills its column; the CSV mapping gets columns wide enough for realistic names. */
+.field { min-width: 0; }
+.field input, .field select, .field textarea { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
+.field input[type="file"] { height: auto; padding: 8px 10px; }
+.inline-form .field { flex: 1 1 260px; }
+.convention { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 8px 24px; align-items: start; margin-top: 16px; }
+.conv-help { margin: 0; padding-top: 28px; }                /* lines the help text up with the box, not its label */
+@media (max-width: 760px) { .convention { grid-template-columns: minmax(0, 1fr); } .conv-help { padding-top: 0; } }
+.mapping-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px; margin-top: 16px; }
+.check-row { margin: 20px 0 8px; }
+/* stage 6, second pass (found by the geometry checks): room for the longest option, compare pickers that stack when the
+   column is narrow, small-screen padding so a select can show its whole value, and stat tiles that never push the page
+   sideways at 320 px. */
+.convention { grid-template-columns: minmax(0, 420px) minmax(0, 1fr); }
+@media (max-width: 760px) { .convention { grid-template-columns: minmax(0, 1fr); } }
+.compare-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+@media (max-width: 480px) { .field select { padding-left: 8px; padding-right: 8px; } .card { padding: 12px; } }
+@media (max-width: 380px) { .stats { grid-template-columns: minmax(0, 1fr); } }
+.stat-value { overflow-wrap: anywhere; }
+.compare-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); }
+.compare-grid .field select { padding-left: 10px; padding-right: 10px; }

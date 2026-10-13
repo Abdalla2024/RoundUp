@@ -18,7 +18,7 @@ export default defineConfig({
   webServer: [
     { command: `${PY} tools/standin/server.py --port 54321 --origin ${WEB}`, cwd: "..", url: `${STANDIN}/auth/v1/.well-known/jwks.json`,
       reuseExistingServer: false, timeout: 30_000 },
-    { command: `${PY} -m uvicorn app:app --host 127.0.0.1 --port 8000`, cwd: "..", url: `${API}/v1/health`,
+    { command: `${PY} -m uvicorn test_api:app --app-dir tools/standin --host 127.0.0.1 --port 8000`, cwd: "..", url: `${API}/v1/health`,
       reuseExistingServer: false, timeout: 60_000,
       env: { SUPABASE_URL: STANDIN, SUPABASE_PUBLISHABLE_KEY: "standin-publishable-key", ALLOWED_ORIGIN: WEB,
              PYTHONPATH: "engine/src:api" } },

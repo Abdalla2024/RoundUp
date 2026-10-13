@@ -118,6 +118,7 @@ test("M6: no chart tooltip at rest; hover shows one, leaving hides it; a tap/cli
   await page.locator(".recharts-wrapper").first().waitFor();
   const tip = page.locator(".recharts-tooltip-wrapper").first();
   await expect(tip).not.toContainText("Round-ups added:");
+  await box.scrollIntoViewIfNeeded();             // mouse coordinates only work inside the window
   const b = (await box.boundingBox())!;
   await page.mouse.move(b.x + b.width * 0.6, b.y + b.height / 2);
   await expect(tip).toContainText("Round-ups added:");

@@ -14,7 +14,7 @@ PYTHONPATH=engine/src .venv/bin/python samples/make_samples.py --check   # verif
 | File | Layout | What to choose in the app |
 |---|---|---|
 | `sample-transactions.csv` | `Date, Description, Amount, Status`. One signed amount column: purchases are positive, refunds are negative | Date → Date, Amount → Amount, Description → Description, Status → Status. Signing: **Purchases are positive numbers** |
-| `sample-split-columns.csv` | `Date, Description, Money out, Money in, Status` | Signing: **Separate columns for money out and money in** (the app should pick this for you and say so) |
+| `sample-split-columns.csv` | `Date, Description, Money out, Money in, Status` | Signing: **Money out and money in columns** (the app should pick this for you and say so) |
 | `sample-type-column.csv` | `Date, Description, Amount, Type, Status`. `Type` says `debit` or `credit` | Signing: **A column says debit or credit** (the app should pick this for you and say so) |
 
 All three hold the same 92 transactions, dated 2024-01-02 to 2024-03-29. Use the dates 2024-01-02 to 2024-03-29 in step 4 (the scenario runs 2012 to 2026, so any scenario works).

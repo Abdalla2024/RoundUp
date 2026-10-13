@@ -20,23 +20,23 @@ const STRATEGIES: [Strategy, string, string][] = [
 ];
 const CONVENTIONS: [string, string][] = [
   ["debits_positive", "Purchases are positive numbers"], ["debits_negative", "Purchases are negative numbers"],
-  ["separate_columns", "Separate columns for money out and money in"], ["type_column", "A column says debit or credit"],
+  ["separate_columns", "Money out and money in columns"], ["type_column", "A column says debit or credit"],
 ];
-type Col = "date" | "amount" | "debit" | "credit" | "type" | "description";
+type Col = "date" | "amount" | "debit" | "credit" | "type" | "status" | "description";
 const COL_LABEL: Record<Col, string> = { date: "Date column", amount: "Amount column", debit: "Money out column",
-  credit: "Money in column", type: "Debit or credit column", description: "Description column (optional)" };
+  credit: "Money in column", type: "Debit or credit column", status: "Status column (optional)", description: "Description column (optional)" };
 const SLASH_DATE = /(^|[,"\s])\d{1,2}\/\d{1,2}\/\d{4}([,"\s]|$)/m;
 
 const DEFAULTS: SetupDraft = { source: "generate", seed: "42", perDay: "2", scenarioId: "crash-and-recovery",
   style: "broad", strategy: "threshold", reinvest: true, start: "2015-01-02", end: "2024-12-31", csv: null,
-  columns: [], mapping: {}, convention: "", parsed: null, slashDates: false };
+  columns: [], mapping: {}, convention: "", convNote: "", parsed: null, slashDates: false };
 
 /** Which column pickers a sign option needs (reviewer M4). */
 function visibleColumns(convention: string, mapping: Mapping): Col[] {
-  if (convention === "separate_columns") return ["date", "debit", "credit", "description"];
-  if (convention === "type_column") return ["date", "amount", "type", "description"];
-  if (convention) return ["date", "amount", "description"];
-  return ["date", "amount", ...(["debit", "credit", "type"] as Col[]).filter((k) => mapping[k]), "description"];
+  if (convention === "separate_columns") return ["date", "debit", "credit", "status", "description"];
+  if (convention === "type_column") return ["date", "amount", "type", "status", "description"];
+  if (convention) return ["date", "amount", "status", "description"];
+  return ["date", "amount", ...(["debit", "credit", "type"] as Col[]).filter((k) => mapping[k]), "status", "description"];
 }
 const validSeed = (s: string) => /^\d{1,10}$/.test(s) && (s.length < 10 || s <= MAX_SEED);
 
@@ -50,11 +50,15 @@ export function SetupForm() {
   const [error, setError] = useState<ApiError | null>(null);
   const [busy, setBusy] = useState(false);
   const [coolingDown, noteRateLimit] = useRateLimitWait();     // reviewer L2
-  const [needConvention, setNeedConvention] = useState(false);
   const errorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { api.scenarios().then(setScen).catch((e) => setError(e as ApiError)); }, []);
-  useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
+  useEffect(() => {
+    if (!error) return;
+    // an error about the sign box moves focus to that box (the banner is read out as an alert either way)
+    if (error.fields.includes("sign_convention")) document.getElementById("convention")?.focus();
+    else errorRef.current?.focus();
+  }, [error]);
 
   const range = scen?.scenarios.find((s) => s.id === f.scenarioId)?.styles.find((s) => s.style === f.style);
   const invalid = (k: string) => Boolean(error?.fields.some((x) => x === k || x.startsWith(k + ".")));
@@ -79,10 +83,21 @@ export function SetupForm() {
     const columns = csvHeader(text);
     if (columns.length === 1 && columns[0].includes(";")) { setError(new ApiError(422, "CSV_INVALID", COPY.semicolons)); return; }
     const guess = (re: RegExp) => columns.find((c) => re.test(c)) ?? null;
-    set({ csv: text, columns, slashDates: SLASH_DATE.test(text), mapping: {
+    const mapping: Mapping = {
       date: guess(/date/i), amount: guess(/amount/i), description: guess(/desc|merchant|name|memo/i),
-      debit: guess(/^(debit|withdrawals?|money out|paid out)$/i), credit: guess(/^(credit|deposits?|money in|paid in)$/i),
-      type: guess(/^(type|transaction type|debit\/credit|dr\/cr)$/i) } });
+      status: guess(/^(status|transaction status|state)$/i),
+      debit: guess(/^(debit|debits|withdrawals?|money out|paid out|amount out)$/i),
+      credit: guess(/^(credit|credits|deposits?|money in|paid in|amount in)$/i),
+      type: guess(/^(type|transaction type|debit\/credit|dr\/cr|cr\/dr)$/i) };
+    // R-1.3: a layout is chosen for you only when the column names make it plain (two money columns, or a
+    // debit/credit column beside the amount), and the page says so. A single signed column is never guessed.
+    let convention = "", convNote = "";
+    if (mapping.debit && mapping.credit && mapping.debit !== mapping.credit) {
+      convention = "separate_columns"; convNote = COPY.signingChosenBecause(mapping.debit, mapping.credit);
+    } else if (mapping.type && mapping.amount && mapping.type !== mapping.amount) {
+      convention = "type_column"; convNote = COPY.signingChosenBecauseType(mapping.type);
+    }
+    set({ csv: text, columns, slashDates: SLASH_DATE.test(text), mapping, convention, convNote });
   }
 
   async function checkFile() {
@@ -90,14 +105,16 @@ export function SetupForm() {
     const chosen = cols.filter((k) => f.mapping[k]);
     const dup = chosen.filter((k) => chosen.some((j) => j !== k && f.mapping[j] === f.mapping[k]));
     if (dup.length) { setError(new ApiError(422, "INVALID_INPUT", COPY.sameColumn, dup.map((k) => `mapping.${k}`))); return; }
+    if (!f.convention) { setError(new ApiError(422, "INVALID_INPUT", COPY.chooseSigning, ["sign_convention"])); return; }   // R-1.3
     setBusy(true); setError(null);
     try {
       const res = await api.parse(f.csv, sentMapping(), f.convention || null);
-      set({ parsed: res }); setNeedConvention(false);
+      set({ parsed: res });
     } catch (e) {
       const err = e as ApiError;
-      if (err.code === "SIGN_CONVENTION_REQUIRED") setNeedConvention(true);
-      noteRateLimit(err); setError(err);
+      noteRateLimit(err);
+      setError(err.code === "SIGN_CONVENTION_REQUIRED"
+        ? new ApiError(422, err.code, COPY.chooseSigning, ["sign_convention"], null, err.requestId) : err);
     } finally { setBusy(false); }
   }
 
@@ -161,27 +178,35 @@ export function SetupForm() {
           <div>
             <div className="field" style={{ marginTop: 12 }}><label htmlFor="csv">CSV file (up to 2 MB)</label>
               <input id="csv" type="file" accept=".csv,text/csv" onChange={(e) => onFile(e.target.files?.[0])} /></div>
-            {f.columns.length > 0 && (
-              <div className="fields" role="group" aria-label="Choose columns">
+            {f.columns.length > 0 && (<>
+              <div className="convention">
                 <div className="field"><label htmlFor="convention">How are amounts signed?</label>
-                  <select id="convention" value={f.convention} onChange={(e) => set({ convention: e.target.value, parsed: null })}
-                    aria-invalid={needConvention || invalid("sign_convention")} aria-describedby={needConvention ? "conv-help" : undefined}>
-                    <option value="">Work it out from the columns</option>
-                    {CONVENTIONS.map(([v, t]) => <option key={v} value={v}>{t}</option>)}</select>
-                  {needConvention && <span id="conv-help" className="small">In this file, are purchases positive or negative numbers?</span>}</div>
+                  <select id="convention" value={f.convention}
+                    onChange={(e) => set({ convention: e.target.value, convNote: "", parsed: null })}
+                    aria-invalid={invalid("sign_convention")} aria-describedby="conv-help">
+                    <option value="">{COPY.signingPrompt}</option>
+                    {CONVENTIONS.map(([v, t]) => <option key={v} value={v}>{t}</option>)}</select></div>
+                <p id="conv-help" className="small muted conv-help">
+                  {[f.convNote, f.convention ? COPY.signingOptionHelp[f.convention] : COPY.signingHelp,
+                    invalid("sign_convention") && !f.convention ? COPY.chooseSigningField : ""].filter(Boolean).join(" ")}</p>
+              </div>
+              <div className="mapping-grid" role="group" aria-label="Choose columns">
                 {cols.map((k) => (
                   <div className="field" key={k}><label htmlFor={`map-${k}`}>{COL_LABEL[k]}</label>
                     <select id={`map-${k}`} value={f.mapping[k] ?? ""} aria-invalid={invalid(`mapping.${k}`)}
                       onChange={(e) => set({ mapping: { ...f.mapping, [k]: e.target.value || null }, parsed: null })}>
-                      <option value="">(none)</option>{f.columns.map((c) => <option key={c} value={c}>{c}</option>)}
+                      <option value="">(none)</option>
+                      {f.columns.map((c) => <option key={c} value={c} title={c}>{c.length > 48 ? `${c.slice(0, 47)}…` : c}</option>)}
                     </select></div>))}
-              </div>)}
-            {f.columns.length > 0 && <p><button type="button" className="btn" onClick={checkFile} disabled={busy}>Check this file</button></p>}
+              </div></>)}
+            {f.columns.length > 0 && <p className="check-row"><button type="button" className="btn" onClick={checkFile} disabled={busy}>Check this file</button></p>}
             {f.parsed && (
               <div className="success" role="status">
                 <p style={{ margin: 0 }}>{count(f.parsed.summary.usable)} of {count(f.parsed.summary.rows)} rows can be used.
-                  {" "}Money coming in (refunds, deposits) never adds round-ups.
+                  {" "}{COPY.checkCredits(count(f.parsed.summary.credits))}
                   {" "}Not purchases (payments, transfers or fees), so no round-ups: {count(f.parsed.summary.non_purchases)}.
+                  {f.parsed.summary.not_posted > 0 && ` ${COPY.checkNotPosted(count(f.parsed.summary.not_posted))}`}
+                  {f.parsed.summary.whole_dollar > 0 && ` ${COPY.checkWholeDollar(count(f.parsed.summary.whole_dollar))}`}
                   {Object.entries(f.parsed.summary.problems).filter(([, n]) => n > 0).map(([k, n]) =>
                     ` ${k === "invalid_amount" ? "Rows with an amount we can’t read" : k === "invalid_date" ? "Rows with a date we can’t read" : "Rows with a zero amount"}: ${count(n)}.`)}
                   {f.parsed.summary.possible_duplicates > 0 && ` Possible duplicates (kept): ${count(f.parsed.summary.possible_duplicates)}.`}</p>

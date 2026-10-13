@@ -8,7 +8,7 @@ export interface LastRun { request: SimulateRequest; response: SimulateResponse;
 export interface SetupDraft {
   source: "generate" | "upload"; seed: string; perDay: string; scenarioId: string; style: Style; strategy: Strategy;
   reinvest: boolean; start: string; end: string; csv: string | null; columns: string[]; mapping: Mapping;
-  convention: string; parsed: ParseResponse | null; slashDates: boolean;
+  convention: string; convNote: string; parsed: ParseResponse | null; slashDates: boolean;
 }
 interface Ctx {
   run: LastRun | null; setRun: (r: LastRun | null) => void;

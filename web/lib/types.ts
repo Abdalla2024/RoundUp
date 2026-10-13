@@ -45,7 +45,8 @@ export interface ParsedRow {
 }
 export interface ParseResponse {
   columns: string[]; date_column_used: string; sign_convention: string; transactions: ParsedRow[];
-  summary: { rows: number; usable: number; problems: Record<string, number>; non_purchases: number; possible_duplicates: number };
+  summary: { rows: number; usable: number; problems: Record<string, number>; non_purchases: number; credits: number;
+    not_posted: number; whole_dollar: number; possible_duplicates: number };
 }
 export type Mapping = Partial<Record<"date" | "posted_date" | "amount" | "debit" | "credit" | "type" | "status" |
   "description" | "external_id" | "account", string | null>>;

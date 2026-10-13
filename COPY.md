@@ -115,7 +115,7 @@ Each line fixes a reviewer finding (H = high, M = medium, L = low; see TEST-STRA
 - **Sample number hint** (M3): "A whole number from 0 to 2,147,483,647." Errors: "Use a whole number from 0 to 2,147,483,647 for the sample number." / "Use 1, 2 or 3 for purchases per day." Only the wrong field is marked.
 - **Check step, dates** (H2, M5): "Dates in this file run from {first} to {last}." If any row is outside the dates in step 4: "Some rows fall outside the dates in step 4, so they won't add round-ups." with the button "Use this file's dates" (kept inside the scenario's range).
 - **Slash dates** (M5; shown when the file has dates like 01/06/2020): "Dates written with slashes are read as month/day/year (US style), so 01/06/2020 is January 6, 2020. If your bank writes the day first, these dates will be wrong."
-- **Sign options** (M4): "Separate columns for money out and money in" now shows "Money out column" and "Money in column"; "A column says debit or credit" shows "Debit or credit column". Missing column (from the API): "Choose which column holds the amount." (or "debit or credit", "money out", "money in").
+- **Sign options** (M4): "Money out and money in columns" (was "Separate columns for money out and money in"; shortened in stage 6 so it fits a phone) now shows "Money out column" and "Money in column"; "A column says debit or credit" shows "Debit or credit column". Missing column (from the API): "Choose which column holds the amount." (or "debit or credit", "money out", "money in").
 - **CSV problems** (L9): empty file: "The file is empty."; semicolons: "This file seems to use semicolons between columns. Save it with commas between columns and upload it again."; one column chosen twice: "Choose a different column for each field."
 - **Rate limit** (L2): same message; the Run and Compare buttons stay disabled until the wait ends.
 
@@ -125,3 +125,31 @@ Each line fixes a reviewer finding (H = high, M = medium, L = low; see TEST-STRA
 
 **Saved** (L10)
 - After a delete: "Deleted “{name}”." (announced; focus moves to the page heading).
+
+## Upload step, after the owner's testing on the preview (2026-10-13; applied, for the owner's sign-off)
+
+- **Sign-convention box:** label "How are amounts signed?". It starts on the prompt "**Choose how amounts are signed**", not on an option. The four options are "Purchases are positive numbers", "Purchases are negative numbers", "Money out and money in columns" (was "Separate columns for money out and money in"; shortened so it fits a phone) and "A column says debit or credit".
+- **Help beside the box, before any choice:** "Banks write purchases in different ways. Look at one purchase in your file. If it is a positive number (like 6.16), choose “Purchases are positive numbers”. If it has a minus sign (like -6.16), choose “Purchases are negative numbers”. If money out and money in are in two columns, or a column says debit or credit, choose the matching option."
+- **Help after a choice** (one sentence each):
+  - positive: "Purchases are positive numbers, like 6.16. Refunds and other money coming in are negative, like -12.50, and never add round-ups."
+  - negative: "Purchases are negative numbers, like -6.16. Money coming in is positive, like 12.50, and never adds round-ups."
+  - two columns: "Purchases are in the money out column. Money coming in is in the money in column and never adds round-ups."
+  - debit or credit: "A column says debit or credit for each row. Debits are purchases. Credits are money coming in and never add round-ups."
+- **Chosen for you (only when the column names make it plain, R-1.3):** "We chose this because your file has columns named “{out}” and “{in}”. Change it if that is wrong." or "We chose this because your file has a column named “{type}” next to the amount. Change it if that is wrong." A single signed Amount column is never guessed.
+- **Error (nothing is sent to the API):** "Choose how amounts are signed in this file, in the box named “How are amounts signed?”. Your options are: “Purchases are positive numbers”, “Purchases are negative numbers”, “Money out and money in columns”, or “A column says debit or credit”." The box is marked invalid, gets focus, and its help adds "Choose one of the four options."
+- **New picker:** "Status column (optional)", found automatically when a column is named Status. Without it, pending and cancelled rows were counted as purchases.
+- **Check step, new sentences:** "Money coming in (refunds, deposits): {n}. These never add round-ups." · "Pending or cancelled rows: {n}. These are left out." · "Purchases of an exact dollar amount: {n}. These add $0.00, because there is no spare change."
+
+## Proposed, NOT applied: clearer "Sample number" wording (waiting for the owner)
+
+Today: label "Sample number (same number, same purchases)", hint "A whole number from 0 to 2,147,483,647."; "Purchases per day, at most", hint "1, 2 or 3."
+
+Proposal (plain language: the number picks which made-up purchases are used; the same number always gives the same results):
+- Section line above the two fields: "RoundUp makes up a list of everyday purchases for you. The number below picks which list."
+- Label: "**Made-up purchase list number**"
+- Hint: "Pick any whole number from 0 to 2,147,483,647. The same number always gives the same purchases and the same results. A different number gives a different list."
+- Label: "**Most purchases in one day**"; hint: "Choose 1, 2 or 3. Each day gets anywhere from none up to this many made-up purchases."
+- Error: "Use a whole number from 0 to 2,147,483,647 for the made-up purchase list number." (the "Use 1, 2 or 3…" error keeps its wording)
+- Technical details: "sample number 42, up to 2 purchases a day" becomes "purchase list number 42, up to 2 purchases a day".
+
+Shorter alternative for the label: "Purchase set number". Nothing else on screen uses the words "sample number", so the change is limited to the setup form and the technical-details line.
