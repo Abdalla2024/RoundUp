@@ -11,8 +11,9 @@ CONTEXT = Context(prec=28, rounding=ROUND_HALF_EVEN,
 CENT = Decimal("0.01")
 SHARE_DISPLAY = Decimal("0.000001")
 
-_AMOUNT = re.compile(r"^(\d+|\d{1,3}(,\d{3})+)(\.\d{1,2})?$")
-_DECIMAL = re.compile(r"^-?\d+(\.\d+)?$")
+# ASCII digits only: \d and int() would also accept e.g. full-width or Arabic-Indic digits.
+_AMOUNT = re.compile(r"^([0-9]+|[0-9]{1,3}(,[0-9]{3})+)(\.[0-9]{1,2})?$")
+_DECIMAL = re.compile(r"^-?[0-9]+(\.[0-9]+)?$")
 
 
 class InvalidAmount(ValueError):

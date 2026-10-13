@@ -62,3 +62,16 @@ def test_r_0_4_exact_ties_survive_28_digit_residue():
     assert display_money(Decimal("9.484999999999999999999999999")) == "9.48"
     assert display_money(Decimal("9.495000000000000000000000001")) == "9.50"
     assert display_shares(Decimal("0.0000025000000000000000000001")) == "0.000002"
+
+
+@pytest.mark.parametrize("s", ["４.３７", "٤.٣٧", "4.３7", "１"])
+def test_r_0_1_ascii_digits_only(s):
+    """Found by the independent API tester: str.isdigit/\\d/int() accept non-ASCII digits."""
+    with pytest.raises(InvalidAmount):
+        parse_amount_cents(s)
+
+
+def test_market_numbers_ascii_only():
+    from roundup_engine.money import parse_decimal
+    with pytest.raises(ValueError):
+        parse_decimal("５0.00")

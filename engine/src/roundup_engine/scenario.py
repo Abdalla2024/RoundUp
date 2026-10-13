@@ -8,6 +8,7 @@ from . import ENGINE_VERSION
 from .market import DataError, Dividend, MarketSeries, Split
 from .money import display_money, display_pct, display_shares, parse_decimal
 from .simulate import Config, simulate
+from .transactions import is_non_purchase
 
 
 def _d(s: str) -> date:
@@ -40,7 +41,14 @@ def _b(x: bool) -> str:
 def input_checksum(s: dict) -> str:
     """SHA-256 of the canonical scenario input: market checksum + transactions + config (R-12.4)."""
     market, rows, _ = parse_scenario(s)
-    payload = {"market": market.checksum(), "transactions": rows, "config": s["config"]}
+    # Each row contributes its resolved category instead of its description and type, so merchant text never
+    # feeds a stored hash (D-8) while classification changes still change the checksum.
+    canonical = [{"posted_date": r.get("posted_date"), "amount": r.get("amount"), "direction": r.get("direction"),
+                  "status": r.get("status"),
+                  "category": r.get("category") or ("non_purchase" if is_non_purchase(r.get("type") or "",
+                                                                                      r.get("description") or "")
+                                                    else "purchase")} for r in rows]
+    payload = {"market": market.checksum(), "transactions": canonical, "config": s["config"]}
     return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 

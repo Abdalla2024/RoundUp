@@ -75,3 +75,14 @@ def test_r_1_4_category_override():
     out = run_scenario(s)
     assert out["summary"]["contributed"] == "0.63"
     assert out["transactions_used"] == "1" and out["transactions_ignored"] == "1"
+
+
+def test_input_checksum_uses_resolved_category_not_description():
+    """Found by the independent API tester: merchant text must not feed a stored hash (D-8)."""
+    a, b, c = copy.deepcopy(G21), copy.deepcopy(G21), copy.deepcopy(G21)
+    for t in b["transactions"]:
+        t["description"] = "SOME OTHER SHOP"          # still a purchase: same checksum
+    for t in c["transactions"][:1]:
+        t["description"] = "ATM WITHDRAWAL"           # now a non-purchase: different checksum
+    assert input_checksum(a) == input_checksum(b)
+    assert input_checksum(a) != input_checksum(c)
