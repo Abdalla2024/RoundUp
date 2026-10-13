@@ -6,7 +6,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 export const SUPABASE_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL || "").replace(/\/$/, "");
 export const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "";
 export type AuthMode = "supabase" | "standin" | "off";
-export const AUTH_MODE: AuthMode = process.env.NEXT_PUBLIC_AUTH_MODE === "standin" ? "standin"
+// A literal comparison against the build-time value, so deployed builds (where it is "") drop every stand-in
+// branch below as dead code (checked by e2e-deployed: no "/standin/token" in the deployed bundle).
+const STANDIN = process.env.NEXT_PUBLIC_AUTH_MODE === "standin";
+export const AUTH_MODE: AuthMode = STANDIN ? "standin"
   : SUPABASE_URL && PUBLISHABLE_KEY ? "supabase" : "off";
 
 export interface Session { token: string; email: string }
@@ -29,7 +32,7 @@ const emit = (s: Session | null) => listeners.forEach((l) => l(s));
 export const auth = {
   mode: AUTH_MODE,
   async current(): Promise<Session | null> {
-    if (AUTH_MODE === "standin") return standinSession;
+    if (STANDIN) return standinSession;
     if (AUTH_MODE === "off") return null;
     const { data } = await (await supabase()).auth.getSession();     // browser only: the API verifies the token itself
     const s = data.session;
@@ -37,7 +40,7 @@ export const auth = {
   },
   /** Sends a magic link (supabase) or signs in immediately (standin). Returns true when already signed in. */
   async signIn(email: string): Promise<boolean> {
-    if (AUTH_MODE === "standin") {
+    if (STANDIN) {
       const r = await fetch(`${SUPABASE_URL}/standin/token`, { method: "POST", body: JSON.stringify({ email }),
         headers: { "Content-Type": "application/json" } });
       if (!r.ok) throw new Error("Sign-in failed.");
@@ -54,7 +57,7 @@ export const auth = {
     return false;
   },
   async signOut(): Promise<void> {
-    if (AUTH_MODE === "standin") { standinSession = null; emit(null); return; }
+    if (STANDIN) { standinSession = null; emit(null); return; }
     if (AUTH_MODE === "supabase") await (await supabase()).auth.signOut();
     emit(null);
   },

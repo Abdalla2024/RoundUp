@@ -70,6 +70,14 @@ test("sign in (stand-in) and save; the saved list shows it; delete asks first", 
 });
 
 // ---- stage-5 web review fixes, end to end ----
+test("the site has an icon, so browsers do not log a 404 for it", async ({ page, request }) => {
+  const r = await request.get("/icon.svg");
+  expect(r.status()).toBe(200);
+  expect(r.headers()["content-type"]).toContain("image/svg+xml");
+  await page.goto("/");
+  expect(await page.locator('link[rel~="icon"]').count()).toBeGreaterThan(0);
+});
+
 test("H1: a weekend-only date range gets a plain message, not a crash", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("radio", { name: /Crash and recovery/ }).check();

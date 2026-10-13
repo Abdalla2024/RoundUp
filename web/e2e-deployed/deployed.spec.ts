@@ -46,7 +46,8 @@ test("smoke: simulate, compare, upload a CSV, saved page signed out (no sign-in 
 
   await page.goto("/saved");
   await expect(page.getByRole("heading", { name: "Sign in to see saved scenarios" })).toBeVisible();   // not submitted
-  expect(consoleErrors.filter((e) => !/favicon/i.test(e))).toEqual([]);
+  // vercel.live is Vercel's own preview-feedback toolbar, which exists only on previews; our CSP rightly blocks it.
+  expect(consoleErrors.filter((e) => !/vercel\.live/.test(e))).toEqual([]);
 });
 
 test("the deployed build points at the right services (no localhost, no stand-in)", async ({ page }) => {
