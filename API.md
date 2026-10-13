@@ -197,7 +197,7 @@ An independent tester, working only from this contract, listed 42 ambiguities (`
 |---|---|---|
 | 1, 40 | Body size | The real byte count is authoritative. A declared `Content-Length` over the limit is refused early with 413. Exactly 3,000,000 bytes is accepted. |
 | 2 | Order of checks | **POST:** rate limit (429) → content type (415) → size (413) → JSON (400) → schema (422; `UNKNOWN_FIELD` wins over `INVALID_INPUT`) → engine (422). **`/v1/saved`:** storage configured (503) → token (401) → then the same order. |
-| 3, 4, 6 | Duplicate keys, `NaN`/`Infinity`, BOM or invalid UTF-8 in the JSON body | 400 `INVALID_JSON`. |
+| 3, 4, 6 | Duplicate keys, `NaN`/`Infinity`, invalid UTF-8 in the JSON body | 400 `INVALID_JSON`. A leading UTF-8 BOM is tolerated (skipped). |
 | 5 | Content-Type | Case-insensitive; parameters such as `; charset=utf-8` are allowed. |
 | 7 | Explicit `null` | Allowed for `category` and `description`; refused (422) for `status`, which must be omitted to get the default. |
 | 8, 9, 10 | Dates | `start` and `end` are required. `start == end` is allowed, and so are non-trading days. Transactions outside the window are ignored by the engine (R-1.6) and counted in `transactions_ignored`. |
