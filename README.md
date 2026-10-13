@@ -8,7 +8,9 @@ An educational, invite-only demo that simulates "spare-change" round-up investin
 | `crosscheck/` | Independent second implementation (exact fractions) used to check the engine |
 | `api/` | `roundup_api`, the FastAPI service ([API.md](API.md)) |
 | `supabase/` | Database schema and row-level-security SQL, with its own README |
-| `web/mocks/` | Static design mocks for review (not the real site) |
+| `web/` | The Next.js site ([FRONTEND.md](FRONTEND.md), wording in [COPY.md](COPY.md)); `web/mocks/` holds the reviewed static mocks |
+| `tools/standin/` | Local test stand-in for Supabase sign-in and storage (never deployed) |
+| `DEPLOY.md` | Owner's steps to deploy on Vercel + Supabase |
 
 ## Set up and run all tests (fresh environment)
 
@@ -25,6 +27,14 @@ python3 -m venv .venv
 ```
 
 Database SQL (needs local Postgres binaries, e.g. Postgres.app; skipped otherwise): `.venv/bin/python -m pytest -q supabase/tests`. See [supabase/README.md](supabase/README.md).
+
+**Web app** (Node 22.13+), from `web/`:
+```bash
+npm ci
+npm run typecheck && npm test        # component tests + no-money-arithmetic check
+npx playwright test                  # end-to-end, axe (light/dark/mobile), keyboard, performance
+```
+The end-to-end tests start a local Supabase stand-in (`tools/standin/server.py`), the real API and a production build of the site. They need local network (loopback) access, and they use the installed Google Chrome locally and Playwright's Chromium in CI.
 
 Run the API locally: `.venv/bin/python -m uvicorn app:app` (uvicorn is not pinned; install it for local runs only).
 

@@ -1,6 +1,13 @@
 # RoundUp frontend: proposed structure (stage 4, Part 2)
 
-**Status:** proposal for owner approval. Nothing here is built yet. The design it implements is DESIGN.md, plus the reviewed mocks in `web/mocks/`.
+**Status:** built in stage 5 (`web/`). The exact wording comes from COPY.md. Where the build differs from the proposal below, the "As built" notes win.
+
+**As built (stage 5):**
+- **Sign-in is browser-only, with `@supabase/supabase-js`** (PKCE magic link), not `@supabase/ssr`. The ssr README: "If you don't need server-side access to the session, use `@supabase/supabase-js`'s `createClient` directly… there's no reason to use `@supabase/ssr` in that case" ([README](https://github.com/supabase/ssr)). The API verifies every token itself, and saved scenarios are read under RLS, so the site has no server-side trust decisions.
+- **A test stand-in for sign-in** (`tools/standin/`, `NEXT_PUBLIC_AUTH_MODE=standin`) lets the end-to-end tests sign in and save with no real credentials. `web/next.config.ts` refuses to build it on Vercel.
+- **Lazy loading:** the Supabase client loads on first sign-in use, and Recharts loads when a chart is shown (`components/ChartCanvas.tsx`). That cut the setup page's first load from 1,090 KB to 606 KB uncompressed (200 KB transferred).
+- **Key points always visible:** on mobile they sit at the top of the page, with the full list collapsed, instead of in a dialog.
+- **The only number-from-string conversion** is in the chart's drawing files (`ValueChart.tsx` for the axis top, `ChartCanvas.tsx` for line positions). A test enforces this (`web/tests/no-money-arithmetic.test.ts`).
 
 ## 1. Stack
 
