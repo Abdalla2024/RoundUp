@@ -19,9 +19,8 @@ export function chartTop(points: Point[]): number {
 export function chartSummary(result: Result): string {
   const pts = result.series, f = pts[0], l = pts[pts.length - 1];
   const dip = result.summary.deepest_dip;
-  return `From ${longDate(f.date)} to ${longDate(l.date)} the value goes from ${money(f.value)} to ${money(l.value)}, ` +
-    `with ups and downs in between, while the round-ups added go from ${money(f.added)} to ${money(l.added)}.` +
-    (dip ? ` Lowest point compared with money put in: ${dipText(dip)}` : "");
+  const lowest = dip ? ` Lowest point compared with money put in: ${dipText(dip)}` : "";
+  return `From ${longDate(f.date)} to ${longDate(l.date)} the value goes from ${money(f.value)} to ${money(l.value)}, with ups and downs in between, while the round-ups added go from ${money(f.added)} to ${money(l.added)}.${lowest}`;
 }
 
 export function ValueChart({ result, title, color = "var(--series-1)", yTop, small, label = "Value" }:

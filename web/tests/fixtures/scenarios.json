@@ -1,0 +1,240 @@
+{
+ "label": "Synthetic scenario. Not a real fund, not real prices, and not a forecast.",
+ "model_version": "scenario-model-1",
+ "scenarios": [
+  {
+   "id": "steady-growth",
+   "name": "Steady growth",
+   "description": "A synthetic market that rises gradually, with small day-to-day moves.",
+   "label": "Synthetic scenario. Not a real fund, not real prices, and not a forecast.",
+   "seed": 1101,
+   "styles": [
+    {
+     "style": "broad",
+     "name": "Broad-market style (synthetic)",
+     "symbol": "SYN-STEADY-GROWTH-BROAD",
+     "start": "2012-01-03",
+     "end": "2026-09-30",
+     "market_checksum": "81344ab2110d41752ecce820f37097b45cd9da8d68db421e20fb5e4c1ec9b9b7",
+     "parameters": {
+      "regimes": [
+       {
+        "from": "0",
+        "drift_bp": 4,
+        "vol_bp": 70
+       }
+      ],
+      "split_ratio": "3",
+      "start_price": "100.0000",
+      "yield_bp": 150,
+      "drift_adj_bp": 0
+     }
+    },
+    {
+     "style": "dividend",
+     "name": "Dividend style (synthetic)",
+     "symbol": "SYN-STEADY-GROWTH-DIVIDEND",
+     "start": "2012-01-03",
+     "end": "2026-09-30",
+     "market_checksum": "acd39b59b87093a587996a61ba1a3032be8d05fc7773d44ce1c65f907cc46975",
+     "parameters": {
+      "regimes": [
+       {
+        "from": "0",
+        "drift_bp": 4,
+        "vol_bp": 70
+       }
+      ],
+      "split_ratio": "3",
+      "start_price": "40.0000",
+      "yield_bp": 350,
+      "drift_adj_bp": -1
+     }
+    }
+   ]
+  },
+  {
+   "id": "crash-and-recovery",
+   "name": "Crash and recovery",
+   "description": "A synthetic market that grows, falls sharply over a few months, then recovers.",
+   "label": "Synthetic scenario. Not a real fund, not real prices, and not a forecast.",
+   "seed": 1202,
+   "styles": [
+    {
+     "style": "broad",
+     "name": "Broad-market style (synthetic)",
+     "symbol": "SYN-CRASH-AND-RECOVERY-BROAD",
+     "start": "2012-01-03",
+     "end": "2026-09-30",
+     "market_checksum": "b1c96edd103ce9744901538b07321256bfb46e47eed041728417f954ec23cc70",
+     "parameters": {
+      "regimes": [
+       {
+        "from": "0",
+        "drift_bp": 3,
+        "vol_bp": 80
+       },
+       {
+        "from": "0.30",
+        "drift_bp": -45,
+        "vol_bp": 260
+       },
+       {
+        "from": "0.335",
+        "drift_bp": 12,
+        "vol_bp": 140
+       },
+       {
+        "from": "0.55",
+        "drift_bp": 3,
+        "vol_bp": 80
+       }
+      ],
+      "split_ratio": "0.5",
+      "start_price": "100.0000",
+      "yield_bp": 150,
+      "drift_adj_bp": 0
+     }
+    },
+    {
+     "style": "dividend",
+     "name": "Dividend style (synthetic)",
+     "symbol": "SYN-CRASH-AND-RECOVERY-DIVIDEND",
+     "start": "2012-01-03",
+     "end": "2026-09-30",
+     "market_checksum": "7e7d387af4c48b496b14c426d52fc5b2d0ed7ce07257437e85de23f29ffb5795",
+     "parameters": {
+      "regimes": [
+       {
+        "from": "0",
+        "drift_bp": 3,
+        "vol_bp": 80
+       },
+       {
+        "from": "0.30",
+        "drift_bp": -45,
+        "vol_bp": 260
+       },
+       {
+        "from": "0.335",
+        "drift_bp": 12,
+        "vol_bp": 140
+       },
+       {
+        "from": "0.55",
+        "drift_bp": 3,
+        "vol_bp": 80
+       }
+      ],
+      "split_ratio": "0.5",
+      "start_price": "40.0000",
+      "yield_bp": 350,
+      "drift_adj_bp": -1
+     }
+    }
+   ]
+  },
+  {
+   "id": "sideways",
+   "name": "Sideways",
+   "description": "A synthetic market with no overall trend: prices wander up and down.",
+   "label": "Synthetic scenario. Not a real fund, not real prices, and not a forecast.",
+   "seed": 1303,
+   "styles": [
+    {
+     "style": "broad",
+     "name": "Broad-market style (synthetic)",
+     "symbol": "SYN-SIDEWAYS-BROAD",
+     "start": "2012-01-03",
+     "end": "2026-09-30",
+     "market_checksum": "d75dc665cb7ae5ed684035927c992073638bd34324212f8e7adb840bd04b73f6",
+     "parameters": {
+      "regimes": [
+       {
+        "from": "0",
+        "drift_bp": 0,
+        "vol_bp": 90
+       }
+      ],
+      "split_ratio": "2",
+      "start_price": "100.0000",
+      "yield_bp": 150,
+      "drift_adj_bp": 0
+     }
+    },
+    {
+     "style": "dividend",
+     "name": "Dividend style (synthetic)",
+     "symbol": "SYN-SIDEWAYS-DIVIDEND",
+     "start": "2012-01-03",
+     "end": "2026-09-30",
+     "market_checksum": "3c05267913f65cbd8bc630dc8aeb22d3ec8757cc760e85317aa706bac514b010",
+     "parameters": {
+      "regimes": [
+       {
+        "from": "0",
+        "drift_bp": 0,
+        "vol_bp": 90
+       }
+      ],
+      "split_ratio": "2",
+      "start_price": "40.0000",
+      "yield_bp": 350,
+      "drift_adj_bp": -1
+     }
+    }
+   ]
+  },
+  {
+   "id": "high-volatility",
+   "name": "High volatility",
+   "description": "A synthetic market with large daily swings in both directions.",
+   "label": "Synthetic scenario. Not a real fund, not real prices, and not a forecast.",
+   "seed": 1404,
+   "styles": [
+    {
+     "style": "broad",
+     "name": "Broad-market style (synthetic)",
+     "symbol": "SYN-HIGH-VOLATILITY-BROAD",
+     "start": "2012-01-03",
+     "end": "2026-09-30",
+     "market_checksum": "14796fde7ea4dad4353777b8801b7f47e1f112725c0dd2cc885cf58f63628ef5",
+     "parameters": {
+      "regimes": [
+       {
+        "from": "0",
+        "drift_bp": 3,
+        "vol_bp": 230
+       }
+      ],
+      "split_ratio": "2",
+      "start_price": "100.0000",
+      "yield_bp": 150,
+      "drift_adj_bp": 0
+     }
+    },
+    {
+     "style": "dividend",
+     "name": "Dividend style (synthetic)",
+     "symbol": "SYN-HIGH-VOLATILITY-DIVIDEND",
+     "start": "2012-01-03",
+     "end": "2026-09-30",
+     "market_checksum": "aaead661602a8a463ee1ed39fd88ebf36efae3c440761357e547458f74a2547a",
+     "parameters": {
+      "regimes": [
+       {
+        "from": "0",
+        "drift_bp": 3,
+        "vol_bp": 230
+       }
+      ],
+      "split_ratio": "2",
+      "start_price": "40.0000",
+      "yield_bp": 350,
+      "drift_adj_bp": -1
+     }
+    }
+   ]
+  }
+ ]
+}

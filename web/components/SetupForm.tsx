@@ -154,10 +154,11 @@ export function SetupForm() {
             {parsed && (
               <div className="success" role="status">
                 <p style={{ margin: 0 }}>{count(parsed.summary.usable)} of {count(parsed.summary.rows)} rows can be used.
-                  {" "}{count(parsed.summary.non_purchases)} are not purchases (payments, transfers, refunds or fees) and add no round-ups.
+                  {" "}Money coming in (refunds, deposits) never adds round-ups.
+                  {" "}Not purchases (payments, transfers or fees), so no round-ups: {count(parsed.summary.non_purchases)}.
                   {Object.entries(parsed.summary.problems).filter(([, n]) => n > 0).map(([k, n]) =>
-                    ` ${count(n)} ${k === "invalid_amount" ? "have an amount we can’t read" : k === "invalid_date" ? "have a date we can’t read" : "are zero"}.`)}
-                  {parsed.summary.possible_duplicates > 0 && ` ${count(parsed.summary.possible_duplicates)} look like possible duplicates (kept).`}</p>
+                    ` ${k === "invalid_amount" ? "Rows with an amount we can\u2019t read" : k === "invalid_date" ? "Rows with a date we can\u2019t read" : "Rows with a zero amount"}: ${count(n)}.`)}
+                  {parsed.summary.possible_duplicates > 0 && ` Possible duplicates (kept): ${count(parsed.summary.possible_duplicates)}.`}</p>
               </div>)}
           </div>
         )}

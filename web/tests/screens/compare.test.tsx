@@ -1,0 +1,52 @@
+import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { describe, expect, test, vi } from "vitest";
+import { CompareView } from "@/components/CompareView";
+import { COPY } from "@/lib/copy";
+import assumptions from "../fixtures/assumptions.json";
+import compareFx from "../fixtures/compare.json";
+import { apiMoneyStrings, COMPARE, renderWith, RUN, shownMoney } from "../helpers";
+
+const compare = vi.fn();
+vi.mock("@/lib/api", async (orig) => ({ ...(await orig<typeof import("@/lib/api")>()),
+  api: { assumptions: () => Promise.resolve(assumptions), compare: (...a: unknown[]) => compare(...a) } }));
+
+describe("Compare screen", () => {
+  test("empty state without a simulation", () => {
+    renderWith(<CompareView />);
+    expect(screen.getByText(/Run a simulation first/)).toBeTruthy();
+  });
+
+  test("runs the comparison with the same purchases and scenario", async () => {
+    compare.mockResolvedValue(compareFx.response);
+    renderWith(<CompareView />, { run: RUN });
+    fireEvent.change(screen.getByLabelText("How round-ups are invested", { selector: "#strat-B" }), { target: { value: "weekly" } });
+    fireEvent.click(screen.getByRole("button", { name: "Compare" }));
+    await waitFor(() => expect(compare).toHaveBeenCalled());
+    const req = compare.mock.calls[0][0];
+    expect(req.b).toEqual({ strategy: "weekly", reinvest: false });
+    expect(req.generate).toEqual(RUN.request.generate);
+    expect(req).not.toHaveProperty("strategy");
+  });
+
+  test("table rows, plain-language labels, note and per-side dips", () => {
+    const { container } = renderWith(<CompareView />, { run: RUN, compare: COMPARE });
+    const text = container.textContent ?? "";
+    for (const r of ["Round-ups added", "Value at end", "Growth on round-ups", "Dividends (simulated)",
+      "Round-ups waiting to be invested", "Dividends kept as cash", "Times invested from round-ups", "Times invested from dividends"]) {
+      expect(screen.getByRole("rowheader", { name: r })).toBeTruthy();
+    }
+    expect(screen.getByRole("columnheader", { name: "B minus A" })).toBeTruthy();
+    expect(text).toContain("−$65.11");
+    expect(text).toContain(COPY.compareNote);
+    expect(text).toContain("A, lowest point compared with money put in:");
+    expect(text).toContain("B, lowest point compared with money put in:");
+    // advice-like phrasing must not appear (the key point "Nothing here suggests what you should do" is the opposite)
+    expect(text).not.toMatch(/\b(best (choice|option|strategy)|you should (invest|choose|pick)|we recommend|recommended)\b/i);
+  });
+
+  test("every dollar figure comes verbatim from the API response", () => {
+    const { container } = renderWith(<CompareView />, { run: RUN, compare: COMPARE });
+    const allowed = apiMoneyStrings(compareFx.response);
+    expect(shownMoney(container.textContent ?? "").filter((m) => !allowed.has(m))).toEqual([]);
+  });
+});

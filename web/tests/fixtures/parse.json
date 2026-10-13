@@ -1,0 +1,61 @@
+{
+ "csv": "Date,Amount,Description\n2015-01-05,4.37,COFFEE\n2015-01-06,-20.00,REFUND\n2015-01-07,512.37,PAYMENT TO CARD\n2015-01-08,4.375,BAD\n",
+ "response": {
+  "columns": [
+   "Date",
+   "Amount",
+   "Description"
+  ],
+  "date_column_used": "Date",
+  "sign_convention": "debits_positive",
+  "transactions": [
+   {
+    "row": 2,
+    "posted_date": "2015-01-05",
+    "amount": "4.37",
+    "direction": "debit",
+    "status": "posted",
+    "category": "purchase",
+    "problem": null
+   },
+   {
+    "row": 3,
+    "posted_date": "2015-01-06",
+    "amount": "20.00",
+    "direction": "credit",
+    "status": "posted",
+    "category": "purchase",
+    "problem": null
+   },
+   {
+    "row": 4,
+    "posted_date": "2015-01-07",
+    "amount": "512.37",
+    "direction": "debit",
+    "status": "posted",
+    "category": "non_purchase",
+    "problem": null
+   },
+   {
+    "row": 5,
+    "posted_date": "2015-01-08",
+    "amount": null,
+    "direction": "debit",
+    "status": "posted",
+    "category": "purchase",
+    "problem": "invalid_amount"
+   }
+  ],
+  "summary": {
+   "rows": 4,
+   "usable": 3,
+   "problems": {
+    "invalid_amount": 1,
+    "invalid_date": 0,
+    "zero_amount": 0
+   },
+   "non_purchases": 1,
+   "possible_duplicates": 0
+  }
+ }
+}
