@@ -28,7 +28,7 @@
 | Same with `buys: "all"` | 553,448 bytes (why the site asks for `none`) |
 | `POST /v1/compare`, same range | 118,384 bytes, 249 ms |
 
-At ≈ 60 KB per run, the 100 GB Hobby transfer allowance is about 1.7 million simulations a month. Timings are on a laptop, not Vercel (not verified there).
+Transferred bytes vary between runs (a repeat run on the same day gave 148,132 for the setup page and 178,232 for the run; uncompressed sizes were identical), so treat them as ≈ 150–200 KB. At ≈ 60 KB per run, the 100 GB Hobby transfer allowance is about 1.7 million simulations a month. Timings are on a laptop, not Vercel (not verified there).
 
 **Compute budget check.** Hobby includes 4 active CPU-hours (14,400 CPU-seconds) a month. The engine runs one fund × strategy over ~3,700 calendar-open days (2012 → 2026). Phase 3 will measure the actual cost per run on Vercel. If one full comparison (2 funds × 4 strategies) costs ≤ 1 CPU-second, the allowance covers ≥ 14,000 comparisons a month, far beyond an invite-only cohort. Exceeding it pauses the feature for up to 30 days ([Hobby docs](https://vercel.com/docs/plans/hobby)), so the API caches results by input hash.
 
