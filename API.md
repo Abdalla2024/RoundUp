@@ -211,7 +211,7 @@ An independent tester, working only from this contract, listed 42 ambiguities (`
 | 3, 4, 6 | Duplicate keys, `NaN`/`Infinity`, invalid UTF-8 in the JSON body | 400 `INVALID_JSON`. A leading UTF-8 BOM is tolerated (skipped). |
 | 5 | Content-Type | Case-insensitive; parameters such as `; charset=utf-8` are allowed. |
 | 7 | Explicit `null` | Allowed for `category` and `description`; refused (422) for `status`, which must be omitted to get the default. |
-| 8, 9, 10 | Dates | `start` and `end` are required. `start == end` is allowed, and so are non-trading days at either end, but the window must contain at least one trading day (otherwise 422 `WINDOW_OUTSIDE_DATA`, stage 5). Transactions outside the window are ignored by the engine (R-1.6) and counted in `transactions_ignored`. |
+| 8, 9, 10 | Dates | `start` and `end` are required. `start == end` is allowed, and so are non-trading days at either end, but the window must contain at least one trading day (otherwise 422 `WINDOW_OUTSIDE_DATA`, stage 5). A window outside the scenario's data is refused at once, also with `generate`: no purchases are generated for it (stage 6; before this, `end=9999-12-31` took 8–10 s and returned 500). Transactions outside the window are ignored by the engine (R-1.6) and counted in `transactions_ignored`. |
 | 11, 26 | `input_checksum` | Described under Meta above. |
 | 12 | Length limits | Counted in Unicode code points. The body limit is in bytes. |
 | 13, 14 | CSV limits | An over-long `csv` gives 422 `INVALID_INPUT`. Any header name over 100 characters, or more than 50 columns, gives 422 `CSV_INVALID`. |

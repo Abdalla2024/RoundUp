@@ -36,9 +36,14 @@ def engine_input(req, strategy: str = "threshold", reinvest: bool = True) -> tup
         txs = [{"posted_date": t.posted_date, "amount": t.amount, "direction": t.direction, "status": t.status,
                 "type": "", "description": t.description or "", **({"category": t.category} if t.category else {})}
                for t in req.transactions]
-    else:
+    elif meta["start"] <= req.start <= req.end <= meta["end"]:
         txs = generate_transactions(seed=req.generate.seed, start=req.start, end=req.end,
                                     max_per_day=req.generate.max_per_day)
+    else:
+        # The window is outside the scenario's data, so the engine will refuse it (R-12.1, 422 WINDOW_OUTSIDE_DATA).
+        # Do not step through every day of an impossible window first: end=9999-12-31 took 8-10 s and then crashed
+        # on a date overflow (found by the stage-6 attack test on the deployed preview).
+        txs = []
     scenario = {"id": "api", "market": market, "transactions": txs,
                 "config": {"strategy": strategy, "start": req.start, "end": req.end,
                            "reinvest": "true" if reinvest else "false"}}

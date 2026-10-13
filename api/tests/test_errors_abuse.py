@@ -173,3 +173,34 @@ def test_response_headers_for_a_json_api(client):
         assert r.headers["referrer-policy"] == "no-referrer"
     assert bad.headers["cache-control"] == "no-store"
     assert client.post("/v1/simulate", json=base_body()).headers["cache-control"] == "no-store"
+
+
+def test_generate_with_an_impossible_window_fails_fast_with_422(client):
+    """Found by the attack agent on the deployed preview: `generate` stepped through every day between start and end
+    BEFORE the window was checked, so end=9999-12-31 took 8-10 s and then crashed (500). It must be an instant 422."""
+    import time
+    gen = {"seed": 1, "max_per_day": 3}
+    windows = [("2012-01-03", "9999-12-31"), ("0001-01-01", "9999-12-31"), ("0001-01-01", "2026-09-30"),
+               ("2012-01-03", "3000-12-31"), ("2026-10-01", "2026-09-30")]
+    for start, end in windows:
+        body = {"scenario_id": "steady-growth", "style": "broad", "start": start, "end": end, "generate": gen,
+                "strategy": "threshold", "reinvest": True}
+        t = time.perf_counter()
+        r = client.post("/v1/simulate", json=body)
+        assert r.status_code == 422 and r.json()["error"]["code"] == "WINDOW_OUTSIDE_DATA", (start, end, r.text[:200])
+        assert time.perf_counter() - t < 1.0, (start, end)
+        cmp_body = {k: v for k, v in body.items() if k not in ("strategy", "reinvest")}
+        cmp_body.update(a={"strategy": "threshold", "reinvest": True}, b={"strategy": "monthly", "reinvest": False})
+        rc = client.post("/v1/compare", json=cmp_body)
+        assert rc.status_code == 422 and rc.json()["error"]["code"] == "WINDOW_OUTSIDE_DATA", (start, end)
+
+
+def test_generate_inside_the_window_is_unchanged(client):
+    """The guard must not change any valid run: same request, same numbers as the engine's own generator."""
+    from roundup_engine.generator import generate_transactions
+    body = {"scenario_id": "steady-growth", "style": "broad", "start": "2015-01-02", "end": "2015-06-30",
+            "generate": {"seed": 5, "max_per_day": 2}, "strategy": "threshold", "reinvest": True}
+    r = client.post("/v1/simulate", json=body)
+    assert r.status_code == 200
+    n = len(generate_transactions(seed=5, start="2015-01-02", end="2015-06-30", max_per_day=2))
+    assert int(r.json()["result"]["transactions_used"]) + int(r.json()["result"]["transactions_ignored"]) == n
