@@ -117,3 +117,10 @@ def test_name_required_and_bounded(client, make_token):
     h = {"Authorization": f"Bearer {make_token()}"}
     assert client.post("/v1/saved", json=save_body(name=""), headers=h).status_code == 422
     assert client.post("/v1/saved", json=save_body(name="x" * 81), headers=h).status_code == 422
+
+
+@pytest.mark.parametrize("value", ["true", "false", 1, None])
+def test_is_anonymous_must_be_boolean_false_if_present(client, storage, make_token, value):
+    tok = make_token(is_anonymous=value) if value is not None else make_token(is_anonymous=None)
+    r = client.post("/v1/saved", json=save_body(), headers={"Authorization": f"Bearer {tok}"})
+    assert r.status_code == (201 if value is None else 401)

@@ -173,3 +173,27 @@ def test_parse_missing_mapped_column(client):
     r = client.post("/v1/transactions/parse", json={"csv": CSV, "mapping": {"date": "When", "amount": "Amount"},
                                                    "sign_convention": "debits_positive"})
     assert r.status_code == 422 and r.json()["error"]["code"] == "CSV_INVALID"
+
+
+def test_parse_explicit_convention_must_fit_mapping(client):
+    """Independent tester's ambiguity #17: a convention that contradicts the mapping is refused, not silently
+    turned into a file of invalid rows."""
+    csv2 = "Date,Debit,Credit\n2015-01-05,4.37,\n"
+    for conv, mapping in [("debits_positive", {"date": "Date", "debit": "Debit", "credit": "Credit"}),
+                          ("separate_columns", {"date": "Date", "debit": "Debit"}),
+                          ("type_column", {"date": "Date", "debit": "Debit", "credit": "Credit"})]:
+        r = client.post("/v1/transactions/parse", json={"csv": csv2, "mapping": mapping, "sign_convention": conv})
+        assert r.status_code == 422 and r.json()["error"]["fields"] == ["sign_convention"], conv
+
+
+def test_parse_missing_column_not_echoed(client):
+    r = client.post("/v1/transactions/parse", json={"csv": CSV, "mapping": {"date": "=HYPERLINK(1)", "amount": "Amount"},
+                                                   "sign_convention": "debits_positive"})
+    assert r.status_code == 422 and r.json()["error"]["fields"] == ["mapping.date"]
+    assert "HYPERLINK" not in r.text
+
+
+def test_parse_strips_utf8_bom(client):
+    r = client.post("/v1/transactions/parse", json={"csv": "﻿" + CSV, "mapping": {"date": "Date", "amount": "Amount"},
+                                                   "sign_convention": "debits_positive"})
+    assert r.status_code == 200 and r.json()["columns"][0] == "Date"

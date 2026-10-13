@@ -5,8 +5,8 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-DATE = r"^\d{4}-\d{2}-\d{2}$"
-AMOUNT = r"^\d{1,7}(\.\d{1,2})?$"
+DATE = r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$"            # ASCII digits only (\d matches any Unicode digit)
+AMOUNT = r"^[0-9]{1,7}(\.[0-9]{1,2})?$"
 MAX_TRANSACTIONS = 20_000
 
 

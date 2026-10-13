@@ -54,10 +54,13 @@ class TokenVerifier:
             raise
         except Exception:                      # any decoding/verification/JWKS failure
             raise invalid from None
+        for name in ("exp", "iat", "nbf"):                  # PyJWT does not reject e.g. a string "exp"
+            if name in claims and (not isinstance(claims[name], int) or isinstance(claims[name], bool)):
+                raise invalid
         try:
             uuid.UUID(str(claims["sub"]))
         except ValueError:
             raise invalid from None
-        if claims.get("is_anonymous") is True or claims.get("role", "authenticated") != "authenticated":
+        if claims.get("is_anonymous", False) is not False or claims.get("role", "authenticated") != "authenticated":
             raise invalid
         return claims

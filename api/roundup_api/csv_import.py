@@ -30,6 +30,7 @@ def _bad(msg: str) -> ApiError:
 
 
 def parse_csv(text: str, mapping: dict, sign_convention: str | None) -> dict:
+    text = text.removeprefix("\ufeff")              # Excel's UTF-8 byte-order mark
     if "\x00" in text:
         raise _bad("The file looks like binary data, not a CSV file.")
     if not text.strip():
@@ -47,9 +48,15 @@ def parse_csv(text: str, mapping: dict, sign_convention: str | None) -> dict:
         raise _bad(f"The file has more than {MAX_ROWS:,} rows.")
     columns = [h.strip() for h in header]
     used = {k: v for k, v in mapping.items() if v is not None}
-    missing = [v for v in used.values() if v not in columns]
-    if missing:
-        raise _bad(f"These mapped columns are not in the file: {', '.join(neutralise(m) for m in missing)}.")
+    missing = [k for k, v in used.items() if v not in columns]
+    if missing:                                    # user-supplied names are never echoed in errors
+        raise ApiError(422, "CSV_INVALID", "Some chosen columns are not in the file. Check the column choices.",
+                       fields=[f"mapping.{k}" for k in missing])
+    needs = {"separate_columns": ("debit", "credit"), "type_column": ("type", "amount"),
+             "debits_positive": ("amount",), "debits_negative": ("amount",)}
+    if sign_convention and not all(used.get(k) for k in needs[sign_convention]):
+        raise ApiError(422, "INVALID_INPUT", "The chosen sign convention does not match the chosen columns.",
+                       fields=["sign_convention"])
     if not (used.get("date") or used.get("posted_date")):
         raise _bad("Choose which column holds the date.")
     dict_rows = [{c: (r[i] if i < len(r) else "") for i, c in enumerate(columns)} for r in data]
