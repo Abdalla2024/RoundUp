@@ -118,3 +118,18 @@ def test_save_scenario_is_atomic(cluster):
     assert r.returncode != 0 and "check constraint" in r.stderr
     count = psql(cluster, db, "select count(*) from public.scenarios")
     assert count.stdout.split()[-3] == "0"                         # the scenario row was rolled back too
+
+
+def test_selfcontained_script_passes_and_leaves_nothing(cluster):
+    """The variant for the real project creates its two users inside the transaction; after it, no users remain."""
+    original = (HERE / "rls_negative_test.sql").read_text()
+    variant = (HERE / "rls_negative_test_selfcontained.sql").read_text()
+    marker = "-- ---------------------------------------------------------------- user A saves a scenario"
+    assert variant[variant.index(marker):] == original[original.index(marker):]      # same checks, in step
+    db = fresh_db(cluster, "rls_selfcontained")
+    count = "select count(*) from auth.users; select count(*) from public.scenarios; select count(*) from public.explainer_usage"
+    before = psql(cluster, db, count).stdout                  # the shim seeds two placeholder users
+    r = psql(cluster, db, file=HERE / "rls_negative_test_selfcontained.sql")
+    assert r.returncode == 0, r.stderr
+    assert "ALL RLS CHECKS PASSED" in r.stdout and r.stderr.count("PASS:") == 14
+    assert psql(cluster, db, count).stdout == before          # rolled back: no users or rows left
