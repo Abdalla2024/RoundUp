@@ -11,7 +11,11 @@ The engine is the product. If its numbers are wrong, nothing else matters. This 
 | Independent cross-check | `crosscheck/` (Fraction arithmetic, written blind). Agrees **exactly at display precision** on 70 fixtures + 2,303 random scenarios. One real engine bug was found and fixed (half-cent tie, R-0.4). Agreement is enforced in CI by `test_crosscheck.py`. |
 | Fault injection | `engine/tools/fault_injection.py`: **37** single-rule mutations, all caught by real test failures. (The commit message of `f3189ab` says 36; one mutation was added afterwards. The commit message of `a472796` says 43 golden cases; the correct count is **40**. Commit messages are left as recorded history.) |
 | Hand calculations | 5 spreadsheet-ready cases in HAND-CALCULATIONS.md, awaiting owner verification. |
-| Real-data golden cases, pipeline checks, API/RLS, AI explainer, frontend | Later stages (unchanged plan below). |
+| **Stage 3: scenario generator** | 80 generator tests (determinism, NYSE 2026 holidays, positive 4-dp prices, engine data rules, ≥ 1 split per series, every series accepted by the engine for all strategies, no real tickers). Cross-check on **208 generated scenarios** (all 8 series, full 2012–2026 range included, 65,764 buys): **0 differences**. |
+| **Stage 3: API** | 90 own tests (contract, abuse, auth with a local JWKS and mock Data API, logging without personal data, API-equals-engine, no-calculation structure) and **514 independent cases** written blind from API.md. Both suites pass. |
+| Fault injection (updated) | **38** mutations, all caught. |
+| Totals after stage 3 | Engine 362 tests · API 90 + 514 independent · cross-check agreement on 70 fixtures + 101 random scenarios in CI. |
+| Real-data golden cases, pipeline checks, RLS against a live database, AI explainer, frontend | Later stages. |
 
 The §4 tolerance is tightened by the result: engine vs cross-check must be **identical** at display precision, with no tolerance. Engine vs spreadsheet allows ≤ $0.01 (spreadsheets use binary floating point).
 
