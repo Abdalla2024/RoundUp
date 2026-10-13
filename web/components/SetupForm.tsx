@@ -8,6 +8,7 @@ import { count, longDate } from "@/lib/format";
 import type { Mapping, ParseResponse, ScenariosResponse, SimulateRequest, Strategy, Style, TransactionIn } from "@/lib/types";
 import { ErrorNotice } from "./Chrome";
 import { useRun, type SetupDraft } from "./RunContext";
+import { useRateLimitWait } from "./useRateLimitWait";
 
 const MAX_CSV_CHARS = 2_000_000;
 const MAX_SEED = "2147483647";                   // the API's limit; compared as text, never computed
@@ -48,19 +49,12 @@ export function SetupForm() {
   const [scen, setScen] = useState<ScenariosResponse | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
   const [busy, setBusy] = useState(false);
-  const [coolingDown, setCoolingDown] = useState(false);
+  const [coolingDown, noteRateLimit] = useRateLimitWait();     // reviewer L2
   const [needConvention, setNeedConvention] = useState(false);
   const errorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { api.scenarios().then(setScen).catch((e) => setError(e as ApiError)); }, []);
   useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
-  useEffect(() => {                               // reviewer L2: wait out a rate limit before allowing another run
-    const secs = error?.code === "RATE_LIMITED" && error.retryAfter ? Number.parseInt(error.retryAfter, 10) : 0;
-    if (!(secs > 0)) return;
-    setCoolingDown(true);
-    const t = setTimeout(() => setCoolingDown(false), secs * 1000);
-    return () => clearTimeout(t);
-  }, [error]);
 
   const range = scen?.scenarios.find((s) => s.id === f.scenarioId)?.styles.find((s) => s.style === f.style);
   const invalid = (k: string) => Boolean(error?.fields.some((x) => x === k || x.startsWith(k + ".")));
@@ -103,7 +97,7 @@ export function SetupForm() {
     } catch (e) {
       const err = e as ApiError;
       if (err.code === "SIGN_CONVENTION_REQUIRED") setNeedConvention(true);
-      setError(err);
+      noteRateLimit(err); setError(err);
     } finally { setBusy(false); }
   }
 
@@ -134,7 +128,7 @@ export function SetupForm() {
       const response = await api.simulate(req);
       setRun({ request: req, response, sample: f.source === "generate" });
       router.push("/results");
-    } catch (e) { setError(e as ApiError); } finally { setBusy(false); }
+    } catch (e) { noteRateLimit(e as ApiError); setError(e as ApiError); } finally { setBusy(false); }
   }
 
   return (

@@ -205,8 +205,21 @@ describe("Setup screen", () => {
       sim.mockImplementation(() => Promise.reject(new ApiError(429, "RATE_LIMITED", "Too many requests. Please wait 2 seconds and try again.", [], "2")));
       renderWith(<SetupForm />);
       await ready();
+      // Record every DOM change: the button must never be enabled while the "please wait" message shows
+      // (CI 2026-10-13 caught a one-render gap when the wait was started in an effect).
+      const seen: boolean[] = [];
+      const obs = new MutationObserver(() => {
+        if (document.querySelector('[role="alert"]')) {
+          seen.push((screen.getByRole("button", { name: /Run simulation|Running/ }) as HTMLButtonElement).disabled);
+        }
+      });
+      obs.observe(document.body, { subtree: true, childList: true, attributes: true });
       fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
       await screen.findByRole("alert");
+      await new Promise((r) => setTimeout(r, 50));
+      obs.disconnect();
+      expect(seen.length).toBeGreaterThan(0);
+      expect(seen.every(Boolean)).toBe(true);
       expect((screen.getByRole("button", { name: "Run simulation" }) as HTMLButtonElement).disabled).toBe(true);
       await vi.advanceTimersByTimeAsync(2100);
       await waitFor(() => expect((screen.getByRole("button", { name: "Run simulation" }) as HTMLButtonElement).disabled).toBe(false));

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { COPY } from "@/lib/copy";
 import { count, dateRange, money, signedMoney } from "@/lib/format";
@@ -9,6 +9,7 @@ import { Disclaimer, ErrorNotice } from "./Chrome";
 import { KeyPoints } from "./KeyPoints";
 import { DipSentence } from "./ResultParts";
 import { useRun } from "./RunContext";
+import { useRateLimitWait } from "./useRateLimitWait";
 import { chartTop, ValueChart } from "./ValueChart";
 
 const STRATS: Strategy[] = ["threshold", "next_session", "weekly", "monthly"];
@@ -33,14 +34,7 @@ export function CompareView() {
   const [error, setError] = useState<ApiError | null>(null);
   const [busy, setBusy] = useState(false);
   const inFlight = useRef(false);                 // reviewer L1: rapid clicks send one request
-  const [coolingDown, setCoolingDown] = useState(false);
-  useEffect(() => {                               // reviewer L2: wait out a rate limit before allowing another compare
-    const secs = error?.code === "RATE_LIMITED" && error.retryAfter ? Number.parseInt(error.retryAfter, 10) : 0;
-    if (!(secs > 0)) return;
-    setCoolingDown(true);
-    const t = setTimeout(() => setCoolingDown(false), secs * 1000);
-    return () => clearTimeout(t);
-  }, [error]);
+  const [coolingDown, noteRateLimit] = useRateLimitWait();     // reviewer L2
 
   if (!run) {
     return (<section className="card empty"><h1>Compare two ways of investing</h1>
@@ -53,7 +47,7 @@ export function CompareView() {
     if (inFlight.current || coolingDown) return;
     inFlight.current = true; setBusy(true); setError(null);
     try { setCompare({ request: { ...base, a, b }, response: await api.compare({ ...base, a, b }), sample: run!.sample }); }
-    catch (err) { setError(err as ApiError); } finally { inFlight.current = false; setBusy(false); }
+    catch (err) { noteRateLimit(err as ApiError); setError(err as ApiError); } finally { inFlight.current = false; setBusy(false); }
   }
   const C = compare?.response;
   const rows: [string, string, string, string][] = C ? [
