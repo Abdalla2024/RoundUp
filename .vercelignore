@@ -30,3 +30,5 @@ web/playwright.config.ts
 .github
 **/*.tsbuildinfo
 samples
+web/e2e-deployed
+web/playwright.deployed.config.ts
