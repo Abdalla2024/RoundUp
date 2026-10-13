@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set up a simulation · RoundUp (design mock)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="setup">
+<a class="skip" href="#main">Skip to main content</a>
+<header class="topbar"><div class="topbar-inner"><a class="logo" href="index.html">RoundUp</a>
+<nav aria-label="Main"><a href="setup.html" aria-current="page">New simulation</a><a href="compare.html">Compare</a><a href="saved.html">Saved scenarios</a><a href="#how">How this works</a><a href="#sign-in">Sign in</a></nav></div>
+<div class="label-strip"><p>Synthetic scenario. Not a real fund, not real prices, and not a forecast.</p></div></header>
+<main id="main" tabindex="-1">
+
+<h1>Set up a simulation</h1>
+<p class="muted">Four short steps. You can change anything later.</p>
+<form action="results.html" method="get">
+<fieldset><legend><span class="step">Step 1 of 4</span>Your purchases</legend>
+<p class="muted small">Round-ups come from purchases. Use sample spending, or upload a CSV export from your bank.
+Uploaded files are read in your session and not stored.</p>
+<div class="options">
+<label class="option"><input type="radio" name="tx" value="generate" checked><span class="title">Generate sample spending</span>
+<span class="desc">Made-up everyday purchases, the same every time for the same number.</span></label>
+<label class="option"><input type="radio" name="tx" value="upload"><span class="title">Upload a CSV</span>
+<span class="desc">You choose which columns hold the date and amount. Merchant names are never stored.</span></label>
+</div>
+<div class="fields"><div class="field"><label for="seed">Sample number</label><input id="seed" name="seed" inputmode="numeric" value="42" aria-describedby="seed-help"><span id="seed-help" class="small muted">Any whole number.</span></div>
+<div class="field"><label for="perday">Purchases per day, at most</label><input id="perday" name="perday" inputmode="numeric" value="2" aria-describedby="perday-help"><span id="perday-help" class="small muted">1, 2 or 3.</span></div></div>
+</fieldset>
+<fieldset><legend><span class="step">Step 2 of 4</span>Market scenario</legend>
+<p class="muted small">Every scenario is made up by a published model, so you can see how round-ups behave in different
+kinds of markets. <strong>Synthetic scenario. Not a real fund, not real prices, and not a forecast.</strong></p>
+<div class="options" id="scenario-options"></div>
+<p id="style-h" style="margin:20px 0 0;font-weight:650">Style</p>
+<div class="options" role="group" aria-labelledby="style-h">
+<label class="option"><input type="radio" name="style" value="broad" checked><span class="title">Broad-market style</span>
+<span class="desc">In these scenarios: small dividends, prices grow a little faster.</span></label>
+<label class="option"><input type="radio" name="style" value="dividend"><span class="title">Dividend style</span>
+<span class="desc">In these scenarios: larger dividends, prices grow a little slower.</span></label></div>
+</fieldset>
+<fieldset><legend><span class="step">Step 3 of 4</span>How round-ups are invested</legend>
+<div class="options">
+<label class="option"><input type="radio" name="strategy" value="threshold" checked><span class="title">When they reach $5 <span class="tag">Default</span></span>
+<span class="desc">Saved-up round-ups are invested once they add up to $5.</span></label>
+<label class="option"><input type="radio" name="strategy" value="next_session"><span class="title">After every purchase day</span>
+<span class="desc">Each day's round-ups are invested on the next trading day.</span></label>
+<label class="option"><input type="radio" name="strategy" value="weekly"><span class="title">Once a week</span>
+<span class="desc">The week's round-ups are invested after Sunday.</span></label>
+<label class="option"><input type="radio" name="strategy" value="monthly"><span class="title">Once a month</span>
+<span class="desc">The month's round-ups are invested after the month ends.</span></label></div>
+<label class="switch"><input type="checkbox" name="reinvest" checked><span><span class="title" style="font-weight:650">Reinvest dividends</span><br>
+<span class="small muted">Use dividend cash to buy more of the same scenario's shares on the day it is paid. Turn off to keep it as cash.</span></span></label>
+</fieldset>
+<fieldset><legend><span class="step">Step 4 of 4</span>Dates</legend>
+<p class="muted small">This scenario runs from Jan 3, 2012 to Sep 30, 2026.</p>
+<div class="fields"><div class="field"><label for="start">Start date</label><input id="start" name="start" type="date" value="2015-01-02" min="2012-01-03" max="2026-09-30"></div>
+<div class="field"><label for="end">End date</label><input id="end" name="end" type="date" value="2024-12-31" min="2012-01-03" max="2026-09-30"></div></div>
+</fieldset>
+<div class="btn-row"><button class="btn btn-primary" type="submit">Run simulation</button>
+<span class="small muted">Takes about a second. Nothing is saved unless you sign in and choose Save.</span></div>
+</form>
+</main>
+<footer><div>RoundUp is an educational demo. No money moves and nothing here is advice or a forecast.
+<a href="#privacy">Privacy</a> · <a href="#how">How this works</a> · Design mock built from real API output.</div></footer>
+<script src="data.js"></script><script src="chart.js"></script><script src="app.js"></script>
+</body>
+</html>

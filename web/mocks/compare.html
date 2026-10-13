@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compare two ways of investing · RoundUp (design mock)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="compare">
+<a class="skip" href="#main">Skip to main content</a>
+<header class="topbar"><div class="topbar-inner"><a class="logo" href="index.html">RoundUp</a>
+<nav aria-label="Main"><a href="setup.html">New simulation</a><a href="compare.html" aria-current="page">Compare</a><a href="saved.html">Saved scenarios</a><a href="#how">How this works</a><a href="#sign-in">Sign in</a></nav></div>
+<div class="label-strip"><p>Synthetic scenario. Not a real fund, not real prices, and not a forecast.</p></div></header>
+<main id="main" tabindex="-1">
+
+<div class="layout"><div>
+<h1>Compare two ways of investing</h1>
+<p class="muted">Same purchases, same synthetic scenario (Crash and recovery, broad-market style, Jan 2, 2015 – Dec 31, 2024).
+Only the settings below differ.</p>
+<p class="assumptions-button-wrap"><button class="btn assumptions-button" id="open-assumptions" type="button" aria-haspopup="dialog">Assumptions</button></p>
+<div class="notice" role="note"><p><strong>Hypothetical simulation on a synthetic market.</strong> These results show what might have happened to your round-ups in a made-up market scenario. No money was invested, the prices are not real, and this is not a forecast. It is not investment, tax or financial advice.</p></div>
+<div class="compare-grid">
+<div class="card"><h2 class="col-head"><span class="key" style="background:var(--series-1)" aria-hidden="true"></span>A</h2>
+<p style="margin:0">Invest each time round-ups reach $5. Dividends reinvested.</p></div>
+<div class="card"><h2 class="col-head"><span class="key" style="background:var(--series-2)" aria-hidden="true"></span>B</h2>
+<p style="margin:0">Invest once a month. Dividends kept as cash.</p></div></div>
+<div class="table-scroll" style="max-height:none" role="region" aria-label="Comparison table" tabindex="0">
+<table class="cmp-table"><caption class="visually-hidden">Results for A and B, and B compared with A</caption>
+<thead><tr><th scope="col">Figure</th><th scope="col">A</th><th scope="col">B</th><th scope="col">B compared with A</th></tr></thead>
+<tbody id="cmp-body"></tbody></table></div>
+<p class="small muted" style="margin-top:8px">"B compared with A" is B minus A. These differences come from this one made-up scenario
+and say nothing about which choice works better in general.</p>
+<h2 style="margin-top:24px">Value over time</h2>
+<div class="multiples">
+<figure id="chart-a"><h3>A: invest at $5, reinvest dividends</h3><div class="chart-mount"></div><p class="tooltip" aria-live="polite"></p>
+</figure>
+<figure id="chart-b"><h3>B: invest monthly, keep dividends as cash</h3><div class="chart-mount"></div><p class="tooltip" aria-live="polite"></p>
+</figure></div>
+<p class="small muted">Both charts use the same scale. The dashed line is the round-ups added so far. <span id="compare-rule"></span></p>
+<dialog id="assumptions-dialog" aria-labelledby="assumptions-mobile-h"><div class="assumptions" id="assumptions-mobile" data-assumptions></div>
+<p><button class="btn" type="button" data-close>Close</button></p></dialog>
+</div>
+<aside class="assumptions assumptions-rail panel" id="assumptions-rail" data-assumptions></aside>
+</div>
+</main>
+<footer><div>RoundUp is an educational demo. No money moves and nothing here is advice or a forecast.
+<a href="#privacy">Privacy</a> · <a href="#how">How this works</a> · Design mock built from real API output.</div></footer>
+<script src="data.js"></script><script src="chart.js"></script><script src="app.js"></script>
+</body>
+</html>

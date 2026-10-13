@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saved scenarios · RoundUp (design mock)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="saved">
+<a class="skip" href="#main">Skip to main content</a>
+<header class="topbar"><div class="topbar-inner"><a class="logo" href="index.html">RoundUp</a>
+<nav aria-label="Main"><a href="setup.html">New simulation</a><a href="compare.html">Compare</a><a href="saved.html" aria-current="page">Saved scenarios</a><a href="#how">How this works</a><a href="saved.html">Account</a></nav></div></header>
+
+<main id="main" tabindex="-1">
+
+<h1>Saved scenarios</h1>
+<p class="muted">Saved scenarios keep their results exactly as calculated. They are not backed up in this demo.</p>
+<div class="state-tabs" role="group" aria-label="Mock state to preview">
+<button class="btn" type="button" data-state="list" aria-pressed="true">Signed in, with scenarios</button>
+<button class="btn" type="button" data-state="empty" aria-pressed="false">Signed in, none yet</button>
+<button class="btn" type="button" data-state="signed-out" aria-pressed="false">Signed out</button></div>
+<section data-panel="list" aria-label="Your saved scenarios"><ul class="saved-list" id="saved-list"></ul>
+<p class="small muted" style="margin-top:16px"><a href="#export">Download my data</a> · <a href="#delete-account">Delete my account</a></p></section>
+<section data-panel="empty" hidden class="card empty"><h2>Nothing saved yet</h2>
+<p class="muted">Run a simulation, then choose <strong>Save</strong> to keep it here.</p>
+<a class="btn btn-primary" href="setup.html">Start a simulation</a></section>
+<section data-panel="signed-out" hidden class="card empty"><h2>Sign in to see saved scenarios</h2>
+<p class="muted">You can run simulations without an account. Signing in only lets you keep them.
+We send a one-time sign-in link to your email; there is no password.</p>
+<a class="btn btn-primary" href="#sign-in">Email me a sign-in link</a></section>
+</main>
+<footer><div>RoundUp is an educational demo. No money moves and nothing here is advice or a forecast.
+<a href="#privacy">Privacy</a> · <a href="#how">How this works</a> · Design mock built from real API output.</div></footer>
+<script src="data.js"></script><script src="chart.js"></script><script src="app.js"></script>
+</body>
+</html>

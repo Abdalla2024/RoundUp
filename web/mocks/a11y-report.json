@@ -1,0 +1,97 @@
+{
+ "setup/desktop": {
+  "axe_violations": [],
+  "axe_passes": 41,
+  "tab_stops": 15,
+  "first_tab_stop": "Skip to main content",
+  "stops_without_visible_focus": [],
+  "visible_interactive_elements": 27
+ },
+ "results/desktop": {
+  "axe_violations": [],
+  "axe_passes": 46,
+  "tab_stops": 13,
+  "first_tab_stop": "Skip to main content",
+  "stops_without_visible_focus": [],
+  "visible_interactive_elements": 15,
+  "chart_keyboard": {
+   "home": "Jan 2, 2015: value $1.35, round-ups added $1.35",
+   "after_arrow": "Jan 9, 2015: value $2.59, round-ups added $2.59",
+   "changes": true
+  }
+ },
+ "compare/desktop": {
+  "axe_violations": [],
+  "axe_passes": 47,
+  "tab_stops": 9,
+  "first_tab_stop": "Skip to main content",
+  "stops_without_visible_focus": [],
+  "visible_interactive_elements": 12,
+  "chart_keyboard": {
+   "home": "Jan 2, 2015: value $1.35, round-ups added $1.35",
+   "after_arrow": "Jan 9, 2015: value $2.59, round-ups added $2.59",
+   "changes": true
+  }
+ },
+ "saved/desktop": {
+  "axe_violations": [],
+  "axe_passes": 39,
+  "tab_stops": 19,
+  "first_tab_stop": "Skip to main content",
+  "stops_without_visible_focus": [],
+  "visible_interactive_elements": 20
+ },
+ "setup/mobile": {
+  "axe_violations": [],
+  "axe_passes": 42,
+  "tab_stops": 15,
+  "first_tab_stop": "Skip to main content",
+  "stops_without_visible_focus": [],
+  "visible_interactive_elements": 27
+ },
+ "results/mobile": {
+  "axe_violations": [],
+  "axe_passes": 46,
+  "tab_stops": 14,
+  "first_tab_stop": "Skip to main content",
+  "stops_without_visible_focus": [],
+  "visible_interactive_elements": 16
+ },
+ "compare/mobile": {
+  "axe_violations": [],
+  "axe_passes": 46,
+  "tab_stops": 10,
+  "first_tab_stop": "Skip to main content",
+  "stops_without_visible_focus": [],
+  "visible_interactive_elements": 13,
+  "dialog": {
+   "opens_with_enter": true,
+   "closes_with_escape": true,
+   "focus_returns_to": "open-assumptions"
+  }
+ },
+ "saved/mobile": {
+  "axe_violations": [],
+  "axe_passes": 40,
+  "tab_stops": 19,
+  "first_tab_stop": "Skip to main content",
+  "stops_without_visible_focus": [],
+  "visible_interactive_elements": 20
+ },
+ "setup/dark": {
+  "axe_violations": [],
+  "axe_passes": 41
+ },
+ "results/dark": {
+  "axe_violations": [],
+  "axe_passes": 46
+ },
+ "compare/dark": {
+  "axe_violations": [],
+  "axe_passes": 47
+ },
+ "saved/dark": {
+  "axe_violations": [],
+  "axe_passes": 39
+ }
+}
