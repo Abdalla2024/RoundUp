@@ -78,7 +78,7 @@ The limits are kept in memory per server instance (see OPERATIONS.md).
  "input_checksum": "<sha256 hex>", "label": "Synthetic scenario. Not a real fund, not real prices, and not a forecast."}
 ```
 - `market_checksum` is the engine's checksum of the market series.
-- `input_checksum` is the engine's SHA-256 of the canonical scenario input (market checksum + transactions + config). The same request always gives the same `input_checksum`.
+- `input_checksum` is the engine's SHA-256 of the canonical scenario input: the market checksum, plus each transaction's date, amount, direction, status and **resolved category**, plus the config. Descriptions never feed the checksum (D-8). The same request always gives the same `input_checksum`. For compare, it covers the shared input with the default config, before the a/b overrides.
 
 **Result:** exactly the engine result format in `engine/fixtures/FORMAT.md` (`status`, `summary`, `buys`, `series`, …), unchanged, plus `engine_version`.
 
@@ -124,7 +124,7 @@ Body: run options, plus `"a": {"strategy": ..., "reinvest": ...}` and `"b": {...
 ```json
 {"a": <engine result>, "b": <engine result>, "difference": {...}, "meta": <meta>}
 ```
-- `difference` is computed by the engine (`roundup_engine.compare`) as b − a for: `ending_value`, `gain`, `dividends_earned`, `uninvested_cash`, `roundup_buys`, `dividend_buys`. Money is shown to the cent.
+- `difference` is computed by the engine (`roundup_engine.compare`) as b − a for: `ending_value`, `gain`, `dividends_earned`, `uninvested_cash`, `roundup_buys`, `dividend_buys`. Like every engine result value, each is a **string**: money to the cent with a leading `-` when negative (e.g. `"-12.34"`, `"0.00"`), and counts as integer strings (e.g. `"-1"`, `"0"`).
 - If either run fails with a data error, the response is 422 with that error code.
 
 ### `POST /v1/transactions/parse`
@@ -132,9 +132,9 @@ Body:
 ```json
 {"csv": "<text>", "mapping": {"date": "Date", "posted_date": null, "amount": "Amount", "debit": null,
  "credit": null, "type": null, "status": null, "description": "Description", "external_id": null,
- "account": null}, "sign_convention": null}
+ "account": null}, "sign_convention": "debits_positive"}
 ```
-- `sign_convention` is optional: `separate_columns`, `type_column`, `debits_positive` or `debits_negative`.
+- `sign_convention` is optional: `separate_columns`, `type_column`, `debits_positive` or `debits_negative`. If it is null, it is inferred **only** from the column layout: separate debit/credit columns give `separate_columns`, and a type column whose values are all debit/credit gives `type_column`. A single signed amount column is never guessed from its values; it returns 422 `SIGN_CONVENTION_REQUIRED` (R-1.3, no silent default). An explicit convention must fit the mapping, otherwise the response is 422 `INVALID_INPUT` with `fields: ["sign_convention"]`. `separate_columns` needs `debit` and `credit`; `type_column` needs `type` and `amount`; `debits_positive` and `debits_negative` need `amount`.
 - `mapping` values are column names, or null.
 
 200:
@@ -148,6 +148,7 @@ Body:
 ```
 - `row` is the line number in the file (header = 1).
 - **Descriptions are never returned.** Classification happens here and is returned as `category`.
+- **Error messages never echo user-supplied text.** A missing mapped column is reported through `fields` (e.g. `["mapping.date"]`).
 - **Echoed text** (column names) is neutralised against spreadsheet formula injection: any value starting with `=`, `+`, `-`, `@`, tab, CR, LF, or a full-width `＝＋－＠` gets a leading `'`.
 - Nothing is stored.
 
@@ -187,3 +188,44 @@ app = create_app(
 - `roundup_api.main:app` is the default app built from the environment.
 - Storage calls are `POST <supabase_url>/rest/v1/scenarios`, then `POST <supabase_url>/rest/v1/scenario_results`. Each carries the headers `apikey: <publishable_key>`, `Authorization: Bearer <the user's token>`, `Prefer: return=representation` and `Content-Type: application/json`. A successful insert answers `201` with a JSON array of the created rows ([PostgREST](https://github.com/PostgREST/postgrest/blob/main/docs/references/api/preferences.rst)). The `scenarios` row's `id` is the `id` returned by `POST /v1/saved`.
 - `rate_limits` keys: `simulate`, `compare`, `parse`, `saved`, `read`.
+
+## Resolved questions (from the independent contract review)
+
+An independent tester, working only from this contract, listed 42 ambiguities (`api/tests_independent/ATTACKS.md`). The current behaviour, now normative:
+
+| # | Question | Answer |
+|---|---|---|
+| 1, 40 | Body size | The real byte count is authoritative. A declared `Content-Length` over the limit is refused early with 413. Exactly 3,000,000 bytes is accepted. |
+| 2 | Order of checks | **POST:** rate limit (429) → content type (415) → size (413) → JSON (400) → schema (422; `UNKNOWN_FIELD` wins over `INVALID_INPUT`) → engine (422). **`/v1/saved`:** storage configured (503) → token (401) → then the same order. |
+| 3, 4, 6 | Duplicate keys, `NaN`/`Infinity`, BOM or invalid UTF-8 in the JSON body | 400 `INVALID_JSON`. |
+| 5 | Content-Type | Case-insensitive; parameters such as `; charset=utf-8` are allowed. |
+| 7 | Explicit `null` | Allowed for `category` and `description`; refused (422) for `status`, which must be omitted to get the default. |
+| 8, 9, 10 | Dates | `start` and `end` are required. `start == end` is allowed, and so are non-trading days. Transactions outside the window are ignored by the engine (R-1.6) and counted in `transactions_ignored`. |
+| 11, 26 | `input_checksum` | Described under Meta above. |
+| 12 | Length limits | Counted in Unicode code points. The body limit is in bytes. |
+| 13, 14 | CSV limits | An over-long `csv` gives 422 `INVALID_INPUT`. Any header name over 100 characters, or more than 50 columns, gives 422 `CSV_INVALID`. |
+| 15 | `columns` | Echoes every header name, neutralised. Cell values from unmapped columns are never returned. |
+| 16 | `mapping` | Keys may be omitted (= null). If both `date` and `posted_date` are mapped, `posted_date` wins (R-1.2). |
+| 17 | Sign convention | Described under the parse endpoint. |
+| 18 | `row` | The CSV record number, with the header as row 1. A quoted multi-line field counts as one record. Blank lines are skipped but keep their numbers. |
+| 19 | Problem rows | Included, with `problem` set to `invalid_amount`, `invalid_date` or `zero_amount`. `amount` is null for invalid amounts. A leading `+` is invalid. |
+| 20 | Malformed CSV | Ragged rows: missing cells are empty and extra cells are ignored. Stray quotes, NUL or binary data, and an empty file give 422 `CSV_INVALID`. A header-only file returns zero transactions. A UTF-8 BOM is stripped. |
+| 21 | Echo in errors | Never: see the parse endpoint. |
+| 22 | Parse → simulate | The client must drop `row` and `problem` (and rows with problems) before sending transactions to `/simulate`, which rejects unknown fields. |
+| 23, 24 | `fields` | Present for `INVALID_INPUT`, `UNKNOWN_FIELD` and mapping-related `CSV_INVALID`. Each entry is a dotted path to the offending key, e.g. `transactions.0.memo`. |
+| 25 | Ill-formed `scenario_id` | Up to 64 characters: 404 `UNKNOWN_SCENARIO`. Longer: 422 `INVALID_INPUT`. |
+| 27 | `difference` format | Strings: see compare above. |
+| 28 | Result format | `engine/fixtures/FORMAT.md`. |
+| 29 | Authorization header | A missing or empty token, or a scheme other than exactly `Bearer `, gives 401 `AUTH_REQUIRED`. |
+| 30 | Token claims | Algorithm ES256/RS256 only. A `kid` present in the JWKS is required. `aud` may be a string or a list containing `authenticated`. `exp` is required, and `exp`/`iat`/`nbf` must be integers when present. 10 s leeway. `is_anonymous`, if present, must be exactly `false`. |
+| 31 | Tokens on open endpoints | Ignored. |
+| 32 | No `SUPABASE_URL` | 503 before any token check. |
+| 33 | Data API answers anything but 201 | 503 `STORAGE_UNAVAILABLE`. |
+| 34 | Partial save | If the results insert fails after the scenario insert, the API returns 503 and an orphan scenario row (with no results) can remain. **OPEN:** the accounts stage will replace the two inserts with one Postgres function call (atomic). |
+| 35 | Stored row shapes | Sent to the `public` schema (no `Content-Profile`). `user_id` is sent explicitly and RLS `with check` verifies it equals `auth.uid()`. Saved transactions use the API's decimal-string format, without descriptions. Deleted users: the token stays valid until `exp`, but the insert then fails its foreign key, giving 503. |
+| 36 | Rate limits | Separate buckets per route group. Sliding 60 s window. Every request counts, including 4xx; `/v1/health` counts toward `read`. `Retry-After` is 1–60. Client IP rules: Configuration section. Per-user limits are not implemented (explainer stage). State is per app instance. |
+| 37 | Other paths | `/docs`, `/redoc` and `/openapi.json` are disabled (404). Unknown query parameters are ignored. **OPEN for the web stage:** CORS is not configured yet; it must allow only the site's origin. |
+| 38 | Degraded health | Returns 503 with the health body, not the error envelope. This is deliberate, so monitors can read the fields. |
+| 39 | Label | `meta.label` is exactly the `LABEL` constant in `roundup_scenarios`. |
+| 41 | `generate` + `save_transactions` | The generated transactions are saved. |
+| 42 | Sample-data label in assumptions | It is the R-12.5 entry. |

@@ -80,7 +80,7 @@ All quotes were checked by me on 2026-10-12 unless marked "(agent)", meaning rea
 
 | Table | Fields | RLS |
 |---|---|---|
-| `scenarios` | `id` uuid PK, `user_id` → `auth.users` ON DELETE CASCADE, `name`, `config` jsonb (funds, strategies, start/end, reinvest, generator seed, import summary counts), `transactions` jsonb **null unless the user ticked "also save my transactions"** (date, amount cents, direction, category; no descriptions), `created_at`, `updated_at` | select/insert/update/delete where `(select auth.uid()) = user_id` |
+| `scenarios` | `id` uuid PK, `user_id` → `auth.users` ON DELETE CASCADE, `name`, `config` jsonb (funds, strategies, start/end, reinvest, generator seed, import summary counts), `transactions` jsonb **null unless the user ticked "also save my transactions"** (posted date, amount as a decimal string, direction, status, category; no descriptions), `created_at`, `updated_at` | select/insert/update/delete where `(select auth.uid()) = user_id` |
 | `scenario_results` | `id`, `scenario_id` (cascade), `user_id`, `market_scenario`, `style`, `strategy`, `reinvest`, `result` jsonb (engine output), `engine_version`, `model_version`, `scenario_seed`, `data_kind` (`sample`/`real`), `data_end`, `market_checksum`, `input_checksum` (SHA-256), `created_at` | same; **no update policy** (results are immutable; re-run inserts new rows) |
 | `explainer_usage` | `user_id`, `day`, `requests`, `input_tokens`, `output_tokens` | select own; insert/update only via a narrow `security definer` function |
 
