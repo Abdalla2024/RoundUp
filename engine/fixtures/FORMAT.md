@@ -79,7 +79,7 @@ Each file in `fixtures/scenarios/` is one JSON scenario, a single-fund run (FINA
 
 | Code | Rule |
 |---|---|
-| `WINDOW_OUTSIDE_DATA` | R-12.1 (start before first close, end after last close, or start > end) |
+| `WINDOW_OUTSIDE_DATA` | R-12.1 (start before first close, end after last close, start > end, or no close inside [start, end]) |
 | `GAP_TOO_LONG` | R-6.3(a) |
 | `GAP_ON_EVENT` | R-6.3(b): an event ex-date (on or before the data end) has no close |
 | `EVENT_NOT_CALENDAR_DAY` | R-6.3(c): split/dividend ex-date not a calendar-open day |

@@ -106,6 +106,20 @@ def test_window_outside_data_plain_message(client):
     assert e["code"] == "WINDOW_OUTSIDE_DATA" and "2012-01-03" in e["message"]
 
 
+def test_window_without_trading_day_rejected(client):
+    # Stage-5 reviewer H1: a weekend-only window used to return 200 with an empty series and as_of before start.
+    tx = [{"posted_date": "2015-01-03", "amount": "4.37", "direction": "debit"}]
+    for path in ("/v1/simulate", "/v1/compare"):
+        body = base_body(start="2015-01-03", end="2015-01-04", transactions=tx)
+        if path == "/v1/compare":
+            body = {k: v for k, v in body.items() if k not in ("strategy", "reinvest")}
+            body.update(a={"strategy": "threshold", "reinvest": True}, b={"strategy": "monthly", "reinvest": True})
+        r = client.post(path, json=body)
+        assert r.status_code == 422, (path, r.text[:200])
+        e = r.json()["error"]
+        assert e["code"] == "WINDOW_OUTSIDE_DATA" and "trading day" in e["message"]
+
+
 def test_unknown_scenario(client):
     for kw in ({"scenario_id": "nope"}, {"style": "growth"}, {"scenario_id": "../etc/passwd"}):
         r = client.post("/v1/simulate", json=base_body(**kw))

@@ -19,8 +19,8 @@ class ApiError(Exception):
 
 
 ENGINE_MESSAGES = {
-    "WINDOW_OUTSIDE_DATA": "The dates must be inside the scenario's range ({start} to {end}), "
-                           "and the start date must not be after the end date.",
+    "WINDOW_OUTSIDE_DATA": "The dates must be inside the scenario's range ({start} to {end}), the start date "
+                           "must not be after the end date, and the dates must include at least one trading day.",
     "GAP_TOO_LONG": "The price data has too many missing days in a row, so no result can be given.",
     "GAP_ON_EVENT": "The price data is missing a price on a dividend or split day, so no result can be given.",
     "EVENT_NOT_CALENDAR_DAY": "The price data has a dividend or split on a day the market was closed.",

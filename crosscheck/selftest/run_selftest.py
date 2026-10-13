@@ -139,6 +139,30 @@ check("GAP_ON_EVENT beats GAP_TOO_LONG", variant(market__calendar=long_cal,
       market__dividends=[{"ex_date": "2024-01-03", "pay_date": "2024-01-06", "amount_raw": "1"}],
       config__start="2024-01-01", config__end="2024-01-09"), "GAP_ON_EVENT")
 
+# 4b. R-12.1 (stage 5): at least one close must lie inside [start, end] (inclusive).
+# Fri 2024-01-12 and Tue 2024-01-16 are sessions; Sat/Sun 13-14 are weekend; Mon 15 is the MLK holiday.
+win_mkt = dict(market__calendar=["2024-01-12", "2024-01-16", "2024-01-17"],
+               market__closes={"2024-01-12": "4.00", "2024-01-16": "5.00", "2024-01-17": "5.00"})
+check("weekend-only window", variant(config__start="2024-01-13", config__end="2024-01-14", **win_mkt),
+      "WINDOW_OUTSIDE_DATA")
+check("holiday-only window", variant(config__start="2024-01-15", config__end="2024-01-15", **win_mkt),
+      "WINDOW_OUTSIDE_DATA")
+check("weekend+holiday window", variant(config__start="2024-01-13", config__end="2024-01-15", **win_mkt),
+      "WINDOW_OUTSIDE_DATA")
+one_day = copy.deepcopy(base)
+one_day["market"]["calendar"] = win_mkt["market__calendar"]
+one_day["market"]["closes"] = win_mkt["market__closes"]
+one_day["config"].update(start="2024-01-16", end="2024-01-16")
+one_day["transactions"] = [{"posted_date": "2024-01-16", "amount": "0.60", "direction": "debit",
+                            "status": "posted", "type": "", "description": "a"}]
+r1 = cc.run(one_day)
+check("single-trading-day window ok",
+      [r1["status"], r1["error_code"], r1["series"], r1["summary"]["as_of"], r1["summary"]["contributed"],
+       r1["summary"]["roundups_waiting"], r1["transactions_used"]],
+      ["ok", None, [{"date": "2024-01-16", "value": "0.40", "carried": "false"}], "2024-01-16", "0.40", "0.40", "1"])
+check("window touching one close at its end ok",
+      variant(config__start="2024-01-13", config__end="2024-01-16", **win_mkt), None)
+
 # 5. CLI: multiple files -> mapping id -> result
 import subprocess
 out = subprocess.run([sys.executable, "-I", os.path.join(os.path.dirname(HERE), "crosscheck.py"),

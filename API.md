@@ -34,7 +34,7 @@ FastAPI service. Package `roundup_api` (in `api/`); the app object is `roundup_a
 | 415 | `UNSUPPORTED_MEDIA_TYPE` | POST without `Content-Type: application/json` |
 | 422 | `UNKNOWN_FIELD` | Unexpected field anywhere |
 | 422 | `INVALID_INPUT` | Wrong type, bad format, out of range, too many items |
-| 422 | `WINDOW_OUTSIDE_DATA` | Dates outside the scenario's range, or start after end |
+| 422 | `WINDOW_OUTSIDE_DATA` | Dates outside the scenario's range, start after end, or no trading day between the dates (stage 5: a weekend- or holiday-only window used to return an empty series) |
 | 422 | `SIGN_CONVENTION_REQUIRED` | CSV sign convention cannot be inferred and was not given (R-1.3) |
 | 422 | `CSV_INVALID` | CSV cannot be parsed (binary data, NUL bytes, bad quoting, mapped column missing, too many rows) |
 | 429 | `RATE_LIMITED` | Too many requests; a `Retry-After` header gives seconds |

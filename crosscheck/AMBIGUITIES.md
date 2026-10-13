@@ -122,3 +122,11 @@ Each entry lists the rule, the competing readings, and the reading implemented. 
   - Round-ups dated after the last calendar-open day but ≤ end are waiting.
   - Dividends with pay date ≤ end are cash.
 - The exact parts sum to `uninvested_cash`. The displayed parts can differ from the displayed total by $0.01 (R-0.4).
+
+## AMB-23 — R-12.1 (stage 5): "at least one close lies inside [start, end]"
+- **Inclusive ends.** The bracket notation in R-12.1 and FORMAT.md reads as a closed interval, so a close on `start` or on `end` counts. A single-session window (start = end = a session) is valid. This seemed clear enough, but it is recorded because nothing says "inclusive" in words.
+- **What counts as "a close".** Reading A: any entry in the input `closes`. Reading B: only a close on a calendar-open day.
+  - This matters only when a close sits on a closed day inside an otherwise empty window, for example a Saturday close in a weekend-only window. Under A the window passes and the run fails with `CLOSE_ON_CLOSED_DAY`. Under B it fails with `WINDOW_OUTSIDE_DATA`, which comes first in the precedence order.
+  - **Chosen: A.** The check is literal about "a close", and the result is an error under both readings, so only the code can differ.
+- **Gap-only windows.** A window whose only calendar-open days have no close (data gaps) also has no close inside it. **Chosen:** `WINDOW_OUTSIDE_DATA`, as the rule text says, not `GAP_TOO_LONG` (which needs 4+ days anyway).
+- The required "message naming the fund and its available range" is not part of the FORMAT.md output contract (only `error_code` is), so the cross-check does not produce it.

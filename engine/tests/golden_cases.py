@@ -346,3 +346,14 @@ case(scenario("G-43-dip-recovers", JAN, DIP, [tx("2024-01-03", "4.37")], "next_s
               covers=["R-13.1", "R-6.4"]),
      summary={"ending_value": "0.63",
               "deepest_dip": {"date": "2024-01-08", "value": "0.50", "added": "0.63", "below_by": "0.13"}})
+
+# Reviewer finding H1 (stage 5): a window with no trading day used to return an empty series and an as_of before start.
+case(scenario("G-44-no-session", JAN, FLAT50, [tx("2024-01-06", "4.37")], "next_session", "2024-01-06", "2024-01-07",
+              description="Window covers only a weekend: no trading day inside it -> rejected", covers=["R-12.1"]),
+     status="error", error_code="WINDOW_OUTSIDE_DATA")
+case(scenario("G-45-holiday-only", JAN, FLAT50, [tx("2024-01-15", "4.37")], "next_session", "2024-01-15", "2024-01-15",
+              description="Window is a single market holiday -> rejected", covers=["R-12.1"]),
+     status="error", error_code="WINDOW_OUTSIDE_DATA")
+case(scenario("G-46-single-session", JAN, FLAT50, [tx("2024-01-16", "4.37")], "next_session", "2024-01-16", "2024-01-16",
+              description="Window of one trading day is valid (purchase that day stays cash)", covers=["R-12.1", "R-5.4"]),
+     summary={"as_of": "2024-01-16", "uninvested_cash": "0.63", "roundup_buys": "0"})

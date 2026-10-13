@@ -33,6 +33,8 @@ BUY_BLOCK = (
 
 S = "src/roundup_engine/"
 MUTATIONS = [
+    ("window with no trading day accepted", "R-12.1", S + "simulate.py",
+     [("if not any(cfg.start <= d <= cfg.end for d in m.closes):", "if False:")]),
     # id, rule, file, [(old, new), ...]
     ("whole-dollar rounds to $1", "R-2.2", S + "roundup.py",
      [("return (100 - amount_cents % 100) % 100", "return 100 - amount_cents % 100")]),

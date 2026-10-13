@@ -164,6 +164,9 @@ def validate(calendar, closes, splits, divs, start, end):
     # WINDOW_OUTSIDE_DATA (R-12.1)
     if not closes or start > end or start < min(closes) or end > max(closes):
         raise DataError("WINDOW_OUTSIDE_DATA")
+    # R-12.1 (stage 5): at least one close inside [start, end], both ends inclusive (AMB-23).
+    if not any(start <= d <= end for d in closes):
+        raise DataError("WINDOW_OUTSIDE_DATA")
     # R-6.5 / FORMAT.md: events with ex-date after the data end (last close in the
     # input) are "no data yet": ignored entirely, no check of any kind.
     data_end = max(closes)

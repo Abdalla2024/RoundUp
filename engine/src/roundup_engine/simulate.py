@@ -117,6 +117,8 @@ def _simulate(m: MarketSeries, rows, cfg: Config) -> RunResult:
     # ---- validation, in FORMAT.md precedence order
     if m.first_close is None or cfg.start > cfg.end or cfg.start < m.first_close or cfg.end > m.data_end:
         raise DataError("WINDOW_OUTSIDE_DATA")                                        # R-12.1
+    if not any(cfg.start <= d <= cfg.end for d in m.closes):                         # R-12.1: >= 1 session inside
+        raise DataError("WINDOW_OUTSIDE_DATA", "no trading day in the window")
     validate_series(m)
     window_days = [d for d in m.calendar if cfg.start <= d <= cfg.end]
     run = 0
