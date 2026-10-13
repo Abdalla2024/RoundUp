@@ -288,3 +288,41 @@ def test_cors_allows_only_the_configured_origin(make_client):
 def test_no_cors_without_configuration(client):
     r = client.post("/v1/simulate", json=base_body(), headers={"Origin": "https://roundup-web.vercel.app"})
     assert "access-control-allow-origin" not in r.headers
+
+
+SAMPLE_WITH_STATUS = (
+    "Date,Description,Amount,Status\n"
+    "2024-01-02,Corner Coffee,6.16,posted\n"          # purchase: round-up 0.84
+    "2024-01-04,Hardware Store,19.00,posted\n"          # whole-dollar purchase: round-up 0.00
+    "2024-01-09,Bookshop refund,-12.50,posted\n"        # money in: never a round-up (R-1.8)
+    "2024-01-12,Transfer to savings,200.00,posted\n"    # not a purchase (R-1.4)
+    "2024-01-18,Maple Grocery,31.40,pending\n"          # pending: ignored (R-1.4)
+    "2024-01-19,Bakery,4.57,cancelled\n"                # cancelled: ignored (R-3.2)
+)
+
+
+def test_parse_reports_credits_pending_and_whole_dollar_rows(client):
+    """Stage 6: the check step must say which rows will not add round-ups, and why."""
+    r = client.post("/v1/transactions/parse", json={
+        "csv": SAMPLE_WITH_STATUS, "sign_convention": "debits_positive",
+        "mapping": {"date": "Date", "amount": "Amount", "description": "Description", "status": "Status"}})
+    assert r.status_code == 200, r.text
+    s = r.json()["summary"]
+    assert (s["rows"], s["usable"], s["non_purchases"], s["credits"], s["not_posted"], s["whole_dollar"]) == (6, 6, 1, 1, 2, 1), s
+    t = r.json()["transactions"]
+    assert [x["status"] for x in t] == ["posted", "posted", "posted", "posted", "pending", "cancelled"]
+    assert [x["direction"] for x in t] == ["debit", "debit", "credit", "debit", "debit", "debit"]
+    assert [x["category"] for x in t] == ["purchase", "purchase", "purchase", "non_purchase", "purchase", "purchase"]
+
+
+def test_parsed_rows_run_through_simulate_with_the_expected_counts(client):
+    parsed = client.post("/v1/transactions/parse", json={
+        "csv": SAMPLE_WITH_STATUS, "sign_convention": "debits_positive",
+        "mapping": {"date": "Date", "amount": "Amount", "description": "Description", "status": "Status"}}).json()["transactions"]
+    txs = [{k: x[k] for k in ("posted_date", "amount", "direction", "status", "category")} for x in parsed if x["problem"] is None]
+    r = client.post("/v1/simulate", json=base_body(start="2024-01-02", end="2024-03-28", transactions=txs, scenario_id="steady-growth"))
+    assert r.status_code == 200, r.text
+    res = r.json()["result"]
+    assert res["transactions_used"] == "2"          # the coffee and the whole-dollar purchase
+    assert res["transactions_ignored"] == "4"       # refund, transfer, pending, cancelled
+    assert res["summary"]["contributed"] == "0.84"

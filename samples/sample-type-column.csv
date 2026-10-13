@@ -1,0 +1,93 @@
+Date,Description,Amount,Type,Status
+2024-01-02,Pharmacy,15.88,debit,posted
+2024-01-04,Bakery,44.67,debit,posted
+2024-01-04,Pharmacy,34.59,debit,posted
+2024-01-05,Bakery,35.06,debit,posted
+2024-01-05,Cinema,41.82,debit,posted
+2024-01-06,Cinema,45.55,debit,posted
+2024-01-07,Bakery,7.11,debit,posted
+2024-01-07,Bookstore,39.38,debit,posted
+2024-01-08,Cinema,5.79,debit,posted
+2024-01-08,Lunch Spot,18.41,debit,posted
+2024-01-09,Bookstore,11.17,debit,posted
+2024-01-09,Hardware,35.12,debit,posted
+2024-01-09,Bookshop refund,12.50,credit,posted
+2024-01-10,Cinema,32.97,debit,posted
+2024-01-11,Cinema,17.47,debit,posted
+2024-01-12,Cinema,34.94,debit,posted
+2024-01-12,Transfer to savings,200.00,debit,posted
+2024-01-13,Bakery,19.76,debit,posted
+2024-01-13,Lunch Spot,18.53,debit,posted
+2024-01-15,Cinema,22.20,debit,posted
+2024-01-15,Coffee Shop,19.44,debit,posted
+2024-01-16,Bakery,28.12,debit,posted
+2024-01-16,Grocery,35.49,debit,posted
+2024-01-18,Maple Grocery,31.40,debit,pending
+2024-01-18,Bookstore,30.95,debit,posted
+2024-01-19,Bakery,4.57,debit,cancelled
+2024-01-20,Bookstore,41.41,debit,posted
+2024-01-21,Cinema,32.72,debit,posted
+2024-01-22,Bookstore,39.08,debit,posted
+2024-01-23,Cinema,11.81,debit,posted
+2024-01-23,Grocery,17.95,debit,posted
+2024-01-28,Cinema,20.30,debit,posted
+2024-02-01,Hardware,20.60,debit,posted
+2024-02-02,Hardware,22.59,debit,posted
+2024-02-02,Lunch Spot,43.90,debit,posted
+2024-02-03,Bakery,34.98,debit,posted
+2024-02-03,Pharmacy,6.80,debit,posted
+2024-02-04,Bookstore,23.80,debit,posted
+2024-02-05,Bakery,41.56,debit,posted
+2024-02-05,Grocery,21.48,debit,posted
+2024-02-06,Hardware Store,20.00,debit,posted
+2024-02-07,Bakery,15.42,debit,posted
+2024-02-08,Coffee Shop,30.04,debit,posted
+2024-02-09,Grocery,7.01,debit,posted
+2024-02-09,Lunch Spot,45.57,debit,posted
+2024-02-12,Bakery,11.27,debit,posted
+2024-02-12,Bookstore,8.19,debit,posted
+2024-02-14,Bookstore,48.83,debit,posted
+2024-02-15,Card payment,500.00,debit,posted
+2024-02-18,Coffee Shop,9.54,debit,posted
+2024-02-18,Grocery,49.77,debit,posted
+2024-02-19,Cinema,15.73,debit,posted
+2024-02-19,Grocery,1.03,debit,posted
+2024-02-20,Bookstore,3.36,debit,posted
+2024-02-23,Bakery,18.21,debit,posted
+2024-02-23,Hardware,16.57,debit,posted
+2024-02-25,Pharmacy,26.69,debit,posted
+2024-02-26,Hardware,38.18,debit,posted
+2024-02-26,Lunch Spot,18.79,debit,posted
+2024-02-27,Bookstore,49.69,debit,posted
+2024-02-27,Lunch Spot,37.76,debit,posted
+2024-03-01,Bakery,33.59,debit,posted
+2024-03-03,Coffee Shop,38.30,debit,posted
+2024-03-04,Online shop refund,8.99,credit,posted
+2024-03-05,Bakery,1.23,debit,posted
+2024-03-06,Coffee Shop,35.34,debit,posted
+2024-03-06,Hardware,18.54,debit,posted
+2024-03-07,Cinema,36.35,debit,posted
+2024-03-07,Coffee Shop,41.66,debit,posted
+2024-03-09,Bakery,13.91,debit,posted
+2024-03-09,Pharmacy,28.85,debit,posted
+2024-03-10,Bookstore,6.53,debit,posted
+2024-03-10,Lunch Spot,9.80,debit,posted
+2024-03-13,Pharmacy,26.18,debit,posted
+2024-03-14,Cinema,14.22,debit,posted
+2024-03-15,Hardware,36.54,debit,posted
+2024-03-16,Bookstore,27.73,debit,posted
+2024-03-16,Grocery,4.05,debit,posted
+2024-03-18,Bookstore,35.87,debit,posted
+2024-03-19,Coffee Shop,8.80,debit,posted
+2024-03-19,Coffee Shop,36.68,debit,posted
+2024-03-20,Grocery,19.91,debit,posted
+2024-03-21,Bookstore,45.51,debit,posted
+2024-03-23,Grocery,36.33,debit,posted
+2024-03-23,Grocery,48.82,debit,posted
+2024-03-24,Bookstore,46.78,debit,posted
+2024-03-24,Lunch Spot,22.78,debit,posted
+2024-03-27,Bakery,11.19,debit,posted
+2024-03-27,Lunch Spot,31.95,debit,posted
+2024-03-28,Bookstore,47.92,debit,posted
+2024-03-29,Cinema,23.64,debit,posted
+2024-03-29,Pharmacy,21.25,debit,posted

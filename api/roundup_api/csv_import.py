@@ -76,6 +76,7 @@ def parse_csv(text: str, mapping: dict, sign_convention: str | None) -> dict:
                        "are refunds or payments. Choose how this file signs its amounts.") from None
     report = ImportSession().add_file(nf)
     out, problems, non_purchases = [], {"invalid_amount": 0, "invalid_date": 0, "zero_amount": 0}, 0
+    credits = not_posted = whole_dollar = 0          # counts of rows (stage 6), so the check step can say why rows add nothing
     for i, r in enumerate(nf.rows):
         category = "non_purchase" if is_non_purchase(r.type, r.description) else "purchase"
         non_purchases += category == "non_purchase"
@@ -85,11 +86,16 @@ def parse_csv(text: str, mapping: dict, sign_convention: str | None) -> dict:
             problem = "invalid_amount"
         if problem:
             problems[problem] += 1
+        credits += r.direction == "credit"
+        not_posted += r.status in ("pending", "cancelled")
+        whole_dollar += (problem is None and r.direction == "debit" and r.status == "posted" and category == "purchase"
+                         and re.fullmatch(r"\d+(\.00)?", f["amount"]) is not None)
         out.append({"row": numbered[i][0], "posted_date": f["posted_date"] or None,
                     "amount": f["amount"] if problem != "invalid_amount" else None,
                     "direction": r.direction, "status": r.status, "category": category, "problem": problem})
     return {"columns": [neutralise(c) for c in columns], "date_column_used": neutralise(nf.date_column_used),
             "sign_convention": nf.sign_convention, "transactions": out,
             "summary": {"rows": len(out), "usable": sum(1 for x in out if x["problem"] is None),
-                        "problems": problems, "non_purchases": non_purchases,
+                        "problems": problems, "non_purchases": non_purchases, "credits": credits,
+                        "not_posted": not_posted, "whole_dollar": whole_dollar,
                         "possible_duplicates": report.possible_duplicates}}
