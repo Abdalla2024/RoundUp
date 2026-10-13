@@ -66,7 +66,7 @@ Each file in `fixtures/scenarios/` is one JSON scenario, a single-fund run (FINA
 - `price` is the close used, exactly as given in the input.
 - `as_of` is the date of the last close on or before `end` (R-12.3).
 - `buys` are in execution order. On the same day, round-up batches come first in cut-off order, then dividend reinvestments in ex-date order.
-- `series` has one point per calendar-open day in [start, end] (R-13.2). This is the default `daily` mode. In `auto` mode (`run_scenario(s, series="auto")`, used by the API), ranges over 366 days keep only each ISO week's last point plus the final point. Two keys are then added: `series_resolution` (`"daily"` or `"weekly"`) and `series_rule`, the sentence to show on the chart. Every other value is identical in both modes.
+- `series` has one point per calendar-open day in [start, end] (R-13.2). This is the default `daily` mode. In `auto` mode (`run_scenario(s, series="auto")`, used by the API), ranges over 366 days keep only each ISO week's last point plus the final point. Two keys are then added: `series_resolution` (`"daily"` or `"weekly"`) and `series_rule`, the sentence to show on the chart. Each point also gains `added`: the round-ups contributed up to and including that date, in dollars and cents. Every other value is identical in both modes.
 - `transactions_used` counts rows that produced a round-up candidate: posted purchase debits inside the window, including whole-dollar ones that round up $0. `transactions_ignored` counts every other row.
 - When the run fails, `status` is `"error"`, `error_code` is set, and `summary`, `buys`, `series`, `transactions_used` and `transactions_ignored` are all `null`.
 

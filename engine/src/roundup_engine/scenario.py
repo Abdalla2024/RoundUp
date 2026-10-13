@@ -118,5 +118,7 @@ def result_dict(r, cfg=None, series: str = "daily") -> dict:
         "engine_version": ENGINE_VERSION,
     }
     if series == "auto":
+        for point, p in zip(out["series"], r.series):          # chart context: round-ups added so far
+            point["added"] = f"{p.added_cents // 100}.{p.added_cents % 100:02d}"
         out["series"], out["series_resolution"] = _thin(out["series"], cfg.start, cfg.end)
     return out

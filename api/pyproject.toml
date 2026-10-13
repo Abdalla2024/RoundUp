@@ -20,4 +20,4 @@ packages = ["roundup_api"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["tests"]
+pythonpath = [".", "../engine/src", "tests"]   # tests always run the working tree, installed or not

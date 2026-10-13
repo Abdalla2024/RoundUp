@@ -26,6 +26,11 @@ def _without_series(r):
     return {k: v for k, v in r.items() if k not in ("series", "series_resolution", "series_rule")}
 
 
+def _plain(points):
+    """Chart points without the auto-mode `added` field, for comparison with daily FORMAT.md points."""
+    return [{k: v for k, v in p.items() if k != "added"} for p in points]
+
+
 def test_default_is_daily_and_unchanged_format():
     s = _scenario("2015-01-02", "2019-12-31")
     r = run_scenario(s)
@@ -46,7 +51,7 @@ def test_auto_resolution_boundary(days, expected):
 def test_short_range_auto_equals_daily():
     s = _scenario("2016-02-01", "2016-12-30")
     daily, auto = run_scenario(s), run_scenario(s, series="auto")
-    assert auto["series"] == daily["series"]
+    assert _plain(auto["series"]) == daily["series"]
     assert _without_series(auto) == _without_series(daily)
 
 
@@ -59,9 +64,9 @@ def _check_weekly(s):
     days = [date.fromisoformat(p["date"]) for p in daily["series"]]
     expected = [d for i, d in enumerate(days) if i == len(days) - 1 or days[i + 1].isocalendar()[:2] != d.isocalendar()[:2]]
     assert [p["date"] for p in auto["series"]] == [d.isoformat() for d in expected]
-    for p in auto["series"]:
+    for p in _plain(auto["series"]):
         assert p == by_date[p["date"]]                       # identical value and carried flag
-    assert auto["series"][-1] == daily["series"][-1]          # the final value is always shown
+    assert _plain(auto["series"])[-1] == daily["series"][-1]  # the final value is always shown
 
 
 def test_long_range_weekly_points_are_daily_points():
@@ -106,3 +111,39 @@ def test_deep_copy_input_untouched():
     before = copy.deepcopy(s)
     run_scenario(s, series="auto")
     assert s == before
+
+
+# ---------------------------------------------------------------- "round-ups added so far" on each chart point
+def _added_independently(s, day):
+    """Sum of round-ups of used purchases dated <= day, re-derived from the raw rows (not engine internals)."""
+    from roundup_engine.money import parse_amount_cents
+    from roundup_engine.roundup import roundup_cents
+    from roundup_engine.transactions import is_non_purchase
+    total = 0
+    for t in s["transactions"]:
+        try:
+            cents = parse_amount_cents(t["amount"])
+        except Exception:
+            continue
+        if (t["direction"] == "debit" and t.get("status", "posted") == "posted" and cents > 0
+                and not is_non_purchase(t.get("type", ""), t.get("description", ""))
+                and s["config"]["start"] <= t["posted_date"] <= min(day, s["config"]["end"])):
+            total += roundup_cents(cents)
+    return f"{total // 100}.{total % 100:02d}"
+
+
+@pytest.mark.parametrize("seed", range(15))
+def test_auto_points_carry_round_ups_added(seed):
+    s = generate(seed, n_days=500)
+    r = run_scenario(s, series="auto")
+    added = [p["added"] for p in r["series"]]
+    assert all(_added_independently(s, p["date"]) == p["added"] for p in r["series"][:: max(1, len(added) // 25)])
+    from decimal import Decimal
+    assert [Decimal(x) for x in added] == sorted(Decimal(x) for x in added)  # never decreases
+    assert "added" not in run_scenario(s)["series"][0]                       # daily FORMAT.md output unchanged
+
+
+def test_last_added_equals_contributed_when_end_is_a_session():
+    s = _scenario("2015-01-02", "2019-12-31")
+    r = run_scenario(s, series="auto")
+    assert r["series"][-1]["date"] == "2019-12-31" and r["series"][-1]["added"] == r["summary"]["contributed"]

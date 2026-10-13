@@ -44,6 +44,7 @@ class Point:
     date: date
     value: Decimal
     carried: bool
+    added_cents: int = 0          # round-ups contributed up to and including this date (for the chart)
 
 
 @dataclass
@@ -180,7 +181,8 @@ def _simulate(m: MarketSeries, rows, cfg: Config) -> RunResult:
         else:
             carried = True                                                             # R-6.4
         rcash, dcash, recv = cash_and_receivables(d)
-        series.append(Point(d, shares * last_price + cents_to_decimal(rcash) + dcash + recv, carried))
+        series.append(Point(d, shares * last_price + cents_to_decimal(rcash) + dcash + recv, carried,
+                            rcum[bisect_right(rdays, d)]))
 
     # ---- summary as of the end date (R-13.1)
     rcash, dcash, recv = cash_and_receivables(cfg.end)
