@@ -8,7 +8,7 @@ import { describe, expect, test } from "vitest";
 const ROOT = path.resolve(__dirname, "..");
 const DIRS = ["app", "components", "lib"];
 // Drawing-only exception (documented in the file): converts strings to numbers for line positions and axis scale.
-const CHART_FILE = path.join("components", "ValueChart.tsx");
+const CHART_FILES = [path.join("components", "ValueChart.tsx"), path.join("components", "ChartCanvas.tsx")];
 const MONEY = /\b(contributed|ending_value|gain|gain_pct|value|added|amount|cash|dividends?_\w*|price|shares|below_by|uninvested_cash|roundups_waiting|dividends_as_cash|holdings_value|receivables|summary|difference|money)\b/i;
 const ARITH = new Set([ts.SyntaxKind.PlusToken, ts.SyntaxKind.MinusToken, ts.SyntaxKind.AsteriskToken,
   ts.SyntaxKind.SlashToken, ts.SyntaxKind.PercentToken, ts.SyntaxKind.AsteriskAsteriskToken,
@@ -17,7 +17,7 @@ const ARITH = new Set([ts.SyntaxKind.PlusToken, ts.SyntaxKind.MinusToken, ts.Syn
 export function findViolations(source: string, file: string): string[] {
   const sf = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true, file.endsWith("x") ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
   const out: string[] = [];
-  const isChart = file.endsWith(CHART_FILE);
+  const isChart = CHART_FILES.some((c) => file.endsWith(c));
   const isString = (n: ts.Node) => ts.isStringLiteral(n) || ts.isNoSubstitutionTemplateLiteral(n) || ts.isTemplateExpression(n);
   const at = (n: ts.Node) => `${file}:${sf.getLineAndCharacterOfPosition(n.getStart()).line + 1}`;
   function visit(n: ts.Node) {
@@ -70,8 +70,8 @@ describe("no money arithmetic in the browser", () => {
     ];
     for (const b of bad) expect(findViolations(b, "components/Bad.tsx").length, b).toBeGreaterThan(0);
   });
-  test("the chart exception is the only file that converts strings to numbers", () => {
+  test("the chart drawing files are the only ones that convert strings to numbers", () => {
     const users = sources().filter(([, s]) => /\bNumber\(/.test(s)).map(([f]) => f);
-    expect(users).toEqual([CHART_FILE]);
+    expect(users.sort()).toEqual([...CHART_FILES].sort());
   });
 });

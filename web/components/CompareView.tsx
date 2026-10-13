@@ -85,8 +85,8 @@ export function CompareView() {
         <p className="small muted" style={{ marginTop: 8 }}>{COPY.compareNote}</p>
         <h2 style={{ marginTop: 24 }}>Value over time</h2>
         <div className="multiples">
-          <ValueChart result={C.a} title={`A: ${COPY.strategy[req.a.strategy].toLowerCase()}`} yTop={top} small label="A" />
-          <ValueChart result={C.b} title={`B: ${COPY.strategy[req.b.strategy].toLowerCase()}`} yTop={top} small label="B" color="var(--series-2)" />
+          <ValueChart result={C.a} title={`A: ${COPY.strategy[req.a.strategy].toLowerCase()}`} yTop={top} small label="A" level={3} />
+          <ValueChart result={C.b} title={`B: ${COPY.strategy[req.b.strategy].toLowerCase()}`} yTop={top} small label="B" color="var(--series-2)" level={3} />
         </div>
         <DipSentence dip={C.a.summary.deepest_dip} who="A" />
         <DipSentence dip={C.b.summary.deepest_dip} who="B" />

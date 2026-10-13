@@ -224,3 +224,6 @@ footer div { max-width: 1120px; margin: 0 auto; padding: 16px; font-size: 14px; 
 .linklike { font: inherit; background: none; border: 0; color: var(--ink); padding: 10px 4px; min-height: 44px; cursor: pointer; }
 .linklike:hover { text-decoration: underline; }
 @media (max-width: 900px) { .assumptions-rail-wrap { order: -1; } }
+/* date inputs: Chrome focuses the inner month/day/year parts, so :focus-visible doesn't match the field itself */
+.field input[type="date"]:focus, .field input[type="date"]:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
+.chart-loading { height: 100%; display: flex; align-items: center; justify-content: center; }

@@ -1,7 +1,7 @@
 "use client";
 // Sign-in adapter. "supabase": magic link via @supabase/supabase-js (PKCE). "standin": LOCAL TESTS ONLY, a token
 // from tools/standin (next.config.ts refuses to build it on Vercel). "off": no sign-in configured.
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 export const SUPABASE_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL || "").replace(/\/$/, "");
 export const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "";
@@ -12,12 +12,12 @@ export const AUTH_MODE: AuthMode = process.env.NEXT_PUBLIC_AUTH_MODE === "standi
 export interface Session { token: string; email: string }
 type Listener = (s: Session | null) => void;
 
-let client: SupabaseClient | null = null;
-function supabase(): SupabaseClient {
+let client: Promise<SupabaseClient> | null = null;
+function supabase(): Promise<SupabaseClient> {        // loaded on first use, so pages don't download it up front
   if (!client) {
-    client = createClient(SUPABASE_URL, PUBLISHABLE_KEY, {
+    client = import("@supabase/supabase-js").then(({ createClient }) => createClient(SUPABASE_URL, PUBLISHABLE_KEY, {
       auth: { flowType: "pkce", persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
-    });
+    }));
   }
   return client;
 }
@@ -31,7 +31,7 @@ export const auth = {
   async current(): Promise<Session | null> {
     if (AUTH_MODE === "standin") return standinSession;
     if (AUTH_MODE === "off") return null;
-    const { data } = await supabase().auth.getSession();     // browser only: the API verifies the token itself
+    const { data } = await (await supabase()).auth.getSession();     // browser only: the API verifies the token itself
     const s = data.session;
     return s ? { token: s.access_token, email: s.user.email ?? "" } : null;
   },
@@ -47,7 +47,7 @@ export const auth = {
       return true;
     }
     if (AUTH_MODE === "off") throw new Error("Sign-in is not set up.");
-    const { error } = await supabase().auth.signInWithOtp({
+    const { error } = await (await supabase()).auth.signInWithOtp({
       email, options: { emailRedirectTo: `${window.location.origin}/auth/callback`, shouldCreateUser: false },
     });
     if (error) throw new Error("We couldn’t send a sign-in link to that address. Check it and try again.");
@@ -55,16 +55,17 @@ export const auth = {
   },
   async signOut(): Promise<void> {
     if (AUTH_MODE === "standin") { standinSession = null; emit(null); return; }
-    if (AUTH_MODE === "supabase") await supabase().auth.signOut();
+    if (AUTH_MODE === "supabase") await (await supabase()).auth.signOut();
     emit(null);
   },
   onChange(l: Listener): () => void {
     listeners.add(l);
     let unsub = () => {};
     if (AUTH_MODE === "supabase") {
-      const { data } = supabase().auth.onAuthStateChange((_e, s) =>
-        l(s ? { token: s.access_token, email: s.user.email ?? "" } : null));
-      unsub = () => data.subscription.unsubscribe();
+      supabase().then((c) => {
+        const { data } = c.auth.onAuthStateChange((_e, s) => l(s ? { token: s.access_token, email: s.user.email ?? "" } : null));
+        unsub = () => data.subscription.unsubscribe();
+      });
     }
     return () => { listeners.delete(l); unsub(); };
   },

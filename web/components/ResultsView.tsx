@@ -70,7 +70,8 @@ export function ResultsView() {
       {saving && (
         <form className="inline-form card" style={{ marginTop: 16 }} onSubmit={save}>
           <div className="field"><label htmlFor="save-name">Name for this scenario</label>
-            <input id="save-name" value={name} maxLength={80} onChange={(e) => setName(e.target.value)} required /></div>
+            <input id="save-name" value={name} maxLength={80} onChange={(e) => setName(e.target.value)} required
+              autoFocus /></div>
           <label className="switch" style={{ marginTop: 0 }}><input type="checkbox" checked={keepTx} onChange={(e) => setKeepTx(e.target.checked)} />
             <span>Also save the purchases (dates and amounts only, never merchant names)</span></label>
           <div className="btn-row"><button className="btn btn-primary" type="submit" disabled={!name.trim()}>Save</button>

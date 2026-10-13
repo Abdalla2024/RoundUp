@@ -18,6 +18,7 @@ export function SavedView() {
   const [error, setError] = useState("");
   const [confirm, setConfirm] = useState<SavedScenario | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
+  const keep = useRef<HTMLButtonElement>(null);
 
   const load = useCallback(async () => {
     if (!session) return;
@@ -26,7 +27,9 @@ export function SavedView() {
     catch (e) { setError((e as { code?: string }).code === "AUTH" ? COPY.errors.sessionExpired : (e as Error).message); }
   }, [session]);
   useEffect(() => { load(); }, [load]);
-  useEffect(() => { if (confirm) dialog.current?.showModal(); else dialog.current?.close(); }, [confirm]);
+  useEffect(() => {                              // the safe choice ("Keep it") gets focus when the dialog opens
+    if (confirm) { dialog.current?.showModal(); keep.current?.focus(); } else dialog.current?.close();
+  }, [confirm]);
 
   function open(x: SavedScenario) {
     const r = x.scenario_results[0];
@@ -75,7 +78,7 @@ export function SavedView() {
       <div className="dialog-head"><h2 id="del-h">Delete scenario</h2></div>
       <p>Delete &ldquo;{confirm?.name}&rdquo;? This removes the scenario and its results. It can&rsquo;t be undone.</p>
       <div className="btn-row"><button className="btn btn-primary" type="button" onClick={remove}>Delete</button>
-        <button className="btn" type="button" autoFocus onClick={() => setConfirm(null)}>Keep it</button></div>
+        <button className="btn" type="button" ref={keep} onClick={() => setConfirm(null)}>Keep it</button></div>
     </dialog>
   </>);
 }

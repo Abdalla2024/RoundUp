@@ -44,7 +44,7 @@ Below it, collapsed by default on every screen size:
 - **Not yet invested** (under the chart): "On the last day, {roundups_waiting} of round-ups was waiting to be invested and {dividends_as_cash} of dividends was kept as cash."
 - **How often money was invested:** "Money was invested {roundup_buys} times from round-ups and {dividend_buys} times from dividends."
 - **Chart caption:** the engine's `series_rule`, then "Scenario dates follow a real calendar, but the prices are made up."
-- **Chart summary** (for screen readers, and shown above the table toggle): "From {start} to {end} the value goes from {first value} to {last value}, with ups and downs in between, while the round-ups added go from {first added} to {last added}." When there is a dip, the lowest-point sentence is appended.
+- **Chart summary** (for screen readers, and shown above the table toggle): "From {start} to {end} the value goes from {first value} to {last value}, with ups and downs in between, while the round-ups added go from {first added} to {last added}." The lowest-point sentence follows directly under the chart, so it is not repeated inside the summary (changed in build: it appeared twice).
 - **Table toggle:** "Show the chart as a table"
 - **Explainer placeholder** (clearly marked):
   - Heading: "Questions about these numbers".
