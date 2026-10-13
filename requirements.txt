@@ -1,0 +1,24 @@
+# Deployable API (Vercel project with Root Directory = repository root; see DEPLOY notes in README.md).
+# Vercel docs: with a Root Directory set, "Your app will not be able to access files outside of that directory",
+# so the API project is rooted here, where both local packages are reachable.
+# Exact pins of the runtime dependency tree, as tested locally on 2026-10-12.
+annotated-doc==0.0.5
+annotated-types==0.8.0
+anyio==4.15.1
+certifi==2026.7.22
+cffi==2.1.1
+cryptography==50.0.2
+fastapi==0.143.0
+h11==0.16.0
+httpcore==1.0.9
+httpx==0.28.1
+idna==3.20
+pycparser==3.11
+pydantic==2.14.1
+pydantic_core==2.50.1
+PyJWT==2.15.1
+starlette==1.7.0
+typing-inspection==0.4.4
+typing_extensions==4.16.0
+./engine
+./api
