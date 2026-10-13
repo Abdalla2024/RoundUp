@@ -94,19 +94,19 @@ Controls:
 
 ## 9. Disclaimer wording (shown in the demo; legal review before any public launch)
 
-**Short (on every results screen, above the numbers):**
+**Short (on every results screen, above the numbers). Demo wording, synthetic scenarios:**
 
-> **Hypothetical historical simulation.** These results show what *might* have happened if round-ups had been invested in the past, using historical market prices. No money was invested. Past performance does not predict future results. This is not investment, tax or financial advice.
+> **Hypothetical simulation on a synthetic market.** These results show what might have happened to your round-ups in a made-up market scenario. No money was invested, the prices are not real, and this is not a forecast. It is not investment, tax or financial advice.
 
-**Long (assumptions panel and footer link):**
+**Long (assumptions panel and footer link). Demo wording:**
 
-> RoundUp is an educational tool. It calculates what spare-change round-ups from your sample or uploaded transactions would have been worth if they had been invested in the selected fund on the dates and at the prices described in "How this works". No money moves, no trades are placed, and you cannot invest through RoundUp.
+> RoundUp is an educational tool. It calculates what spare-change round-ups from your sample or uploaded transactions would have been worth if they had been invested in a synthetic market scenario, following the rules in "How this works". The scenarios are made up by a published, seeded model. They are not real funds, not real prices, and not predictions of any market. No money moves, no trades are placed, and you cannot invest through RoundUp.
 >
-> The results are hypothetical and backward-looking. They rely on simplifying assumptions: purchases at the next trading day's closing price, fractional shares, no commissions or trading costs, no taxes, no app or account fees, and dividends handled as described. Real accounts would differ. The funds shown were chosen because they are well known today, and that choice itself benefits from hindsight. Historical returns do not predict future returns, and you could lose money investing.
+> The results rely on simplifying assumptions: purchases at the next trading day's closing price, fractional shares, no commissions or trading costs, no taxes, no app or account fees, no interest on cash waiting to be invested, and dividends handled as described. Real accounts would differ, and real investments can lose money.
 >
 > Nothing on RoundUp, including the AI explanations, is a recommendation to buy, sell or hold any security, or to use any product. Consider speaking with a qualified, independent professional before making financial decisions.
->
-> Market data provided by [provider], used under licence. Data may contain errors; see "Data as of [date]".
+
+**If real data is ever used (not in the demo):** the short disclaimer becomes "Hypothetical historical simulation… using historical market prices… Past performance does not predict future results", and the long one adds the hindsight sentence and "Market data provided by [provider], used under licence."
 
 **Synthetic-scenario label (demo mode, R-12.5), above every result:**
 

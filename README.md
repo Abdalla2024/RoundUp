@@ -33,3 +33,5 @@ Run the API locally: `.venv/bin/python -m uvicorn app:app` (uvicorn is not pinne
 - `vercel.json` excludes tests, mocks and docs from the function bundle.
 - **Not yet verified on Vercel:** whether its Python installer accepts the local-path lines `./engine` and `./api`. Confirm on the first deploy.
 - The web app will be a separate Vercel project rooted at `web/`.
+
+**Troubleshooting (macOS, Python 3.13):** if an *editable* install (`pip install -e`) later fails with "No module named roundup_api", macOS may have marked the `.pth` files as hidden. Python 3.13 skips hidden `.pth` files (`python -v` prints "Skipping hidden .pth file"). Fix it with `chflags nohidden .venv/lib/python3.13/site-packages/*.pth`, or use the non-editable install above.

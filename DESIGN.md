@@ -14,7 +14,7 @@
 
 - Desktop: a single centred column, max 1,120 px. Results use a 2-column grid: main content, with the **assumptions panel** as a right rail (320 px).
 - Mobile (≥ 360 px): a single column. The assumptions panel becomes a bottom sheet opened by an "Assumptions" button that is always visible.
-- Top bar: logo, "How this works", "Saved scenarios" (signed in), and account. Under it, a persistent thin line on result screens: *"Hypothetical historical simulation · Data as of [date]"*.
+- Top bar: logo, "How this works", "Saved scenarios" (signed in), and account. Under it, a persistent thin line on result screens: *"Synthetic scenario · Not a real fund, not real prices, not a forecast"* (demo; see SECURITY-PRIVACY.md §9).
 - Generous whitespace: 8 px spacing scale (8/16/24/32/48). Cards have a 1 px border and no heavy shadows.
 
 ## 3. Key screens

@@ -2,8 +2,8 @@
 
 from roundup_scenarios import LABEL
 
-DISCLAIMER = ("Hypothetical historical simulation on synthetic data. No money is invested. "
-              "These results are not a forecast and not financial advice. Taxes, inflation and interest on "
+DISCLAIMER = ("Hypothetical simulation on a synthetic market. No money is invested, the prices are not real, and "
+              "these results are not a forecast or financial advice. Taxes, inflation and interest on "
               "uninvested cash are not included. " + LABEL)
 
 ASSUMPTIONS = [
