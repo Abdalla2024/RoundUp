@@ -164,6 +164,35 @@ def test_parse_then_simulate_round_trip(client):
     assert r.json()["result"]["summary"]["contributed"] == "0.63"
 
 
+def test_parse_amount_limit_matches_simulate(client):
+    # Stage-5 reviewer M3: the check step accepted 99999999.99, which /v1/simulate then rejected.
+    csv = "Date,Amount\n2015-01-05,99999999.99\n2015-01-06,9999999.99\n2015-01-07,4.37\n"
+    r = client.post("/v1/transactions/parse", json={"csv": csv, "mapping": {"date": "Date", "amount": "Amount"},
+                                                     "sign_convention": "debits_positive"})
+    assert r.status_code == 200, r.text
+    out = r.json()
+    assert [x["problem"] for x in out["transactions"]] == ["invalid_amount", None, None]
+    assert out["transactions"][0]["amount"] is None
+    assert out["summary"]["usable"] == 2 and out["summary"]["problems"]["invalid_amount"] == 1
+    txs = [{k: x[k] for k in ("posted_date", "amount", "direction", "status", "category")}
+           for x in out["transactions"] if x["problem"] is None]
+    assert client.post("/v1/simulate", json=base_body(transactions=txs)).status_code == 200
+
+
+def test_parse_missing_amount_column_named(client):
+    # Stage-5 reviewer L9: with no amount column the message blamed the sign convention.
+    csv = "Date,Amount,Out,In\n2015-01-05,4.37,4.37,\n"
+    cases = [({"date": "Date"}, "debits_positive", "mapping.amount", "amount"),
+             ({"date": "Date"}, "type_column", "mapping.amount", "amount"),
+             ({"date": "Date", "amount": "Amount"}, "type_column", "mapping.type", "debit or credit"),
+             ({"date": "Date", "debit": "Out"}, "separate_columns", "mapping.credit", "money in")]
+    for mapping, conv, field, words in cases:
+        r = client.post("/v1/transactions/parse", json={"csv": csv, "mapping": mapping, "sign_convention": conv})
+        assert r.status_code == 422, r.text
+        e = r.json()["error"]
+        assert e["code"] == "INVALID_INPUT" and field in e["fields"] and words in e["message"], (conv, e)
+
+
 def test_parse_sign_convention_required_and_inferred(client):
     r = client.post("/v1/transactions/parse", json={"csv": CSV, "mapping": {"date": "Date", "amount": "Amount"}})
     assert r.status_code == 422 and r.json()["error"]["code"] == "SIGN_CONVENTION_REQUIRED"
@@ -198,7 +227,7 @@ def test_parse_explicit_convention_must_fit_mapping(client):
                           ("separate_columns", {"date": "Date", "debit": "Debit"}),
                           ("type_column", {"date": "Date", "debit": "Debit", "credit": "Credit"})]:
         r = client.post("/v1/transactions/parse", json={"csv": csv2, "mapping": mapping, "sign_convention": conv})
-        assert r.status_code == 422 and r.json()["error"]["fields"] == ["sign_convention"], conv
+        assert r.status_code == 422 and r.json()["error"]["fields"][0] == "sign_convention", conv  # + missing column (L9)
 
 
 def test_parse_missing_column_not_echoed(client):

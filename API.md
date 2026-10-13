@@ -141,7 +141,7 @@ Body:
  "credit": null, "type": null, "status": null, "description": "Description", "external_id": null,
  "account": null}, "sign_convention": "debits_positive"}
 ```
-- `sign_convention` is optional: `separate_columns`, `type_column`, `debits_positive` or `debits_negative`. If it is null, it is inferred **only** from the column layout: separate debit/credit columns give `separate_columns`, and a type column whose values are all debit/credit gives `type_column`. A single signed amount column is never guessed from its values; it returns 422 `SIGN_CONVENTION_REQUIRED` (R-1.3, no silent default). An explicit convention must fit the mapping, otherwise the response is 422 `INVALID_INPUT` with `fields: ["sign_convention"]`. `separate_columns` needs `debit` and `credit`; `type_column` needs `type` and `amount`; `debits_positive` and `debits_negative` need `amount`.
+- `sign_convention` is optional: `separate_columns`, `type_column`, `debits_positive` or `debits_negative`. If it is null, it is inferred **only** from the column layout: separate debit/credit columns give `separate_columns`, and a type column whose values are all debit/credit gives `type_column`. A single signed amount column is never guessed from its values; it returns 422 `SIGN_CONVENTION_REQUIRED` (R-1.3, no silent default). An explicit convention must fit the mapping, otherwise the response is 422 `INVALID_INPUT` with `fields: ["sign_convention", "mapping.<missing>"…]` and a message naming the missing column, e.g. "Choose which column holds the amount." (stage 5). Amounts over the `/v1/simulate` limit (more than 7 digits before the point) are reported as `invalid_amount`, so every usable row is accepted by `/v1/simulate` (stage 5). `separate_columns` needs `debit` and `credit`; `type_column` needs `type` and `amount`; `debits_positive` and `debits_negative` need `amount`.
 - `mapping` values are column names, or null.
 
 200:
@@ -210,7 +210,7 @@ An independent tester, working only from this contract, listed 42 ambiguities (`
 | 3, 4, 6 | Duplicate keys, `NaN`/`Infinity`, invalid UTF-8 in the JSON body | 400 `INVALID_JSON`. A leading UTF-8 BOM is tolerated (skipped). |
 | 5 | Content-Type | Case-insensitive; parameters such as `; charset=utf-8` are allowed. |
 | 7 | Explicit `null` | Allowed for `category` and `description`; refused (422) for `status`, which must be omitted to get the default. |
-| 8, 9, 10 | Dates | `start` and `end` are required. `start == end` is allowed, and so are non-trading days. Transactions outside the window are ignored by the engine (R-1.6) and counted in `transactions_ignored`. |
+| 8, 9, 10 | Dates | `start` and `end` are required. `start == end` is allowed, and so are non-trading days at either end, but the window must contain at least one trading day (otherwise 422 `WINDOW_OUTSIDE_DATA`, stage 5). Transactions outside the window are ignored by the engine (R-1.6) and counted in `transactions_ignored`. |
 | 11, 26 | `input_checksum` | Described under Meta above. |
 | 12 | Length limits | Counted in Unicode code points. The body limit is in bytes. |
 | 13, 14 | CSV limits | An over-long `csv` gives 422 `INVALID_INPUT`. Any header name over 100 characters, or more than 50 columns, gives 422 `CSV_INVALID`. |

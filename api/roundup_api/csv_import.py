@@ -6,11 +6,13 @@ spreadsheet formula injection (OWASP CSV Injection), descriptions never returned
 
 import csv
 import io
+import re
 
 from roundup_engine.importing import ColumnMap, ImportSession, SignConventionRequired, normalize_file
 from roundup_engine.transactions import is_non_purchase
 
 from .errors import ApiError
+from .schemas import AMOUNT
 
 MAX_ROWS = 20_000
 MAX_COLUMNS = 50
@@ -18,6 +20,9 @@ MAX_FIELD = 10_000
 FORMULA_START = ("=", "+", "-", "@", "\t", "\r", "\n", "＝", "＋", "－", "＠")
 
 csv.field_size_limit(MAX_FIELD)
+
+
+COLUMN_WORDS = {"amount": "the amount", "type": "debit or credit", "debit": "money out", "credit": "money in"}
 
 
 def neutralise(text: str) -> str:
@@ -52,11 +57,14 @@ def parse_csv(text: str, mapping: dict, sign_convention: str | None) -> dict:
     if missing:                                    # user-supplied names are never echoed in errors
         raise ApiError(422, "CSV_INVALID", "Some chosen columns are not in the file. Check the column choices.",
                        fields=[f"mapping.{k}" for k in missing])
-    needs = {"separate_columns": ("debit", "credit"), "type_column": ("type", "amount"),
+    needs = {"separate_columns": ("debit", "credit"), "type_column": ("amount", "type"),
              "debits_positive": ("amount",), "debits_negative": ("amount",)}
-    if sign_convention and not all(used.get(k) for k in needs[sign_convention]):
-        raise ApiError(422, "INVALID_INPUT", "The chosen sign convention does not match the chosen columns.",
-                       fields=["sign_convention"])
+    if sign_convention in needs:                   # name the missing column (stage-5 reviewer L9)
+        missing_cols = [k for k in needs[sign_convention] if not used.get(k)]
+        if missing_cols:
+            raise ApiError(422, "INVALID_INPUT", "Choose which column holds " + " and which holds ".join(
+                COLUMN_WORDS[k] for k in missing_cols) + ".",
+                fields=["sign_convention"] + [f"mapping.{k}" for k in missing_cols])
     if not (used.get("date") or used.get("posted_date")):
         raise _bad("Choose which column holds the date.")
     dict_rows = [{c: (r[i] if i < len(r) else "") for i, c in enumerate(columns)} for r in data]
@@ -70,12 +78,15 @@ def parse_csv(text: str, mapping: dict, sign_convention: str | None) -> dict:
     for i, r in enumerate(nf.rows):
         category = "non_purchase" if is_non_purchase(r.type, r.description) else "purchase"
         non_purchases += category == "non_purchase"
-        if r.problem:
-            problems[r.problem] += 1
         f = r.as_fixture()
+        problem = r.problem
+        if problem is None and not re.fullmatch(AMOUNT, f["amount"]):   # same limit as /v1/simulate (reviewer M3)
+            problem = "invalid_amount"
+        if problem:
+            problems[problem] += 1
         out.append({"row": numbered[i][0], "posted_date": f["posted_date"] or None,
-                    "amount": f["amount"] if r.problem != "invalid_amount" else None,
-                    "direction": r.direction, "status": r.status, "category": category, "problem": r.problem})
+                    "amount": f["amount"] if problem != "invalid_amount" else None,
+                    "direction": r.direction, "status": r.status, "category": category, "problem": problem})
     return {"columns": [neutralise(c) for c in columns], "date_column_used": neutralise(nf.date_column_used),
             "sign_convention": nf.sign_convention, "transactions": out,
             "summary": {"rows": len(out), "usable": sum(1 for x in out if x["problem"] is None),
