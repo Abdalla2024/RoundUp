@@ -193,6 +193,15 @@ def test_parse_missing_amount_column_named(client):
         assert e["code"] == "INVALID_INPUT" and field in e["fields"] and words in e["message"], (conv, e)
 
 
+def test_parse_long_field_and_assumption_wording(client):
+    # Stage-5 reviewer L9 (a 200,000-character cell was blamed on quotes) and L6 (no way to reclassify rows in the UI).
+    r = client.post("/v1/transactions/parse", json={"csv": "Date,Amount\n2015-01-05," + "9" * 20_000 + "\n",
+                                                     "mapping": {"date": "Date", "amount": "Amount"}})
+    assert r.status_code == 422 and "very long" in r.json()["error"]["message"]
+    text = " ".join(a["text"] for a in client.get("/v1/assumptions").json()["assumptions"])
+    assert "reclassify" not in text
+
+
 def test_parse_sign_convention_required_and_inferred(client):
     r = client.post("/v1/transactions/parse", json={"csv": CSV, "mapping": {"date": "Date", "amount": "Amount"}})
     assert r.status_code == 422 and r.json()["error"]["code"] == "SIGN_CONVENTION_REQUIRED"

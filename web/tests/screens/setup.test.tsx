@@ -2,6 +2,8 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { SetupForm } from "@/components/SetupForm";
 import { ApiError } from "@/lib/api";
+import { COPY } from "@/lib/copy";
+import { useState } from "react";
 import parseFx from "../fixtures/parse.json";
 import scenarios from "../fixtures/scenarios.json";
 import simulate from "../fixtures/simulate.json";
@@ -93,5 +95,121 @@ describe("Setup screen", () => {
     fireEvent.change(screen.getByLabelText("CSV file (up to 2 MB)"), { target: { files: [new File(["a".repeat(2_000_001)], "big.csv")] } });
     await waitFor(() => expect(screen.getByRole("alert").textContent).toContain("This file is too large"));
     expect(parse).not.toHaveBeenCalled();
+  });
+
+  // ---- stage-5 web review fixes ----
+  const ready = async () => { await waitFor(() => screen.getByRole("radio", { name: /Crash and recovery/ })); };
+  async function upload(csv: string) {
+    fireEvent.click(screen.getByRole("radio", { name: /Upload a CSV/ }));
+    fireEvent.change(screen.getByLabelText("CSV file (up to 2 MB)"), { target: { files: [new File([csv], "b.csv")] } });
+  }
+
+  test("M1: the form keeps its settings after leaving and coming back", async () => {
+    function Toggle() {          // unmounting and remounting the form is what navigating away and back does
+      const [shown, setShown] = useState(true);
+      return <><button type="button" onClick={() => setShown(!shown)}>toggle</button>{shown && <SetupForm />}</>;
+    }
+    renderWith(<Toggle />);
+    await ready();
+    fireEvent.change(screen.getByLabelText(/Sample number/), { target: { value: "7" } });
+    fireEvent.click(screen.getByRole("radio", { name: /Sideways/ }));
+    fireEvent.click(screen.getByRole("radio", { name: /Once a week/ }));
+    fireEvent.click(screen.getByRole("button", { name: "toggle" }));
+    expect(screen.queryByLabelText(/Sample number/)).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "toggle" }));
+    await ready();
+    expect((screen.getByLabelText(/Sample number/) as HTMLInputElement).value).toBe("7");
+    expect((screen.getByRole("radio", { name: /Sideways/ }) as HTMLInputElement).checked).toBe(true);
+    expect((screen.getByRole("radio", { name: /Once a week/ }) as HTMLInputElement).checked).toBe(true);
+  });
+
+  test("M3: sample number range in the hint and the check; only the wrong field is marked", async () => {
+    renderWith(<SetupForm />);
+    await ready();
+    expect(screen.getByText(COPY.seedHint)).toBeTruthy();
+    for (const bad of ["2147483648", "-1", "99999999999"]) {
+      fireEvent.change(screen.getByLabelText(/Sample number/), { target: { value: bad } });
+      fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
+      expect(screen.getByRole("alert").textContent).toContain(COPY.seedError);
+      expect(screen.getByLabelText(/Sample number/).getAttribute("aria-invalid")).toBe("true");
+      expect(screen.getByLabelText(/Purchases per day/).getAttribute("aria-invalid")).toBe("false");
+    }
+    fireEvent.change(screen.getByLabelText(/Sample number/), { target: { value: "2147483647" } });
+    fireEvent.change(screen.getByLabelText(/Purchases per day/), { target: { value: "4" } });
+    fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
+    expect(screen.getByRole("alert").textContent).toContain(COPY.perDayError);
+    expect(screen.getByLabelText(/Sample number/).getAttribute("aria-invalid")).toBe("false");
+    expect(sim).not.toHaveBeenCalled();
+  });
+
+  test("M4: each sign option shows the columns it needs, and only those are sent", async () => {
+    parse.mockResolvedValue(parseFx.response);
+    renderWith(<SetupForm />);
+    await ready();
+    await upload("Date,Money out,Money in,Kind,Memo\n2015-01-05,4.37,,debit,COFFEE\n");
+    await waitFor(() => screen.getByLabelText("Date column"));
+    fireEvent.change(screen.getByLabelText("How are amounts signed?"), { target: { value: "separate_columns" } });
+    expect(screen.queryByLabelText("Amount column")).toBeNull();
+    fireEvent.change(screen.getByLabelText("Money out column"), { target: { value: "Money out" } });
+    fireEvent.change(screen.getByLabelText("Money in column"), { target: { value: "Money in" } });
+    fireEvent.click(screen.getByRole("button", { name: "Check this file" }));
+    await waitFor(() => expect(parse).toHaveBeenCalled());
+    expect(parse.mock.calls[0][1]).toEqual({ date: "Date", description: "Memo", debit: "Money out", credit: "Money in" });
+    fireEvent.change(screen.getByLabelText("How are amounts signed?"), { target: { value: "type_column" } });
+    expect(screen.getByLabelText("Debit or credit column")).toBeTruthy();
+    expect(screen.getByLabelText("Amount column")).toBeTruthy();
+  });
+
+  test("H2 + M5: the check shows the file's dates, warns about rows outside the window, and explains slash dates", async () => {
+    const res = JSON.parse(JSON.stringify(parseFx.response));
+    res.transactions[0].posted_date = "2009-01-06"; res.transactions[2].posted_date = "2030-01-07";
+    parse.mockResolvedValue(res);
+    renderWith(<SetupForm />);
+    await ready();
+    await upload("Date,Amount\n01/06/2009,4.37\n");
+    await waitFor(() => screen.getByLabelText("Date column"));
+    fireEvent.change(screen.getByLabelText("How are amounts signed?"), { target: { value: "debits_positive" } });
+    fireEvent.click(screen.getByRole("button", { name: "Check this file" }));
+    const status = await screen.findByRole("status");
+    expect(status.textContent).toContain(COPY.fileDates("Jan 6, 2009", "Jan 7, 2030"));
+    expect(status.textContent).toContain(COPY.outsideDates);
+    expect(status.textContent).toContain(COPY.slashDates);
+    fireEvent.click(screen.getByRole("button", { name: COPY.useFileDates }));
+    // kept inside the scenario's range (scenarios fixture: 2012-01-03 to 2025-12-31 or similar)
+    const start = (screen.getByLabelText("Start date") as HTMLInputElement).value;
+    const end = (screen.getByLabelText("End date") as HTMLInputElement).value;
+    const range = scenarios.scenarios.find((x) => x.id === "crash-and-recovery")!.styles[0];
+    expect(start).toBe(range.start);
+    expect(end).toBe(range.end);
+  });
+
+  test("L9: empty file, semicolon file and a column chosen twice get plain messages", async () => {
+    renderWith(<SetupForm />);
+    await ready();
+    await upload("");
+    await waitFor(() => expect(screen.getByRole("alert").textContent).toContain(COPY.emptyFile));
+    fireEvent.change(screen.getByLabelText("CSV file (up to 2 MB)"), { target: { files: [new File(["Date;Amount\n2015-01-05;4.37\n"], "s.csv")] } });
+    await waitFor(() => expect(screen.getByRole("alert").textContent).toContain(COPY.semicolons));
+    fireEvent.change(screen.getByLabelText("CSV file (up to 2 MB)"), { target: { files: [new File([parseFx.csv], "b.csv")] } });
+    await waitFor(() => screen.getByLabelText("Date column"));
+    fireEvent.change(screen.getByLabelText("Amount column"), { target: { value: "Date" } });
+    fireEvent.click(screen.getByRole("button", { name: "Check this file" }));
+    expect(screen.getByRole("alert").textContent).toContain(COPY.sameColumn);
+    expect(screen.getByLabelText("Amount column").getAttribute("aria-invalid")).toBe("true");
+    expect(parse).not.toHaveBeenCalled();
+  });
+
+  test("L2: after a rate limit the Run button stays disabled until the wait ends", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      sim.mockImplementation(() => Promise.reject(new ApiError(429, "RATE_LIMITED", "Too many requests. Please wait 2 seconds and try again.", [], "2")));
+      renderWith(<SetupForm />);
+      await ready();
+      fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
+      await screen.findByRole("alert");
+      expect((screen.getByRole("button", { name: "Run simulation" }) as HTMLButtonElement).disabled).toBe(true);
+      await vi.advanceTimersByTimeAsync(2100);
+      await waitFor(() => expect((screen.getByRole("button", { name: "Run simulation" }) as HTMLButtonElement).disabled).toBe(false));
+    } finally { vi.useRealTimers(); }
   });
 });

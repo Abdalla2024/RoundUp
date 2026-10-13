@@ -63,10 +63,11 @@ describe("Results screen", () => {
   });
 
   test("signed out: 'Sign in to save'; sign-in not set up: no sign-in button", () => {
-    renderWith(<ResultsView />, { run: RUN });
-    expect(screen.getByRole("link", { name: "Sign in to save" })).toBeTruthy();
+    const first = renderWith(<ResultsView />, { run: RUN });
+    expect(screen.getByRole("button", { name: "Sign in to save" })).toBeTruthy();
+    first.unmount();
     renderWith(<ResultsView />, { run: RUN, mode: "off" });
-    expect(screen.getAllByRole("link", { name: "Sign in to save" })).toHaveLength(1);
+    expect(screen.queryByRole("button", { name: "Sign in to save" })).toBeNull();
   });
 
   test("signed in: save flow sends the user's token and the original request", async () => {
@@ -91,6 +92,65 @@ describe("Results screen", () => {
     expect(screen.getByText(/In this made-up scenario/)).toBeTruthy();
   });
 
+  // ---- stage-5 web review fixes ----
+  const variant = (edit: (r: typeof simulate.response.result) => void, sample = false) => {
+    const response = JSON.parse(JSON.stringify(simulate.response)) as typeof simulate.response;
+    edit(response.result);
+    return { request: simulate.request, response, sample } as unknown as typeof RUN;
+  };
+
+  test("H2: rows outside the dates are reported, and an empty window is not blamed on whole dollars", () => {
+    const some = variant((r) => { r.transactions_ignored = "2"; });
+    const { container, unmount } = renderWith(<ResultsView />, { run: some });
+    expect(container.textContent).toContain(COPY.notCounted("2"));
+    unmount();
+    const none = variant((r) => { r.transactions_used = "0"; r.transactions_ignored = "2"; r.summary.contributed = "0.00"; });
+    const t = renderWith(<ResultsView />, { run: none }).container.textContent ?? "";
+    expect(t).toContain(COPY.noneInWindow);
+    expect(t).not.toContain(COPY.wholeDollar);
+    expect(t).toContain("from 0 purchases");
+  });
+
+  test("H1: a result with no chart points shows a plain message instead of crashing", () => {
+    const run = variant((r) => { r.series = []; });
+    const { container } = renderWith(<ResultsView />, { run });
+    expect(container.textContent).toContain(COPY.noTradingDay);
+    expect(screen.queryByRole("button", { name: "Show the chart as a table" })).toBeNull();
+  });
+
+  test("M2: Save is disabled while saving, and a scenario opened from Saved cannot be saved again", async () => {
+    let release: (v: unknown) => void = () => {};
+    save.mockImplementation(() => new Promise((res) => { release = res; }));
+    renderWith(<ResultsView />, { run: RUN, session: SESSION });
+    fireEvent.click(screen.getByRole("button", { name: "Save this scenario" }));
+    fireEvent.change(screen.getByLabelText("Name for this scenario"), { target: { value: "Twice" } });
+    const btn = screen.getByRole("button", { name: "Save" }) as HTMLButtonElement;
+    fireEvent.click(btn); fireEvent.click(btn);
+    expect(save).toHaveBeenCalledTimes(1);
+    expect(btn.disabled).toBe(true);
+    release({ id: "x" });
+    await screen.findByText(/Saved as/);
+    renderWith(<ResultsView />, { run: { ...RUN, savedName: "Kept" }, session: SESSION });
+    expect(screen.queryAllByRole("button", { name: "Save this scenario" })).toHaveLength(0);
+  });
+
+  test("M7: 'Sign in to save' opens the sign-in form on the results page", () => {
+    renderWith(<ResultsView />, { run: RUN });
+    fireEvent.click(screen.getByRole("button", { name: "Sign in to save" }));
+    expect(screen.getByLabelText("Email")).toBeTruthy();
+    expect(screen.getByText(/In this made-up scenario/)).toBeTruthy();       // results stay on screen
+  });
+
+  test("L5: technical details include the settings needed to reproduce the numbers", () => {
+    const { container } = renderWith(<ResultsView />, { run: RUN });
+    const tech = container.querySelector("details.tech")?.textContent?.replace(/\s+/g, " ") ?? "";
+    expect(tech).toContain("scenario seed");
+    expect(tech).toContain("sample number 42, up to 2 purchases a day");
+    expect(tech).toContain("Jan 2, 2015 to Dec 31, 2024");
+    expect(tech).toContain(COPY.strategy[simulate.request.strategy]);
+    expect(tech).not.toContain("anyone reproduce");
+  });
+
   test("whole-dollar purchases: plain message, gain % n/a, no dip", () => {
     const run = { request: whole.request, response: whole.response, sample: false } as unknown as typeof RUN;
     const { container } = renderWith(<ResultsView />, { run });
@@ -100,5 +160,7 @@ describe("Results screen", () => {
     expect(text).toContain("the value never fell below the round-ups added in this scenario.");
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Your round-ups in a made-up market");
     expect(text).toContain(COPY.disclaimer(false));
+    expect(text).toContain("from 1 purchase");                // L8: singular
+    expect(text).not.toContain("1 purchases");
   });
 });

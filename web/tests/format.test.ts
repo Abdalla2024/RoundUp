@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { count, longDate, money, signedMoney, signedPct, unsignedMoney } from "@/lib/format";
+import { count, counted, longDate, money, signedMoney, signedPct, unsignedMoney } from "@/lib/format";
 
 describe("format (display only)", () => {
   test("money", () => {
@@ -22,6 +22,10 @@ describe("format (display only)", () => {
     expect(signedPct("64.78")).toBe("+64.78%");
     expect(signedPct("-4.00")).toBe("−4.00%");
     expect(signedPct("n/a")).toBe("n/a");
+    expect(signedPct("0.00")).toBe("0.00%");                 // reviewer L8: no "+" on zero
+    expect(counted("1", "purchase", "purchases")).toBe("1 purchase");   // reviewer L8: "1 purchases"
+    expect(counted("3606", "purchase", "purchases")).toBe("3,606 purchases");
+    expect(counted("0", "time", "times")).toBe("0 times");
     expect(longDate("2024-12-31")).toBe("Dec 31, 2024");
     expect(longDate("2012-01-03")).toBe("Jan 3, 2012");
   });

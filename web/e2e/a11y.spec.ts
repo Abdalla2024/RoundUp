@@ -13,6 +13,7 @@ const report: Record<string, unknown> = {};
 
 async function check(page: Page, name: string, mode: string) {
   await page.waitForLoadState("networkidle");
+  await page.mouse.move(0, 0);                     // screenshots show the resting state, not a hover left by a click
   const res = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"]).analyze();
   const v = res.violations.map((x) => ({ id: x.id, impact: x.impact, nodes: x.nodes.length, help: x.help,

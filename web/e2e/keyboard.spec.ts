@@ -48,11 +48,19 @@ test("keyboard only: skip link, setup, results, chart, definitions, compare", as
   await expect(page.getByText(/How far the value at the end is above, or below/)).toBeVisible();
   expect(toTile.filter((s) => !s.visibleFocus)).toEqual([]);
 
-  const toChart = await tabTo(page, /Value over time|Line chart|^$/, 20);   // Recharts accessibility layer is a tab stop
+  const toChart = await tabTo(page, /^Value over time\./, 20);     // the chart is one tab stop (role=group)
   report.chart_reached_by_tab = toChart.length;
+  const readout = page.getByTestId("chart-readout").first();
+  await expect(readout).toHaveText("");                             // reviewer M6: nothing shown until asked
   await page.keyboard.press("ArrowRight");
-  await page.keyboard.press("ArrowRight");
-  await expect(page.locator(".recharts-tooltip-wrapper")).toContainText("Round-ups added:");
+  await expect(readout).toContainText(/^Jan 2, 2015: value \$/);
+  await page.keyboard.press("End");
+  await expect(readout).toContainText(/^Dec 31, 2024: value \$/);
+  await page.keyboard.press("Home");
+  await expect(readout).toContainText(/^Jan 2, 2015/);
+  await page.keyboard.press("PageDown");
+  await expect(readout).not.toContainText(/^Jan 2, 2015/);
+  report.chart_keys = ["ArrowRight", "End", "Home", "PageDown"];
 
   await tabTo(page, /^Show the chart as a table$/);
   await page.keyboard.press("Enter");
@@ -77,14 +85,10 @@ test("keyboard only: sign in, save, delete dialog closes with Escape", async ({ 
   await page.getByText("In this made-up scenario").waitFor();
   await tabTo(page, /^Sign in to save$/, 120);
   await page.keyboard.press("Enter");
-  await page.waitForURL("**/saved");
-  await tabTo(page, /^Email$|^$/, 30);
-  await page.getByLabel("Email").focus();             // focus() is keyboard-equivalent placement for typing
+  expect((await focused(page)).text).toBe("Email");     // the sign-in form opens in place, focused (reviewer M7)
   await page.keyboard.type("keys@example.test");
   await page.keyboard.press("Enter");
-  await page.getByRole("heading", { name: "Nothing saved yet" }).waitFor();
-  await page.goBack();
-  await page.waitForURL("**/results");
+  await expect(page).toHaveURL(/\/results$/);
   await tabTo(page, /^Save this scenario$/, 120);
   await page.keyboard.press("Enter");
   await page.keyboard.type("Keyboard save");

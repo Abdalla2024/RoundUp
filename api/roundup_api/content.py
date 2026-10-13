@@ -10,7 +10,7 @@ ASSUMPTIONS = [
     ("R-2.1", "Round-ups", "Each purchase is rounded up to the next whole dollar; the spare change is set aside."),
     ("R-2.2", "Whole-dollar purchases", "A purchase of an exact dollar amount, like $4.00, adds nothing."),
     ("R-1.4", "What counts as a purchase", "Card payments, transfers, cash withdrawals, fees and refunds never "
-              "create round-ups. You can reclassify any row."),
+              "create round-ups. Rows are sorted automatically from their type and description."),
     ("R-5.1", "When money is invested", "Saved-up round-ups are bought at the closing price of the next trading "
               "day after they are ready, never at a price from before the purchase."),
     ("R-5.2", "Starting setting for timing", "Round-ups start out set to be invested once they add up to $5.00. "

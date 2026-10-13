@@ -256,7 +256,7 @@ window.ROUNDUP_MOCK = {
    {
     "id": "R-1.4",
     "title": "What counts as a purchase",
-    "text": "Card payments, transfers, cash withdrawals, fees and refunds never create round-ups. You can reclassify any row."
+    "text": "Card payments, transfers, cash withdrawals, fees and refunds never create round-ups. Rows are sorted automatically from their type and description."
    },
    {
     "id": "R-5.1",

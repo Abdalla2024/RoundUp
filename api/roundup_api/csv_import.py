@@ -43,7 +43,8 @@ def parse_csv(text: str, mapping: dict, sign_convention: str | None) -> dict:
     try:
         rows = list(csv.reader(io.StringIO(text, newline=""), strict=True))
     except csv.Error:
-        raise _bad("The file could not be read as CSV. Check for unmatched quotes.") from None
+        raise _bad("The file could not be read as CSV. Check for unmatched quotes, or a cell that is very long "
+                   f"(the limit is {MAX_FIELD:,} characters).") from None
     header = rows[0]
     numbered = [(i + 2, r) for i, r in enumerate(rows[1:]) if any(c.strip() for c in r)]   # header is row 1
     data = [r for _, r in numbered]

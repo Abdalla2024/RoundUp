@@ -60,4 +60,17 @@ describe("Saved scenarios screen", () => {
     renderWith(<SavedView />, { session: SESSION });
     await waitFor(() => expect(screen.getByRole("alert").textContent).toContain(COPY.errors.sessionExpired));
   });
+
+  test("L10: after a delete, focus goes to the heading and the deletion is announced; names are isolated with <bdi>", async () => {
+    const odd = { ...ROW, name: "\u202Eemoji" };
+    list.mockResolvedValueOnce([odd]).mockResolvedValueOnce([]);
+    del.mockResolvedValue(undefined);
+    const { container } = renderWith(<SavedView />, { session: SESSION });
+    await waitFor(() => screen.getByRole("button", { name: /^Delete / }));
+    expect(container.querySelector(".saved-item h2 bdi")?.textContent).toBe("\u202Eemoji");
+    fireEvent.click(screen.getByRole("button", { name: /^Delete / }));
+    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+    await waitFor(() => expect(screen.getByRole("status").textContent).toBe(COPY.deleted("\u202Eemoji")));
+    expect(document.activeElement).toBe(screen.getByRole("heading", { level: 1, name: "Saved scenarios" }));
+  });
 });

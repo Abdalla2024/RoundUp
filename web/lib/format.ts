@@ -32,14 +32,25 @@ export function count(s: string | number, signed = false): string {
   return signed && body !== "0" ? `+${body}` : body;
 }
 
-/** "64.78" -> "+64.78%"; "n/a" stays "n/a". */
+/** "64.78" -> "+64.78%"; "0.00" -> "0.00%" (no sign on zero); "n/a" stays "n/a". */
 export function signedPct(s: string): string {
   if (s === "n/a") return "n/a";
+  if (/^0+(\.0+)?$/.test(s)) return `${s}%`;
   return s.startsWith("-") ? `−${s.slice(1)}%` : `+${s}%`;
+}
+
+/** "1" -> "1 purchase", "3606" -> "3,606 purchases" (the count string is compared as text, never computed). */
+export function counted(s: string | number, one: string, many: string): string {
+  return `${count(s)} ${String(s) === "1" ? one : many}`;
 }
 
 /** "2024-12-31" -> "Dec 31, 2024" (UTC, so the date never shifts). */
 export function longDate(iso: string): string {
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US",
     { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
+}
+
+/** "Jan 2, 2015 – Dec 31, 2024", or one date when start and end are the same day (reviewer L7). */
+export function dateRange(start: string, end: string): string {
+  return start === end ? longDate(start) : `${longDate(start)} – ${longDate(end)}`;
 }

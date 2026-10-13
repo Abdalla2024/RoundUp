@@ -223,7 +223,19 @@ footer div { max-width: 1120px; margin: 0 auto; padding: 16px; font-size: 14px; 
 .refs { margin-top: 8px; }
 .linklike { font: inherit; background: none; border: 0; color: var(--ink); padding: 10px 4px; min-height: 44px; cursor: pointer; }
 .linklike:hover { text-decoration: underline; }
-@media (max-width: 900px) { .assumptions-rail-wrap { order: -1; } }
+/* (L3) mobile order now follows the page order; see "stage-5 review fixes" */
 /* date inputs: Chrome focuses the inner month/day/year parts, so :focus-visible doesn't match the field itself */
 .field input[type="date"]:focus, .field input[type="date"]:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
 .chart-loading { height: 100%; display: flex; align-items: center; justify-content: center; }
+/* stage-5 review fixes */
+/* L3: key points come first in the page order (disclaimers before figures); on wide screens they sit in the right rail */
+@media (min-width: 901px) {
+  .layout > .assumptions-rail-wrap { grid-column: 2; grid-row: 1; }
+  .layout > .layout-main { grid-column: 1; grid-row: 1; }
+}
+.chip-link { border: 0 !important; padding: 0 !important; }
+.chip-link a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px; font-size: 14px; }   /* L13 */
+.saved-item h2, .saved-item p, .success bdi { overflow-wrap: anywhere; }      /* M8: long names never widen the page */
+.inline-form .field { text-align: left; }                                       /* L11: label aligned with its field */
+.chart-box:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.chart-readout { min-height: 1.5em; margin: 4px 0 0; }

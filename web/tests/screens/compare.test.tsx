@@ -49,4 +49,18 @@ describe("Compare screen", () => {
     const allowed = apiMoneyStrings(compareFx.response);
     expect(shownMoney(container.textContent ?? "").filter((m) => !allowed.has(m))).toEqual([]);
   });
+
+  test("L1: rapid clicks on Compare send one request", async () => {
+    let release: (v: unknown) => void = () => {};
+    compare.mockReset();
+    compare.mockImplementation(() => new Promise((res) => { release = res; }));
+    renderWith(<CompareView />, { run: RUN });
+    const btn = screen.getByRole("button", { name: "Compare" });
+    for (let i = 0; i < 8; i++) fireEvent.click(btn);
+    expect(compare).toHaveBeenCalledTimes(1);
+    release(compareFx.response);
+    await waitFor(() => expect(screen.getByRole("rowheader", { name: "Growth on round-ups" })).toBeTruthy());
+    expect(screen.getAllByText(COPY.sameForBoth)).toHaveLength(1);
+    expect(screen.getAllByText(COPY.seeAB)).toHaveLength(2);
+  });
 });

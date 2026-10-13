@@ -95,3 +95,33 @@ The API's plain-language `error.message` is shown as is. The web app adds only t
 - **Session expired on save:** "Your sign-in has expired. Sign in again to save. Your results are still here."
 - **No results yet** (results page opened directly): "No results yet" / "Run a simulation first." Button: "Set up a simulation"
 - **All whole-dollar purchases:** "These purchases were all whole-dollar amounts, so there was no spare change to invest."
+
+## Added after the stage-5 web review (new wording, for owner approval)
+
+Each line fixes a reviewer finding (H = high, M = medium, L = low; see TEST-STRATEGY.md §stage 5).
+
+**Results**
+- **Rows not counted** (H2; shown under the stat tiles whenever `transactions_ignored` is not "0"): "{n} row(s) add(s) no round-ups because they fall outside the chosen dates or are not purchases (money coming in, payments, transfers or fees, or pending or cancelled rows)."
+- **No purchases in the window** (H2; replaces the whole-dollar sentence when `transactions_used` is "0"): "None of these rows were purchases between the chosen dates, so there was no spare change to invest."
+- **No trading day** (H1; the API now refuses such dates, and this is the fallback if a result ever has no chart points): "There is no trading day between these dates, so there is nothing to show. Choose a wider date range."
+- **Chart keyboard hint** (M6, under each chart): "To read values with the keyboard, select the chart, then use the arrow keys, Home, End, Page Up and Page Down."
+- **Chart readout** (M6; visible, and announced when the keyboard moves): "{date}: value {value}, round-ups added {added}." (+ " Price carried from the last trading day." when `carried`)
+- **Chart summary, special cases** (L7): one point: "On {date} the value is {value} and the round-ups added are {added}." Value unchanged throughout: "From {start} to {end} the value stays at {value}, while the round-ups added go from {first added} to {last added}."
+- **Sign in to save** (M7; the form now opens on the results page instead of leaving it). After the link is sent: "Check your email for a sign-in link. It works once. Keep this tab open: your results stay here, and you can save them once you're signed in."
+- **Technical details** (L5): "Scenario {id} ({style}), scenario seed {seed}, model {model_version}; engine {engine_version}; input checksum {checksum}. Settings: {purchases}; {start} to {end}; {strategy}; {dividends}. The same settings and purchases give exactly these numbers again." `{purchases}` is "sample number {n}, up to {k} purchases a day", "purchases from your file" or "purchases as saved".
+- **Plurals** (L8): "from 1 sample purchase", "1 payment reinvested", "invested 1 time". A zero percentage shows as "0.00%" with no sign.
+
+**Setup**
+- **Sample number hint** (M3): "A whole number from 0 to 2,147,483,647." Errors: "Use a whole number from 0 to 2,147,483,647 for the sample number." / "Use 1, 2 or 3 for purchases per day." Only the wrong field is marked.
+- **Check step, dates** (H2, M5): "Dates in this file run from {first} to {last}." If any row is outside the dates in step 4: "Some rows fall outside the dates in step 4, so they won't add round-ups." with the button "Use this file's dates" (kept inside the scenario's range).
+- **Slash dates** (M5; shown when the file has dates like 01/06/2020): "Dates written with slashes are read as month/day/year (US style), so 01/06/2020 is January 6, 2020. If your bank writes the day first, these dates will be wrong."
+- **Sign options** (M4): "Separate columns for money out and money in" now shows "Money out column" and "Money in column"; "A column says debit or credit" shows "Debit or credit column". Missing column (from the API): "Choose which column holds the amount." (or "debit or credit", "money out", "money in").
+- **CSV problems** (L9): empty file: "The file is empty."; semicolons: "This file seems to use semicolons between columns. Save it with commas between columns and upload it again."; one column chosen twice: "Choose a different column for each field."
+- **Rate limit** (L2): same message; the Run and Compare buttons stay disabled until the wait ends.
+
+**Compare** (L11: wording that was in the app but not here)
+- "B minus A" cell for round-ups added: "same for both"; for cash waiting and dividends kept as cash: "see A and B".
+- Empty state: "Run a simulation first; the comparison uses the same purchases and scenario."
+
+**Saved** (L10)
+- After a delete: "Deleted “{name}”." (announced; focus moves to the page heading).

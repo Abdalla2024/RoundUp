@@ -19,6 +19,8 @@ export function SavedView() {
   const [confirm, setConfirm] = useState<SavedScenario | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const keep = useRef<HTMLButtonElement>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const [announce, setAnnounce] = useState("");
 
   const load = useCallback(async () => {
     if (!session) return;
@@ -45,12 +47,17 @@ export function SavedView() {
   }
   async function remove() {
     if (!confirm || !session) return;
-    try { await deleteSaved(session.token, confirm.id); setConfirm(null); await load(); }
+    const name = confirm.name;
+    try {                                      // reviewer L10: say what happened and put focus somewhere sensible
+      await deleteSaved(session.token, confirm.id); setConfirm(null); await load();
+      setAnnounce(COPY.deleted(name)); heading.current?.focus();
+    }
     catch (e) { setConfirm(null); setError((e as Error).message); }
   }
 
   return (<>
-    <h1>Saved scenarios</h1>
+    <h1 ref={heading} tabIndex={-1}>Saved scenarios</h1>
+    <p role="status" className={announce ? "success" : "visually-hidden"}>{announce}</p>
     <p className="muted">{COPY.savedIntro}</p>
     {!ready ? <p role="status">Loading…</p>
       : mode === "off" ? <section className="card empty"><p>{COPY.signInNotSetUp}</p></section>
@@ -64,7 +71,7 @@ export function SavedView() {
         {items && items.length > 0 && (<ul className="saved-list">{items.map((x) => {
           const s = x.scenario_results[0]?.result.summary;
           return (<li className="card saved-item" key={x.id}><div>
-            <h2 style={{ fontSize: 16, margin: "0 0 4px" }}>{x.name}</h2>
+            <h2 style={{ fontSize: 16, margin: "0 0 4px" }}><bdi>{x.name}</bdi></h2>
             <p className="small muted" style={{ margin: 0 }}>Synthetic scenario: {x.config.scenario_id.replace(/-/g, " ")} ·{" "}
               {x.config.style === "broad" ? "broad-market style" : "dividend style"} · {COPY.strategy[x.config.strategy]} ·{" "}
               {COPY.dividends(x.config.reinvest).toLowerCase()}</p>
@@ -76,7 +83,7 @@ export function SavedView() {
       </>)}
     <dialog ref={dialog} aria-labelledby="del-h" onClose={() => setConfirm(null)}>
       <div className="dialog-head"><h2 id="del-h">Delete scenario</h2></div>
-      <p>Delete &ldquo;{confirm?.name}&rdquo;? This removes the scenario and its results. It can&rsquo;t be undone.</p>
+      <p>Delete &ldquo;<bdi>{confirm?.name}</bdi>&rdquo;? This removes the scenario and its results. It can&rsquo;t be undone.</p>
       <div className="btn-row"><button className="btn btn-primary" type="button" onClick={remove}>Delete</button>
         <button className="btn" type="button" ref={keep} onClick={() => setConfirm(null)}>Keep it</button></div>
     </dialog>

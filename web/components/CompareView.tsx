@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { COPY } from "@/lib/copy";
-import { count, longDate, money, signedMoney } from "@/lib/format";
+import { count, dateRange, money, signedMoney } from "@/lib/format";
 import type { Strategy } from "@/lib/types";
 import { Disclaimer, ErrorNotice } from "./Chrome";
 import { KeyPoints } from "./KeyPoints";
@@ -32,26 +32,37 @@ export function CompareView() {
   const [b, setB] = useState({ strategy: "monthly" as Strategy, reinvest: false });
   const [error, setError] = useState<ApiError | null>(null);
   const [busy, setBusy] = useState(false);
+  const inFlight = useRef(false);                 // reviewer L1: rapid clicks send one request
+  const [coolingDown, setCoolingDown] = useState(false);
+  useEffect(() => {                               // reviewer L2: wait out a rate limit before allowing another compare
+    const secs = error?.code === "RATE_LIMITED" && error.retryAfter ? Number.parseInt(error.retryAfter, 10) : 0;
+    if (!(secs > 0)) return;
+    setCoolingDown(true);
+    const t = setTimeout(() => setCoolingDown(false), secs * 1000);
+    return () => clearTimeout(t);
+  }, [error]);
 
   if (!run) {
     return (<section className="card empty"><h1>Compare two ways of investing</h1>
-      <p className="muted">Run a simulation first; the comparison uses the same purchases and scenario.</p>
+      <p className="muted">{COPY.compareEmpty}</p>
       <Link className="btn btn-primary" href="/">Set up a simulation</Link></section>);
   }
   const { strategy: _s, reinvest: _r, ...base } = run.request;
   async function go(e: React.FormEvent) {
-    e.preventDefault(); setBusy(true); setError(null);
+    e.preventDefault();
+    if (inFlight.current || coolingDown) return;
+    inFlight.current = true; setBusy(true); setError(null);
     try { setCompare({ request: { ...base, a, b }, response: await api.compare({ ...base, a, b }), sample: run!.sample }); }
-    catch (err) { setError(err as ApiError); } finally { setBusy(false); }
+    catch (err) { setError(err as ApiError); } finally { inFlight.current = false; setBusy(false); }
   }
   const C = compare?.response;
   const rows: [string, string, string, string][] = C ? [
-    ["Round-ups added", money(C.a.summary.contributed), money(C.b.summary.contributed), "same input"],
+    ["Round-ups added", money(C.a.summary.contributed), money(C.b.summary.contributed), COPY.sameForBoth],
     ["Value at end", money(C.a.summary.ending_value), money(C.b.summary.ending_value), signedMoney(C.difference.ending_value)],
     ["Growth on round-ups", signedMoney(C.a.summary.gain), signedMoney(C.b.summary.gain), signedMoney(C.difference.gain)],
     ["Dividends (simulated)", money(C.a.summary.dividends_earned), money(C.b.summary.dividends_earned), signedMoney(C.difference.dividends_earned)],
-    ["Round-ups waiting to be invested", money(C.a.summary.roundups_waiting), money(C.b.summary.roundups_waiting), "shown per side"],
-    ["Dividends kept as cash", money(C.a.summary.dividends_as_cash), money(C.b.summary.dividends_as_cash), "shown per side"],
+    ["Round-ups waiting to be invested", money(C.a.summary.roundups_waiting), money(C.b.summary.roundups_waiting), COPY.seeAB],
+    ["Dividends kept as cash", money(C.a.summary.dividends_as_cash), money(C.b.summary.dividends_as_cash), COPY.seeAB],
     ["Times invested from round-ups", count(C.a.summary.roundup_buys), count(C.b.summary.roundup_buys), count(C.difference.roundup_buys, true)],
     ["Times invested from dividends", count(C.a.summary.dividend_buys), count(C.b.summary.dividend_buys), count(C.difference.dividend_buys, true)],
   ] : [];
@@ -59,14 +70,16 @@ export function CompareView() {
   const req = compare?.request;
 
   return (
-    <div className="layout"><div>
+    <div className="layout">
+    <aside className="assumptions-rail-wrap"><KeyPoints headingId="cmp-key-points" /></aside>
+    <div className="layout-main">
       <h1>Compare two ways of investing</h1>
       <p className="muted">Same {run.sample ? "sample " : ""}purchases, same synthetic scenario ({run.response.meta.scenario_id.replace(/-/g, " ")},
-        {" "}{run.request.style === "broad" ? "broad-market style" : "dividend style"}, {longDate(run.request.start)} – {longDate(run.request.end)}).
+        {" "}{run.request.style === "broad" ? "broad-market style" : "dividend style"}, {dateRange(run.request.start, run.request.end)}).
         Only the settings below differ. {COPY.datesNote}</p>
       <form onSubmit={go}>
         <div className="compare-grid"><SidePicker side="A" value={a} onChange={setA} /><SidePicker side="B" value={b} onChange={setB} /></div>
-        <button className="btn btn-primary" type="submit" disabled={busy}>{busy ? "Comparing…" : "Compare"}</button>
+        <button className="btn btn-primary" type="submit" disabled={busy || coolingDown}>{busy ? "Comparing…" : "Compare"}</button>
       </form>
       {error && <ErrorNotice message={error.message} requestId={error.requestId} />}
       {C && req && (<>
@@ -92,7 +105,6 @@ export function CompareView() {
         <DipSentence dip={C.b.summary.deepest_dip} who="B" />
         <p className="small muted">Both charts use the same scale. The dashed line is the round-ups added so far.</p>
       </>)}
-    </div>
-    <aside className="assumptions-rail-wrap"><KeyPoints headingId="cmp-key-points" /></aside></div>
+    </div></div>
   );
 }

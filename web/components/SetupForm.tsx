@@ -7,9 +7,10 @@ import { csvHeader } from "@/lib/csvHeader";
 import { count, longDate } from "@/lib/format";
 import type { Mapping, ParseResponse, ScenariosResponse, SimulateRequest, Strategy, Style, TransactionIn } from "@/lib/types";
 import { ErrorNotice } from "./Chrome";
-import { useRun } from "./RunContext";
+import { useRun, type SetupDraft } from "./RunContext";
 
 const MAX_CSV_CHARS = 2_000_000;
+const MAX_SEED = "2147483647";                   // the API's limit; compared as text, never computed
 const STRATEGIES: [Strategy, string, string][] = [
   ["threshold", "When they reach $5", "Saved-up round-ups are invested once they add up to $5."],
   ["next_session", "After every purchase day", "Each day’s round-ups are invested on the next trading day."],
@@ -20,58 +21,85 @@ const CONVENTIONS: [string, string][] = [
   ["debits_positive", "Purchases are positive numbers"], ["debits_negative", "Purchases are negative numbers"],
   ["separate_columns", "Separate columns for money out and money in"], ["type_column", "A column says debit or credit"],
 ];
+type Col = "date" | "amount" | "debit" | "credit" | "type" | "description";
+const COL_LABEL: Record<Col, string> = { date: "Date column", amount: "Amount column", debit: "Money out column",
+  credit: "Money in column", type: "Debit or credit column", description: "Description column (optional)" };
+const SLASH_DATE = /(^|[,"\s])\d{1,2}\/\d{1,2}\/\d{4}([,"\s]|$)/m;
+
+const DEFAULTS: SetupDraft = { source: "generate", seed: "42", perDay: "2", scenarioId: "crash-and-recovery",
+  style: "broad", strategy: "threshold", reinvest: true, start: "2015-01-02", end: "2024-12-31", csv: null,
+  columns: [], mapping: {}, convention: "", parsed: null, slashDates: false };
+
+/** Which column pickers a sign option needs (reviewer M4). */
+function visibleColumns(convention: string, mapping: Mapping): Col[] {
+  if (convention === "separate_columns") return ["date", "debit", "credit", "description"];
+  if (convention === "type_column") return ["date", "amount", "type", "description"];
+  if (convention) return ["date", "amount", "description"];
+  return ["date", "amount", ...(["debit", "credit", "type"] as Col[]).filter((k) => mapping[k]), "description"];
+}
+const validSeed = (s: string) => /^\d{1,10}$/.test(s) && (s.length < 10 || s <= MAX_SEED);
 
 export function SetupForm() {
   const router = useRouter();
-  const { setRun } = useRun();
+  const { setRun, draft, setDraft } = useRun();
+  const [f, setF] = useState<SetupDraft>(draft ?? DEFAULTS);       // reviewer M1: settings survive leaving the page
+  const set = (patch: Partial<SetupDraft>) => setF((cur) => ({ ...cur, ...patch }));
+  useEffect(() => { setDraft(f); }, [f, setDraft]);
   const [scen, setScen] = useState<ScenariosResponse | null>(null);
-  const [source, setSource] = useState<"generate" | "upload">("generate");
-  const [seed, setSeed] = useState("42");
-  const [perDay, setPerDay] = useState("2");
-  const [scenarioId, setScenarioId] = useState("crash-and-recovery");
-  const [style, setStyle] = useState<Style>("broad");
-  const [strategy, setStrategy] = useState<Strategy>("threshold");
-  const [reinvest, setReinvest] = useState(true);
-  const [start, setStart] = useState("2015-01-02");
-  const [end, setEnd] = useState("2024-12-31");
   const [error, setError] = useState<ApiError | null>(null);
   const [busy, setBusy] = useState(false);
-  // CSV
-  const [csv, setCsv] = useState<string | null>(null);
-  const [columns, setColumns] = useState<string[]>([]);
-  const [mapping, setMapping] = useState<Mapping>({});
-  const [convention, setConvention] = useState("");
-  const [parsed, setParsed] = useState<ParseResponse | null>(null);
+  const [coolingDown, setCoolingDown] = useState(false);
   const [needConvention, setNeedConvention] = useState(false);
   const errorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { api.scenarios().then(setScen).catch((e) => setError(e as ApiError)); }, []);
   useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
+  useEffect(() => {                               // reviewer L2: wait out a rate limit before allowing another run
+    const secs = error?.code === "RATE_LIMITED" && error.retryAfter ? Number.parseInt(error.retryAfter, 10) : 0;
+    if (!(secs > 0)) return;
+    setCoolingDown(true);
+    const t = setTimeout(() => setCoolingDown(false), secs * 1000);
+    return () => clearTimeout(t);
+  }, [error]);
 
-  const range = scen?.scenarios.find((s) => s.id === scenarioId)?.styles.find((s) => s.style === style);
-  const invalid = (f: string) => Boolean(error?.fields.some((x) => x === f || x.startsWith(f + ".")));
+  const range = scen?.scenarios.find((s) => s.id === f.scenarioId)?.styles.find((s) => s.style === f.style);
+  const invalid = (k: string) => Boolean(error?.fields.some((x) => x === k || x.startsWith(k + ".")));
+  const cols = visibleColumns(f.convention, f.mapping);
+  const sentMapping = (): Mapping => Object.fromEntries(cols.filter((k) => f.mapping[k]).map((k) => [k, f.mapping[k]]));
+
+  // The file's first and last usable dates (ISO text, compared as text) for the check step (reviewer H2)
+  const fileDates = f.parsed?.transactions.filter((t) => t.problem === null && t.posted_date).map((t) => t.posted_date!).sort() ?? [];
+  const first = fileDates[0], last = fileDates[fileDates.length - 1];
+  const outside = Boolean(first && (first < f.start || last > f.end));
+  const overlaps = Boolean(range && first && first <= range.end && last >= range.start);
 
   async function onFile(file: File | undefined) {
-    setParsed(null); setError(null); setColumns([]); setCsv(null);
+    set({ parsed: null, columns: [], csv: null, slashDates: false }); setError(null);
     if (!file) return;
     const text = await file.text();
     if (text.length > MAX_CSV_CHARS) {
       setError(new ApiError(413, "PAYLOAD_TOO_LARGE", "This file is too large. The limit is 2 MB or 20,000 rows."));
       return;
     }
-    setCsv(text);
-    const cols = csvHeader(text);
-    setColumns(cols);
-    const guess = (re: RegExp) => cols.find((c) => re.test(c)) ?? null;
-    setMapping({ date: guess(/date/i), amount: guess(/amount/i), description: guess(/desc|merchant|name/i) });
+    if (!text.trim()) { setError(new ApiError(422, "CSV_INVALID", COPY.emptyFile)); return; }
+    const columns = csvHeader(text);
+    if (columns.length === 1 && columns[0].includes(";")) { setError(new ApiError(422, "CSV_INVALID", COPY.semicolons)); return; }
+    const guess = (re: RegExp) => columns.find((c) => re.test(c)) ?? null;
+    set({ csv: text, columns, slashDates: SLASH_DATE.test(text), mapping: {
+      date: guess(/date/i), amount: guess(/amount/i), description: guess(/desc|merchant|name|memo/i),
+      debit: guess(/^(debit|withdrawals?|money out|paid out)$/i), credit: guess(/^(credit|deposits?|money in|paid in)$/i),
+      type: guess(/^(type|transaction type|debit\/credit|dr\/cr)$/i) } });
   }
 
   async function checkFile() {
-    if (!csv) return;
+    if (!f.csv) return;
+    const chosen = cols.filter((k) => f.mapping[k]);
+    const dup = chosen.filter((k) => chosen.some((j) => j !== k && f.mapping[j] === f.mapping[k]));
+    if (dup.length) { setError(new ApiError(422, "INVALID_INPUT", COPY.sameColumn, dup.map((k) => `mapping.${k}`))); return; }
     setBusy(true); setError(null);
     try {
-      const res = await api.parse(csv, mapping, convention || null);
-      setParsed(res); setNeedConvention(false);
+      const res = await api.parse(f.csv, sentMapping(), f.convention || null);
+      set({ parsed: res }); setNeedConvention(false);
     } catch (e) {
       const err = e as ApiError;
       if (err.code === "SIGN_CONVENTION_REQUIRED") setNeedConvention(true);
@@ -79,20 +107,24 @@ export function SetupForm() {
     } finally { setBusy(false); }
   }
 
+  function applyFileDates() {
+    if (!range || !first) return;
+    set({ start: first > range.start ? first : range.start, end: last < range.end ? last : range.end });
+  }
+
   async function onSubmit(ev: React.FormEvent) {
     ev.preventDefault();
+    if (busy || coolingDown) return;
     setError(null);
-    let req: SimulateRequest = { scenario_id: scenarioId, style, start, end, strategy, reinvest };
-    if (source === "generate") {
-      if (!/^\d{1,10}$/.test(seed) || !/^[123]$/.test(perDay)) {
-        setError(new ApiError(422, "INVALID_INPUT", "Use a whole number for the sample number, and 1, 2 or 3 purchases per day.",
-          ["generate.seed", "generate.max_per_day"]));
-        return;
-      }
-      req = { ...req, generate: { seed: Number.parseInt(seed, 10), max_per_day: Number.parseInt(perDay, 10) } };
+    let req: SimulateRequest = { scenario_id: f.scenarioId, style: f.style, start: f.start, end: f.end,
+      strategy: f.strategy, reinvest: f.reinvest };
+    if (f.source === "generate") {
+      if (!validSeed(f.seed)) { setError(new ApiError(422, "INVALID_INPUT", COPY.seedError, ["generate.seed"])); return; }
+      if (!/^[123]$/.test(f.perDay)) { setError(new ApiError(422, "INVALID_INPUT", COPY.perDayError, ["generate.max_per_day"])); return; }
+      req = { ...req, generate: { seed: Number.parseInt(f.seed, 10), max_per_day: Number.parseInt(f.perDay, 10) } };
     } else {
-      if (!parsed) { setError(new ApiError(422, "INVALID_INPUT", "Upload a CSV file and check it first.")); return; }
-      const txs: TransactionIn[] = parsed.transactions.filter((t) => t.problem === null && t.posted_date && t.amount)
+      if (!f.parsed) { setError(new ApiError(422, "INVALID_INPUT", "Upload a CSV file and check it first.")); return; }
+      const txs: TransactionIn[] = f.parsed.transactions.filter((t) => t.problem === null && t.posted_date && t.amount)
         .map((t) => ({ posted_date: t.posted_date!, amount: t.amount!, direction: t.direction, status: t.status, category: t.category }));
       if (txs.length === 0) { setError(new ApiError(422, "INVALID_INPUT", "No usable rows were found in this file.")); return; }
       req = { ...req, transactions: txs };
@@ -100,7 +132,7 @@ export function SetupForm() {
     setBusy(true);
     try {
       const response = await api.simulate(req);
-      setRun({ request: req, response, sample: source === "generate" });
+      setRun({ request: req, response, sample: f.source === "generate" });
       router.push("/results");
     } catch (e) { setError(e as ApiError); } finally { setBusy(false); }
   }
@@ -113,21 +145,21 @@ export function SetupForm() {
         <p className="muted small">Round-ups come from purchases. Use sample spending, or upload a CSV export from your bank.
           Uploaded files are read in your session and not stored.</p>
         <div className="options">
-          <label className="option"><input type="radio" name="source" value="generate" checked={source === "generate"}
-            onChange={() => setSource("generate")} /><span className="title">Generate sample spending</span>
+          <label className="option"><input type="radio" name="source" value="generate" checked={f.source === "generate"}
+            onChange={() => set({ source: "generate" })} /><span className="title">Generate sample spending</span>
             <span className="desc">Made-up everyday purchases, the same every time for the same number.</span></label>
-          <label className="option"><input type="radio" name="source" value="upload" checked={source === "upload"}
-            onChange={() => setSource("upload")} /><span className="title">Upload a CSV</span>
+          <label className="option"><input type="radio" name="source" value="upload" checked={f.source === "upload"}
+            onChange={() => set({ source: "upload" })} /><span className="title">Upload a CSV</span>
             <span className="desc">You choose which columns hold the date and amount. Merchant names are never stored.</span></label>
         </div>
-        {source === "generate" ? (
+        {f.source === "generate" ? (
           <div className="fields">
             <div className="field"><label htmlFor="seed">Sample number (same number, same purchases)</label>
-              <input id="seed" inputMode="numeric" value={seed} onChange={(e) => setSeed(e.target.value)}
+              <input id="seed" inputMode="numeric" value={f.seed} onChange={(e) => set({ seed: e.target.value })}
                 aria-invalid={invalid("generate.seed")} aria-describedby="seed-help" />
-              <span id="seed-help" className="small muted">Any whole number.</span></div>
+              <span id="seed-help" className="small muted">{COPY.seedHint}</span></div>
             <div className="field"><label htmlFor="perday">Purchases per day, at most</label>
-              <input id="perday" inputMode="numeric" value={perDay} onChange={(e) => setPerDay(e.target.value)}
+              <input id="perday" inputMode="numeric" value={f.perDay} onChange={(e) => set({ perDay: e.target.value })}
                 aria-invalid={invalid("generate.max_per_day")} aria-describedby="perday-help" />
               <span id="perday-help" className="small muted">1, 2 or 3.</span></div>
           </div>
@@ -135,30 +167,35 @@ export function SetupForm() {
           <div>
             <div className="field" style={{ marginTop: 12 }}><label htmlFor="csv">CSV file (up to 2 MB)</label>
               <input id="csv" type="file" accept=".csv,text/csv" onChange={(e) => onFile(e.target.files?.[0])} /></div>
-            {columns.length > 0 && (
+            {f.columns.length > 0 && (
               <div className="fields" role="group" aria-label="Choose columns">
-                {(["date", "amount", "description"] as const).map((k) => (
-                  <div className="field" key={k}><label htmlFor={`map-${k}`}>{k === "date" ? "Date column" : k === "amount" ? "Amount column" : "Description column (optional)"}</label>
-                    <select id={`map-${k}`} value={mapping[k] ?? ""} aria-invalid={invalid(`mapping.${k}`)}
-                      onChange={(e) => setMapping({ ...mapping, [k]: e.target.value || null })}>
-                      <option value="">(none)</option>{columns.map((c) => <option key={c} value={c}>{c}</option>)}
-                    </select></div>))}
                 <div className="field"><label htmlFor="convention">How are amounts signed?</label>
-                  <select id="convention" value={convention} onChange={(e) => setConvention(e.target.value)}
-                    aria-invalid={needConvention} aria-describedby={needConvention ? "conv-help" : undefined}>
+                  <select id="convention" value={f.convention} onChange={(e) => set({ convention: e.target.value, parsed: null })}
+                    aria-invalid={needConvention || invalid("sign_convention")} aria-describedby={needConvention ? "conv-help" : undefined}>
                     <option value="">Work it out from the columns</option>
                     {CONVENTIONS.map(([v, t]) => <option key={v} value={v}>{t}</option>)}</select>
                   {needConvention && <span id="conv-help" className="small">In this file, are purchases positive or negative numbers?</span>}</div>
+                {cols.map((k) => (
+                  <div className="field" key={k}><label htmlFor={`map-${k}`}>{COL_LABEL[k]}</label>
+                    <select id={`map-${k}`} value={f.mapping[k] ?? ""} aria-invalid={invalid(`mapping.${k}`)}
+                      onChange={(e) => set({ mapping: { ...f.mapping, [k]: e.target.value || null }, parsed: null })}>
+                      <option value="">(none)</option>{f.columns.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select></div>))}
               </div>)}
-            {columns.length > 0 && <p><button type="button" className="btn" onClick={checkFile} disabled={busy}>Check this file</button></p>}
-            {parsed && (
+            {f.columns.length > 0 && <p><button type="button" className="btn" onClick={checkFile} disabled={busy}>Check this file</button></p>}
+            {f.parsed && (
               <div className="success" role="status">
-                <p style={{ margin: 0 }}>{count(parsed.summary.usable)} of {count(parsed.summary.rows)} rows can be used.
+                <p style={{ margin: 0 }}>{count(f.parsed.summary.usable)} of {count(f.parsed.summary.rows)} rows can be used.
                   {" "}Money coming in (refunds, deposits) never adds round-ups.
-                  {" "}Not purchases (payments, transfers or fees), so no round-ups: {count(parsed.summary.non_purchases)}.
-                  {Object.entries(parsed.summary.problems).filter(([, n]) => n > 0).map(([k, n]) =>
-                    ` ${k === "invalid_amount" ? "Rows with an amount we can\u2019t read" : k === "invalid_date" ? "Rows with a date we can\u2019t read" : "Rows with a zero amount"}: ${count(n)}.`)}
-                  {parsed.summary.possible_duplicates > 0 && ` Possible duplicates (kept): ${count(parsed.summary.possible_duplicates)}.`}</p>
+                  {" "}Not purchases (payments, transfers or fees), so no round-ups: {count(f.parsed.summary.non_purchases)}.
+                  {Object.entries(f.parsed.summary.problems).filter(([, n]) => n > 0).map(([k, n]) =>
+                    ` ${k === "invalid_amount" ? "Rows with an amount we can’t read" : k === "invalid_date" ? "Rows with a date we can’t read" : "Rows with a zero amount"}: ${count(n)}.`)}
+                  {f.parsed.summary.possible_duplicates > 0 && ` Possible duplicates (kept): ${count(f.parsed.summary.possible_duplicates)}.`}</p>
+                {first && <p style={{ margin: "8px 0 0" }}>{COPY.fileDates(longDate(first), longDate(last))}
+                  {outside && <> <strong>{COPY.outsideDates}</strong></>}</p>}
+                {f.slashDates && <p style={{ margin: "8px 0 0" }}>{COPY.slashDates}</p>}
+                {outside && overlaps && <p style={{ margin: "8px 0 0" }}>
+                  <button type="button" className="btn" onClick={applyFileDates}>{COPY.useFileDates}</button></p>}
               </div>)}
           </div>
         )}
@@ -170,16 +207,16 @@ export function SetupForm() {
         <div className="options">
           {(scen?.scenarios ?? []).map((s) => (
             <label className="option" key={s.id}><input type="radio" name="scenario" value={s.id}
-              checked={scenarioId === s.id} onChange={() => setScenarioId(s.id)} />
+              checked={f.scenarioId === s.id} onChange={() => set({ scenarioId: s.id })} />
               <span className="title">{s.name}</span><span className="desc">{s.description}</span></label>))}
         </div>
         <p id="style-h" style={{ margin: "20px 0 0", fontWeight: 650 }}>Style</p>
         <div className="options" role="radiogroup" aria-labelledby="style-h">
-          <label className="option"><input type="radio" name="style" value="broad" checked={style === "broad"}
-            onChange={() => setStyle("broad")} /><span className="title">Broad-market style</span>
+          <label className="option"><input type="radio" name="style" value="broad" checked={f.style === "broad"}
+            onChange={() => set({ style: "broad" })} /><span className="title">Broad-market style</span>
             <span className="desc">In this model: smaller dividends, slightly higher price drift.</span></label>
-          <label className="option"><input type="radio" name="style" value="dividend" checked={style === "dividend"}
-            onChange={() => setStyle("dividend")} /><span className="title">Dividend style</span>
+          <label className="option"><input type="radio" name="style" value="dividend" checked={f.style === "dividend"}
+            onChange={() => set({ style: "dividend" })} /><span className="title">Dividend style</span>
             <span className="desc">In this model: larger dividends, slightly lower price drift.</span></label>
         </div>
       </fieldset>
@@ -188,11 +225,11 @@ export function SetupForm() {
         <p className="muted small">All four are equally valid to explore. Comparing them is the point.</p>
         <div className="options">
           {STRATEGIES.map(([v, t, d]) => (
-            <label className="option" key={v}><input type="radio" name="strategy" value={v} checked={strategy === v}
-              onChange={() => setStrategy(v)} /><span className="title">{t}{v === "threshold" && <> <span className="tag">Starting setting</span></>}</span>
+            <label className="option" key={v}><input type="radio" name="strategy" value={v} checked={f.strategy === v}
+              onChange={() => set({ strategy: v })} /><span className="title">{t}{v === "threshold" && <> <span className="tag">Starting setting</span></>}</span>
               <span className="desc">{d}</span></label>))}
         </div>
-        <label className="switch"><input type="checkbox" checked={reinvest} onChange={(e) => setReinvest(e.target.checked)} />
+        <label className="switch"><input type="checkbox" checked={f.reinvest} onChange={(e) => set({ reinvest: e.target.checked })} />
           <span><span style={{ fontWeight: 650 }}>Reinvest dividends</span><br />
             <span className="small muted">Use dividend cash to buy more of the same scenario&rsquo;s shares on the day it is paid. Turn off to keep it as cash.</span></span></label>
       </fieldset>
@@ -201,15 +238,15 @@ export function SetupForm() {
         <p className="muted small">{range ? `This scenario runs from ${longDate(range.start)} to ${longDate(range.end)}. ` : ""}{COPY.datesNote}</p>
         <div className="fields">
           <div className="field"><label htmlFor="start">Start date</label>
-            <input id="start" type="date" value={start} min={range?.start} max={range?.end} aria-invalid={invalid("start")}
-              onChange={(e) => setStart(e.target.value)} /></div>
+            <input id="start" type="date" value={f.start} min={range?.start} max={range?.end} aria-invalid={invalid("start")}
+              onChange={(e) => set({ start: e.target.value })} /></div>
           <div className="field"><label htmlFor="end">End date</label>
-            <input id="end" type="date" value={end} min={range?.start} max={range?.end} aria-invalid={invalid("end")}
-              onChange={(e) => setEnd(e.target.value)} /></div>
+            <input id="end" type="date" value={f.end} min={range?.start} max={range?.end} aria-invalid={invalid("end")}
+              onChange={(e) => set({ end: e.target.value })} /></div>
         </div>
       </fieldset>
 
-      <div className="btn-row"><button className="btn btn-primary" type="submit" disabled={busy}>{busy ? "Running…" : "Run simulation"}</button>
+      <div className="btn-row"><button className="btn btn-primary" type="submit" disabled={busy || coolingDown}>{busy ? "Running…" : "Run simulation"}</button>
         <span className="small muted">Nothing is saved unless you sign in and choose Save.</span></div>
     </form>
   );

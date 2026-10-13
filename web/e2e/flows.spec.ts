@@ -50,9 +50,12 @@ test("upload a CSV: columns, API check, then results without merchant names", as
 
 test("sign in (stand-in) and save; the saved list shows it; delete asks first", async ({ page }) => {
   await runSample(page);
-  await signIn(page);
-  await page.goBack();                                     // back to results (state kept in memory)
-  await page.waitForURL("**/results");
+  // reviewer M7: signing in happens on the results page, so the results never leave the screen
+  await page.getByRole("button", { name: "Sign in to save" }).click();
+  await page.getByLabel("Email").fill("tester@example.test");
+  await page.getByRole("button", { name: "Email me a sign-in link" }).click();
+  await expect(page).toHaveURL(/\/results$/);
+  await expect(page.getByText("In this made-up scenario")).toBeVisible();
   await page.getByRole("button", { name: "Save this scenario" }).click();
   await page.getByLabel("Name for this scenario").fill("E2E crash test");
   await page.getByRole("button", { name: "Save", exact: true }).click();
@@ -63,6 +66,72 @@ test("sign in (stand-in) and save; the saved list shows it; delete asks first", 
   await expect(page.getByText(/This removes the scenario and its results/)).toBeVisible();
   await page.getByRole("button", { name: "Delete", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Nothing saved yet" })).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: "Deleted" })).toHaveText("Deleted “E2E crash test”.");
+});
+
+// ---- stage-5 web review fixes, end to end ----
+test("H1: a weekend-only date range gets a plain message, not a crash", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("radio", { name: /Crash and recovery/ }).check();
+  await page.getByLabel("Start date").fill("2020-02-29");
+  await page.getByLabel("End date").fill("2020-03-01");
+  await page.getByRole("button", { name: "Run simulation" }).click();
+  await expect(page.locator(".form-error")).toContainText("at least one trading day");
+  await expect(page).toHaveURL(/\/$/);
+});
+
+test("H2 + M1: rows outside the dates are flagged at the check step and in the results; Back keeps the form", async ({ page }) => {
+  const file = path.join(os.tmpdir(), `roundup-e2e-out-${Date.now()}.csv`);
+  fs.writeFileSync(file, "Date,Amount\n2009-01-06,4.37\n2016-03-02,12.10\n2030-01-07,7.75\n");
+  await page.goto("/");
+  await page.getByRole("radio", { name: /Upload a CSV/ }).check();
+  await page.getByLabel("CSV file (up to 2 MB)").setInputFiles(file);
+  await page.getByLabel("How are amounts signed?").selectOption("debits_positive");
+  await page.getByRole("button", { name: "Check this file" }).click();
+  await expect(page.getByRole("status")).toContainText("Dates in this file run from Jan 6, 2009 to Jan 7, 2030.");
+  await expect(page.getByRole("status")).toContainText("Some rows fall outside the dates in step 4");
+  await page.getByRole("radio", { name: /Once a week/ }).check();
+  await page.getByRole("button", { name: "Run simulation" }).click();
+  await page.waitForURL("**/results");
+  await expect(page.getByTestId("not-counted")).toContainText("2 rows add no round-ups because they fall outside the chosen dates");
+  await expect(page.getByText("from 1 purchase", { exact: true })).toBeVisible();
+  await page.goBack();
+  await page.waitForURL(/\/$/);
+  await expect(page.getByRole("radio", { name: /Upload a CSV/ })).toBeChecked();
+  await expect(page.getByRole("radio", { name: /Once a week/ })).toBeChecked();
+  await expect(page.getByRole("status")).toContainText("Dates in this file run from");
+  fs.unlinkSync(file);
+});
+
+test("M6: no chart tooltip at rest; hover shows one, leaving hides it; a tap/click sets the readout", async ({ page }) => {
+  await runSample(page);
+  await page.mouse.move(0, 0);
+  const box = page.getByTestId("chart").first();
+  await page.locator(".recharts-wrapper").first().waitFor();
+  const tip = page.locator(".recharts-tooltip-wrapper").first();
+  await expect(tip).not.toContainText("Round-ups added:");
+  const b = (await box.boundingBox())!;
+  await page.mouse.move(b.x + b.width * 0.6, b.y + b.height / 2);
+  await expect(tip).toContainText("Round-ups added:");
+  await page.mouse.move(0, 0);
+  await expect(tip).not.toContainText("Round-ups added:");
+  await page.mouse.click(b.x + b.width * 0.6, b.y + b.height / 2);
+  await expect(page.getByTestId("chart-readout").first()).toContainText("round-ups added $");
+});
+
+test("M8: a long saved name does not make the phone layout scroll sideways", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await runSample(page);
+  await page.getByRole("button", { name: "Sign in to save" }).click();
+  await page.getByLabel("Email").fill("wide@example.test");
+  await page.getByRole("button", { name: "Email me a sign-in link" }).click();
+  await page.getByRole("button", { name: "Save this scenario" }).click();
+  await page.getByLabel("Name for this scenario").fill("W".repeat(80));
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await page.getByRole("link", { name: "See saved scenarios" }).click();
+  await page.getByRole("button", { name: /^Delete W+$/ }).waitFor();
+  const [sw, cw] = await page.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
+  expect(sw).toBeLessThanOrEqual(cw);
 });
 
 test("another user cannot see the first user's saved scenario (stand-in isolation)", async ({ browser }) => {

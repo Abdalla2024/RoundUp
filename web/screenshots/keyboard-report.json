@@ -1,4 +1,10 @@
 {
- "setup_tab_stops_to_run": 15,
- "chart_reached_by_tab": 1
+ "setup_tab_stops_to_run": 16,
+ "chart_reached_by_tab": 1,
+ "chart_keys": [
+  "ArrowRight",
+  "End",
+  "Home",
+  "PageDown"
+ ]
 }

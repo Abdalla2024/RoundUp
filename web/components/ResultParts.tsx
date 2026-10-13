@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { count, longDate, money, signedMoney, signedPct, unsignedMoney, isNegative } from "@/lib/format";
+import { counted, longDate, money, signedMoney, signedPct, unsignedMoney, isNegative } from "@/lib/format";
 import type { Dip, Result } from "@/lib/types";
 
 export function Headline({ result, sample }: { result: Result; sample: boolean }) {
@@ -31,12 +31,12 @@ export function StatTiles({ result, sample }: { result: Result; sample: boolean 
   return (
     <dl className="stats" id="stats">
       <Tile id="added" term="Round-ups added" value={money(s.contributed)}
-        note={`from ${count(result.transactions_used)} ${sample ? "sample " : ""}purchases`}
+        note={`from ${counted(result.transactions_used, sample ? "sample purchase" : "purchase", sample ? "sample purchases" : "purchases")}`}
         def="The spare change set aside from the purchases. This is money going in, not growth." />
       <Tile id="end" term="Value at end" value={money(s.ending_value)} note={`on ${longDate(s.as_of)}`}
         def="What the shares, cash waiting to be invested and dividends kept as cash would be worth on the last day." />
       <Tile id="div" term="Dividends (simulated)" value={money(s.dividends_earned)}
-        note={`${count(s.dividend_buys)} payments reinvested`}
+        note={`${counted(s.dividend_buys, "payment", "payments")} reinvested`}
         def="Cash the made-up fund paid out from what its holdings earned." />
       <Tile id="growth" term="Growth on round-ups" value={signedMoney(s.gain)}
         note={s.gain_pct === "n/a" ? "no round-ups were added" : `${signedPct(s.gain_pct)} compared with the round-ups added`}
@@ -59,7 +59,7 @@ export function CashSentence({ result }: { result: Result }) {
   const s = result.summary;
   return (
     <p className="muted">On the last day, {money(s.roundups_waiting)} of round-ups was waiting to be invested and{" "}
-      {money(s.dividends_as_cash)} of dividends was kept as cash. Money was invested {count(s.roundup_buys)} times from
-      round-ups and {count(s.dividend_buys)} times from dividends.</p>
+      {money(s.dividends_as_cash)} of dividends was kept as cash. Money was invested {counted(s.roundup_buys, "time", "times")} from
+      round-ups and {counted(s.dividend_buys, "time", "times")} from dividends.</p>
   );
 }
