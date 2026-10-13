@@ -96,7 +96,7 @@ Controls:
 
 **Short (on every results screen, above the numbers). Demo wording, synthetic scenarios:**
 
-> **Hypothetical simulation on a synthetic market.** These results show what might have happened to your round-ups in a made-up market scenario. No money was invested, the prices are not real, and this is not a forecast. It is not investment, tax or financial advice.
+> **Hypothetical simulation on a synthetic market.** These results show how sample round-ups behave in a made-up market scenario. No money was invested, the prices are not real, and this is not a forecast. It is not investment, tax or financial advice.
 
 **Long (assumptions panel and footer link). Demo wording:**
 

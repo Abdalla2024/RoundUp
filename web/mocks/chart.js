@@ -11,6 +11,13 @@
     { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
   window.fmt = { money, longDate };
 
+  // live-region updates are throttled so holding an arrow key does not flood a screen reader
+  const timers = new WeakMap();
+  function announce(node, text) {
+    clearTimeout(timers.get(node));
+    timers.set(node, setTimeout(() => { node.textContent = text; }, 250));
+  }
+
   function el(name, attrs, parent) {
     const n = document.createElementNS(NS, name);
     for (const [k, v] of Object.entries(attrs || {})) n.setAttribute(k, v);
@@ -18,11 +25,13 @@
     return n;
   }
 
-  function niceMax(v) {                       // round the axis top up to 1, 2 or 5 x 10^n
+  const STEPS = { 1: 5, 1.5: 3, 2: 4, 2.5: 5, 3: 3, 4: 4, 5: 5 };   // axis top -> number of round ticks
+  function niceMax(v) {                       // round the axis top up to 1, 1.5, 2, 2.5, 3, 4 or 5 x 10^n
     const p = Math.pow(10, Math.floor(Math.log10(v || 1)));
-    for (const m of [1, 2, 5, 10]) if (m * p >= v) return m * p;
+    for (const m of [1, 1.5, 2, 2.5, 3, 4, 5, 10]) if (m * p >= v) return m * p;
     return 10 * p;
   }
+  window.niceMax = niceMax;
 
   // opts: {points, title, cls, yMax, height, tooltipEl, summaryLabel}
   window.drawChart = function (container, opts) {
@@ -34,8 +43,8 @@
     const y = (v) => T + (1 - v / yMax) * (H - T - B);
     const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, class: "chart", role: "img", tabindex: "0",
                             "aria-label": opts.summaryLabel });
-    const lead = Math.round(yMax / Math.pow(10, Math.floor(Math.log10(yMax))));
-    const steps = lead === 2 ? 4 : 5;            // 1, 2, 5 x 10^n tops give round tick values
+    const lead = yMax / Math.pow(10, Math.floor(Math.log10(yMax)));
+    const steps = STEPS[lead] || 5;
     for (let k = 0; k <= steps; k++) {           // recessive horizontal grid, y from $0
       const v = (yMax * k) / steps;
       el("line", { x1: L, x2: W - R, y1: y(v), y2: y(v), class: k ? "grid" : "axis" }, svg);
@@ -48,7 +57,7 @@
     pts.forEach((p, i) => {
       const yr = p.date.slice(0, 4), q = short ? p.date.slice(0, 7) : yr;
       if (q !== lastYear && (!short || ["01", "04", "07", "10"].includes(p.date.slice(5, 7)))) {
-        if ((lastYear !== null || i === 0) && !(everyOther && +yr % 2)) {
+        if ((lastYear !== null || i === 0) && !(everyOther && i > 0 && +yr % 2 !== +pts[0].date.slice(0, 4) % 2)) {
           el("text", { x: x(i), y: H - 10, "text-anchor": "middle" }, svg).textContent =
             short ? new Date(p.date + "T00:00:00Z").toLocaleDateString("en-US", { month: "short", timeZone: "UTC" }) : yr;
         }
@@ -76,9 +85,9 @@
       cursor.setAttribute("x1", x(idx)); cursor.setAttribute("x2", x(idx));
       dotV.setAttribute("cx", x(idx)); dotV.setAttribute("cy", y(+p.value));
       dotA.setAttribute("cx", x(idx)); dotA.setAttribute("cy", y(+p.added));
-      if (opts.tooltipEl) opts.tooltipEl.textContent =
+      if (opts.tooltipEl) announce(opts.tooltipEl,
         `${longDate(p.date)}: value ${money(p.value)}, round-ups added ${money(p.added)}` +
-        (p.carried === "true" ? " (price carried from the last trading day)" : "");
+        (p.carried === "true" ? " (price carried from the last trading day)" : ""));
     }
     svg.addEventListener("pointermove", (e) => {
       const r = svg.getBoundingClientRect();

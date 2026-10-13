@@ -10,10 +10,10 @@
  "results/desktop": {
   "axe_violations": [],
   "axe_passes": 46,
-  "tab_stops": 13,
+  "tab_stops": 21,
   "first_tab_stop": "Skip to main content",
   "stops_without_visible_focus": [],
-  "visible_interactive_elements": 15,
+  "visible_interactive_elements": 23,
   "chart_keyboard": {
    "home": "Jan 2, 2015: value $1.35, round-ups added $1.35",
    "after_arrow": "Jan 9, 2015: value $2.59, round-ups added $2.59",
@@ -26,7 +26,7 @@
   "tab_stops": 9,
   "first_tab_stop": "Skip to main content",
   "stops_without_visible_focus": [],
-  "visible_interactive_elements": 12,
+  "visible_interactive_elements": 13,
   "chart_keyboard": {
    "home": "Jan 2, 2015: value $1.35, round-ups added $1.35",
    "after_arrow": "Jan 9, 2015: value $2.59, round-ups added $2.59",
@@ -43,7 +43,7 @@
  },
  "setup/mobile": {
   "axe_violations": [],
-  "axe_passes": 42,
+  "axe_passes": 41,
   "tab_stops": 15,
   "first_tab_stop": "Skip to main content",
   "stops_without_visible_focus": [],
@@ -51,15 +51,15 @@
  },
  "results/mobile": {
   "axe_violations": [],
-  "axe_passes": 46,
-  "tab_stops": 14,
+  "axe_passes": 45,
+  "tab_stops": 21,
   "first_tab_stop": "Skip to main content",
   "stops_without_visible_focus": [],
-  "visible_interactive_elements": 16
+  "visible_interactive_elements": 23
  },
  "compare/mobile": {
   "axe_violations": [],
-  "axe_passes": 46,
+  "axe_passes": 45,
   "tab_stops": 10,
   "first_tab_stop": "Skip to main content",
   "stops_without_visible_focus": [],
@@ -72,7 +72,7 @@
  },
  "saved/mobile": {
   "axe_violations": [],
-  "axe_passes": 40,
+  "axe_passes": 39,
   "tab_stops": 19,
   "first_tab_stop": "Skip to main content",
   "stops_without_visible_focus": [],

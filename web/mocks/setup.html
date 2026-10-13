@@ -27,23 +27,24 @@ Uploaded files are read in your session and not stored.</p>
 <label class="option"><input type="radio" name="tx" value="upload"><span class="title">Upload a CSV</span>
 <span class="desc">You choose which columns hold the date and amount. Merchant names are never stored.</span></label>
 </div>
-<div class="fields"><div class="field"><label for="seed">Sample number</label><input id="seed" name="seed" inputmode="numeric" value="42" aria-describedby="seed-help"><span id="seed-help" class="small muted">Any whole number.</span></div>
+<div class="fields"><div class="field"><label for="seed">Sample number (same number, same purchases)</label><input id="seed" name="seed" inputmode="numeric" value="42" aria-describedby="seed-help"><span id="seed-help" class="small muted">Any whole number.</span></div>
 <div class="field"><label for="perday">Purchases per day, at most</label><input id="perday" name="perday" inputmode="numeric" value="2" aria-describedby="perday-help"><span id="perday-help" class="small muted">1, 2 or 3.</span></div></div>
 </fieldset>
 <fieldset><legend><span class="step">Step 2 of 4</span>Market scenario</legend>
 <p class="muted small">Every scenario is made up by a published model, so you can see how round-ups behave in different
-kinds of markets. <strong>Synthetic scenario. Not a real fund, not real prices, and not a forecast.</strong></p>
+kinds of made-up markets. <strong>Synthetic scenario. Not a real fund, not real prices, and not a forecast.</strong></p>
 <div class="options" id="scenario-options"></div>
 <p id="style-h" style="margin:20px 0 0;font-weight:650">Style</p>
 <div class="options" role="group" aria-labelledby="style-h">
 <label class="option"><input type="radio" name="style" value="broad" checked><span class="title">Broad-market style</span>
-<span class="desc">In these scenarios: small dividends, prices grow a little faster.</span></label>
+<span class="desc">In this model: smaller dividends, slightly higher price drift.</span></label>
 <label class="option"><input type="radio" name="style" value="dividend"><span class="title">Dividend style</span>
-<span class="desc">In these scenarios: larger dividends, prices grow a little slower.</span></label></div>
+<span class="desc">In this model: larger dividends, slightly lower price drift.</span></label></div>
 </fieldset>
 <fieldset><legend><span class="step">Step 3 of 4</span>How round-ups are invested</legend>
+<p class="muted small">All four are equally valid to explore. Comparing them is the point.</p>
 <div class="options">
-<label class="option"><input type="radio" name="strategy" value="threshold" checked><span class="title">When they reach $5 <span class="tag">Default</span></span>
+<label class="option"><input type="radio" name="strategy" value="threshold" checked><span class="title">When they reach $5 <span class="tag">Starting setting</span></span>
 <span class="desc">Saved-up round-ups are invested once they add up to $5.</span></label>
 <label class="option"><input type="radio" name="strategy" value="next_session"><span class="title">After every purchase day</span>
 <span class="desc">Each day's round-ups are invested on the next trading day.</span></label>
@@ -55,7 +56,7 @@ kinds of markets. <strong>Synthetic scenario. Not a real fund, not real prices, 
 <span class="small muted">Use dividend cash to buy more of the same scenario's shares on the day it is paid. Turn off to keep it as cash.</span></span></label>
 </fieldset>
 <fieldset><legend><span class="step">Step 4 of 4</span>Dates</legend>
-<p class="muted small">This scenario runs from Jan 3, 2012 to Sep 30, 2026.</p>
+<p class="muted small">This scenario runs from Jan 3, 2012 to Sep 30, 2026. Its dates follow a real calendar, but the prices are made up.</p>
 <div class="fields"><div class="field"><label for="start">Start date</label><input id="start" name="start" type="date" value="2015-01-02" min="2012-01-03" max="2026-09-30"></div>
 <div class="field"><label for="end">End date</label><input id="end" name="end" type="date" value="2024-12-31" min="2012-01-03" max="2026-09-30"></div></div>
 </fieldset>

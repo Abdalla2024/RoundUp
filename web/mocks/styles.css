@@ -58,9 +58,9 @@ p { margin: 0 0 12px; }
 .topbar nav a { color: var(--ink); text-decoration: none; padding: 10px 4px; min-height: 44px; display: inline-flex;
                 align-items: center; }
 .topbar nav a[aria-current="page"] { box-shadow: inset 0 -2px 0 var(--link); }
-@media (max-width: 700px) {
+@media (max-width: 700px) {                       /* nav wraps onto two rows: nothing hidden off-screen */
   .topbar-inner { flex-wrap: wrap; gap: 0; padding-bottom: 0; }
-  .topbar nav { margin-left: 0; width: 100%; flex-wrap: nowrap; overflow-x: auto; gap: 18px; }
+  .topbar nav { margin-left: 0; width: 100%; flex-wrap: wrap; column-gap: 18px; row-gap: 0; }
   .topbar nav a { white-space: nowrap; }
 }
 .label-strip { background: var(--panel); border-bottom: 1px solid var(--line); }
@@ -82,7 +82,12 @@ main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 48px; }
        border-radius: 8px; font: inherit; font-weight: 600; text-decoration: none; cursor: pointer;
        border: 1px solid var(--control); background: var(--surface); color: var(--ink); }
 .btn-primary { background: var(--link); border-color: var(--link); color: var(--on-link); }
-.btn[disabled] { color: var(--ink-2); border-style: dashed; cursor: not-allowed; background: var(--panel); }
+.btn[aria-disabled="true"] { color: var(--ink-2); border-style: dashed; cursor: not-allowed; background: var(--panel); }
+.term { font: inherit; color: inherit; background: none; border: 0; padding: 0; min-height: 24px; cursor: pointer;
+        text-decoration: underline dotted; text-underline-offset: 3px; }
+.term-def { font-size: 13px; color: var(--ink-2); margin: 4px 0 0; }
+.tech { margin-top: 16px; font-size: 14px; }
+.tech summary { font-size: 14px; min-height: 32px; }
 .btn-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 20px; padding: 0; list-style: none; }
 .chips li { border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: 14px; }
@@ -116,7 +121,7 @@ legend { font-size: 20px; font-weight: 650; margin-bottom: 4px; padding: 0; }
 .stat dd { margin: 4px 0 0; }
 .stat-value { font-size: 26px; font-weight: 650; line-height: 1.2; }
 .stat-note { display: block; font-size: 13px; color: var(--ink-2); margin-top: 2px; }
-.term { text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
+
 
 figure { margin: 0 0 24px; }
 figcaption { font-size: 14px; color: var(--ink-2); margin-top: 8px; }
@@ -161,6 +166,11 @@ details summary { cursor: pointer; min-height: 44px; display: flex; align-items:
 dialog { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--ink);
          width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 20px; }
 dialog::backdrop { background: rgb(0 0 0 / 0.4); }
+dialog { padding-top: 0; }
+.dialog-head { position: sticky; top: 0; background: var(--surface); display: flex; align-items: center;
+               justify-content: space-between; gap: 12px; padding: 16px 0 8px; border-bottom: 1px solid var(--line);
+               margin-bottom: 8px; z-index: 1; }
+.dialog-head h2 { margin: 0; }
 
 /* compare */
 .compare-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-bottom: 24px; }
@@ -168,6 +178,13 @@ dialog::backdrop { background: rgb(0 0 0 / 0.4); }
 .col-head { display: flex; align-items: center; gap: 8px; }
 .key { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
 .cmp-table td, .cmp-table th { padding: 8px; }
+@media (max-width: 600px) {                      /* comparison as stacked blocks: no sideways scrolling */
+  .cmp-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .cmp-table tr { display: block; border-bottom: 1px solid var(--line); padding: 8px 0; }
+  .cmp-table th[scope="row"] { display: block; text-align: left; border: 0; padding: 0 0 4px; }
+  .cmp-table td { display: flex; justify-content: space-between; border: 0; padding: 2px 0; }
+  .cmp-table td::before { content: attr(data-label); color: var(--ink-2); }
+}
 .multiples { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
 @media (max-width: 700px) { .multiples { grid-template-columns: minmax(0, 1fr); } }
 

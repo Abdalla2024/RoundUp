@@ -241,7 +241,7 @@ window.ROUNDUP_MOCK = {
   ]
  },
  "assumptions": {
-  "disclaimer": "Hypothetical simulation on a synthetic market. No money is invested, the prices are not real, and these results are not a forecast or financial advice. Taxes, inflation and interest on uninvested cash are not included. Synthetic scenario. Not a real fund, not real prices, and not a forecast.",
+  "disclaimer": "Hypothetical simulation on a synthetic market. No money is invested, the prices are not real, and these results are not a forecast or financial advice. Taxes, inflation and interest on uninvested cash are not included.",
   "assumptions": [
    {
     "id": "R-2.1",
@@ -265,13 +265,13 @@ window.ROUNDUP_MOCK = {
    },
    {
     "id": "R-5.2",
-    "title": "Default timing",
-    "text": "By default, round-ups are invested once they add up to $5.00. You can compare investing after every purchase day, weekly or monthly."
+    "title": "Starting setting for timing",
+    "text": "Round-ups start out set to be invested once they add up to $5.00. Investing after every purchase day, weekly or monthly are equally valid to explore."
    },
    {
     "id": "R-7.1",
     "title": "Prices",
-    "text": "Purchases use each day's closing price exactly as it was, without later adjustments."
+    "text": "Purchases use each simulated day's closing price from the scenario, never adjusted afterwards."
    },
    {
     "id": "R-8.5",
@@ -285,8 +285,8 @@ window.ROUNDUP_MOCK = {
    },
    {
     "id": "R-10.1",
-    "title": "Fund costs",
-    "text": "A fund's yearly running cost is already reflected in its price, so it is not subtracted again."
+    "title": "Running costs",
+    "text": "Treated as already included in the scenario's prices, as a real fund's costs would be, so nothing more is subtracted."
    },
    {
     "id": "R-10.4",
@@ -295,8 +295,8 @@ window.ROUNDUP_MOCK = {
    },
    {
     "id": "R-11.3",
-    "title": "Hindsight",
-    "text": "Looking back at any market makes the past seem more predictable than it was."
+    "title": "One possible path",
+    "text": "A made-up scenario shows one possible path, not what any market will do."
    },
    {
     "id": "R-12.5",
@@ -11659,6 +11659,20 @@ window.ROUNDUP_MOCK = {
   "generate": {
    "seed": 42,
    "max_per_day": 2
+  }
+ },
+ "results_settings": {
+  "strategy": "threshold",
+  "reinvest": true
+ },
+ "compare_settings": {
+  "a": {
+   "strategy": "threshold",
+   "reinvest": true
+  },
+  "b": {
+   "strategy": "monthly",
+   "reinvest": false
   }
  }
 };

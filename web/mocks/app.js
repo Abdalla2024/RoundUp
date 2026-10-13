@@ -4,6 +4,7 @@
   const { money, longDate } = window.fmt;
   const $ = (s) => document.querySelector(s);
   const sign = (s) => (s.startsWith("-") ? money(s) : "+" + money(s));
+  const signCount = (s) => (s.startsWith("-") ? "−" + s.slice(1) : s === "0" ? "0" : "+" + s);
   const count = (s) => String(s).replace(/\B(?=(\d{3})+(?!\d))/g, ",");   // "3606" -> "3,606" (formatting only)
   const STRATEGY = {
     threshold: "Invest each time round-ups reach $5",
@@ -11,24 +12,36 @@
     weekly: "Invest once a week",
     monthly: "Invest once a month",
   };
+  const DIVIDENDS = (r) => (r ? "Dividends reinvested" : "Dividends kept as cash");
   const scen = (id) => D.scenarios.scenarios.find((s) => s.id === id);
-  const styleName = (id, st) => scen(id).styles.find((x) => x.style === st).name;
+  const styleName = (id, st) => scen(id).styles.find((x) => x.style === st).name.replace(" (synthetic)", "");
 
   // ---------------------------------------------------------------- assumptions (rail + mobile dialog)
-  function assumptions(target) {
+  function assumptions(target, inDialog) {
     const items = D.assumptions.assumptions.map((a) =>
-      `<dt>${a.title} <span class="rule-id">(${a.id})</span></dt><dd>${a.text}</dd>`).join("");
-    target.innerHTML = `<h2 id="${target.id}-h">Assumptions</h2>
-      <p class="small muted">The rules behind every number on this page. Rule numbers refer to the published
-      finance rules.</p><dl>${items}</dl>
+      `<dt>${a.title} <span class="rule-id">(${a.id})</span></dt>` +
+      `<dd>${a.text}</dd>`).join("");
+    target.innerHTML = (inDialog ? "" : `<h2 id="${target.id}-h">Assumptions</h2>`) +
+      `<p class="small muted">The rules behind every number on this page. <a href="#how">How these rules work</a></p><dl>${items}</dl>
       <p class="small muted" style="margin-top:16px">${D.assumptions.disclaimer}</p>`;
-    target.setAttribute("aria-labelledby", target.id + "-h");
+    if (!inDialog) target.setAttribute("aria-labelledby", target.id + "-h");
   }
-  document.querySelectorAll("[data-assumptions]").forEach(assumptions);
+  document.querySelectorAll("[data-assumptions]").forEach((t) => assumptions(t, !!t.closest("dialog")));
   const dlg = $("#assumptions-dialog"), openBtn = $("#open-assumptions");
   if (dlg && openBtn) {
-    openBtn.addEventListener("click", () => dlg.showModal());
+    openBtn.addEventListener("click", () => { dlg.showModal(); dlg.querySelector("h2").focus(); });
     dlg.querySelector("[data-close]").addEventListener("click", () => dlg.close());
+  }
+  // planned AI buttons: focusable, announced as unavailable (aria-disabled instead of disabled)
+  document.querySelectorAll('[aria-disabled="true"]').forEach((b) => b.addEventListener("click", (e) => e.preventDefault()));
+  // term definitions: real buttons that show/hide visible text (no hover-only titles)
+  function wireTerms(root) {
+    root.querySelectorAll("button.term").forEach((b) => b.addEventListener("click", () => {
+      const def = document.getElementById(b.getAttribute("aria-controls"));
+      const open = b.getAttribute("aria-expanded") === "true";
+      b.setAttribute("aria-expanded", String(!open));
+      def.hidden = open;
+    }));
   }
 
   // ---------------------------------------------------------------- setup
@@ -38,15 +51,15 @@
         <span class="title">${s.name}</span><span class="desc">${s.description}</span></label>`).join("");
   }
 
-  // ---------------------------------------------------------------- results
+  // ---------------------------------------------------------------- charts and tables
   function chartBlock(result, mount, opts) {
     const tip = mount.querySelector(".tooltip");
     const first = result.series[0], last = result.series[result.series.length - 1];
     window.drawChart(mount.querySelector(".chart-mount"), Object.assign({
       points: result.series, tooltipEl: tip,
-      summaryLabel: `Line chart from ${longDate(first.date)} to ${longDate(last.date)}. Value rises from ` +
-        `${money(first.value)} to ${money(last.value)}; round-ups added rise from ${money(first.added)} to ` +
-        `${money(last.added)}. Use the arrow keys to read values; a table version follows the chart.`,
+      summaryLabel: `Line chart from ${longDate(first.date)} to ${longDate(last.date)}. The value goes from ` +
+        `${money(first.value)} to ${money(last.value)}, with ups and downs in between; round-ups added go from ` +
+        `${money(first.added)} to ${money(last.added)}. Use the arrow keys to read values, or open the table version.`,
     }, opts));
     const rule = mount.querySelector(".rule");
     if (rule) rule.textContent = result.series_rule;
@@ -61,50 +74,60 @@
       <tbody>${rows}</tbody></table></div>`;
   }
 
+  const tile = (id, term, def, value, note) => `<div class="stat"><dt><button type="button" class="term"
+      aria-expanded="false" aria-controls="def-${id}">${term}</button></dt>
+      <dd><span class="stat-value">${value}</span><span class="stat-note">${note}</span>
+      <p class="term-def" id="def-${id}" hidden>${def}</p></dd></div>`;
+
+  // ---------------------------------------------------------------- results
   if (document.body.dataset.page === "results") {
-    const r = D.results.result, s = r.summary, req = D.request;
+    const r = D.results.result, s = r.summary, req = D.request, set = D.results_settings;
     const more = !s.gain.startsWith("-");
-    $("#headline").innerHTML = `Your <strong>${money(s.contributed)}</strong> of round-ups would have been worth
-      <strong>${money(s.ending_value)}</strong> on ${longDate(s.as_of)} in this synthetic scenario. That is
-      <strong>${money(s.gain.replace("-", ""))} ${more ? "more" : "less"}</strong> than the round-ups added.`;
-    $("#stats").innerHTML = `
-      <div class="stat"><dt><span class="term" title="The spare change set aside. Your own money going in, not growth.">Round-ups added</span></dt>
-        <dd><span class="stat-value">${money(s.contributed)}</span><span class="stat-note">${count(r.transactions_used)} purchases</span></dd></div>
-      <div class="stat"><dt><span class="term" title="What the shares and any waiting cash would have been worth on the last date.">Value at end</span></dt>
-        <dd><span class="stat-value">${money(s.ending_value)}</span><span class="stat-note">on ${longDate(s.as_of)}</span></dd></div>
-      <div class="stat"><dt><span class="term" title="Cash paid by the fund from what its holdings earned.">Dividends earned</span></dt>
-        <dd><span class="stat-value">${money(s.dividends_earned)}</span><span class="stat-note">${s.dividend_buys} reinvested</span></dd></div>
-      <div class="stat"><dt><span class="term" title="Value at end minus round-ups added. It can be negative.">Difference</span></dt>
-        <dd><span class="stat-value">${sign(s.gain)}</span><span class="stat-note">${s.gain_pct}% of round-ups added</span></dd></div>`;
-    $("#chips").innerHTML = [`${count(r.transactions_used)} sample purchases`, `${scen(req.scenario_id).name}, ${styleName(req.scenario_id, req.style).replace(" (synthetic)", "").toLowerCase()}`,
-      STRATEGY.threshold, "Dividends reinvested", `${longDate(req.start)} – ${longDate(req.end)}`]
-      .map((c) => `<li>${c}</li>`).join("") + `<li><a href="setup.html">Edit</a></li>`;
-    $("#detail").textContent = `${s.roundup_buys} round-up purchases and ${s.dividend_buys} dividend ` +
-      `reinvestments. ${money(s.uninvested_cash)} was still waiting to be invested on the last date.`;
+    $("#headline").innerHTML = `In this made-up scenario, <strong>${money(s.contributed)}</strong> of sample
+      round-ups ends at <strong>${money(s.ending_value)}</strong> on ${longDate(s.as_of)}:
+      <strong>${money(s.gain.replace("-", ""))}</strong> ${more ? "more" : "less"} than was put in.`;
+    $("#stats").innerHTML =
+      tile("added", "Round-ups added", "The spare change set aside from the purchases. This is money going in, not growth.",
+           money(s.contributed), `from ${count(r.transactions_used)} sample purchases`) +
+      tile("end", "Value at end", "What the shares, any cash waiting to be invested and any dividends kept as cash would be worth on the last day.",
+           money(s.ending_value), `on ${longDate(s.as_of)}`) +
+      tile("div", "Dividends (simulated)", "Cash the made-up fund paid out from what its holdings earned.",
+           money(s.dividends_earned), `${s.dividend_buys} payments reinvested`) +
+      tile("diff", "Value minus round-ups added", "Value at end minus the round-ups added. It can be negative.",
+           sign(s.gain), `${s.gain_pct.startsWith("-") ? "" : "+"}${s.gain_pct}% compared with the round-ups added`);
+    wireTerms($("#stats"));
+    $("#chips").innerHTML = [`${count(r.transactions_used)} sample purchases`,
+      `${scen(req.scenario_id).name}, ${styleName(req.scenario_id, req.style).toLowerCase()}`,
+      STRATEGY[set.strategy], DIVIDENDS(set.reinvest), `${longDate(req.start)} – ${longDate(req.end)}`]
+      .map((c) => `<li>${c}</li>`).join("") + `<li><a href="setup.html">Edit settings</a></li>`;
+    $("#detail").textContent = `Money was invested ${count(s.roundup_buys)} times from round-ups and ` +
+      `${s.dividend_buys} times from dividends. ${money(s.uninvested_cash)} was still waiting to be invested on the last day.`;
     chartBlock(r, $("#chart"), { valueLabel: "Value" });
     $("#table").innerHTML = table(r);
-    $("#meta").textContent = `Scenario ${D.results.meta.scenario_id} (seed ${D.results.meta.scenario_seed}, ` +
-      `${D.results.meta.model_version}) · engine ${D.results.meta.engine_version} · input checksum ` +
-      `${D.results.meta.input_checksum.slice(0, 12)}…`;
+    $("#meta").textContent = `Scenario ${D.results.meta.scenario_id}, seed ${D.results.meta.scenario_seed}, ` +
+      `${D.results.meta.model_version}; engine ${D.results.meta.engine_version}; input checksum ` +
+      `${D.results.meta.input_checksum}. These let anyone reproduce the exact numbers.`;
   }
 
   // ---------------------------------------------------------------- compare
   if (document.body.dataset.page === "compare") {
-    const C = D.compare, a = C.a.summary, b = C.b.summary, d = C.difference;
+    const C = D.compare, a = C.a.summary, b = C.b.summary, d = C.difference, cs = D.compare_settings;
+    $("#desc-a").textContent = `${STRATEGY[cs.a.strategy]}. ${DIVIDENDS(cs.a.reinvest)}.`;
+    $("#desc-b").textContent = `${STRATEGY[cs.b.strategy]}. ${DIVIDENDS(cs.b.reinvest)}.`;
     const rows = [
       ["Round-ups added", money(a.contributed), money(b.contributed), "same input"],
       ["Value at end", money(a.ending_value), money(b.ending_value), sign(d.ending_value)],
-      ["Difference (value minus round-ups added)", sign(a.gain), sign(b.gain), sign(d.gain)],
-      ["Dividends earned", money(a.dividends_earned), money(b.dividends_earned), sign(d.dividends_earned)],
-      ["Cash not yet invested", money(a.uninvested_cash), money(b.uninvested_cash), sign(d.uninvested_cash)],
-      ["Round-up purchases", a.roundup_buys, b.roundup_buys, d.roundup_buys.startsWith("-") ? "−" + d.roundup_buys.slice(1) : "+" + d.roundup_buys],
-      ["Dividend reinvestments", a.dividend_buys, b.dividend_buys, d.dividend_buys.startsWith("-") ? "−" + d.dividend_buys.slice(1) : "+" + d.dividend_buys],
+      ["Value minus round-ups added", sign(a.gain), sign(b.gain), sign(d.gain)],
+      ["Dividends (simulated)", money(a.dividends_earned), money(b.dividends_earned), sign(d.dividends_earned)],
+      ["Cash not invested (round-ups waiting, plus dividends kept as cash)", money(a.uninvested_cash),
+       money(b.uninvested_cash), sign(d.uninvested_cash)],
+      ["Times invested from round-ups", a.roundup_buys, b.roundup_buys, signCount(d.roundup_buys)],
+      ["Times invested from dividends", a.dividend_buys, b.dividend_buys, signCount(d.dividend_buys)],
     ];
-    $("#cmp-body").innerHTML = rows.map(([k, x, y, z]) =>
-      `<tr><th scope="row">${k}</th><td>${x}</td><td>${y}</td><td>${z}</td></tr>`).join("");
+    $("#cmp-body").innerHTML = rows.map(([k, x, y, z]) => `<tr><th scope="row">${k}</th><td data-label="A">${x}</td>` +
+      `<td data-label="B">${y}</td><td data-label="B minus A">${z}</td></tr>`).join("");
     const top = Math.max(...[...C.a.series, ...C.b.series].map((p) => Math.max(+p.value, +p.added)));
-    const p10 = Math.pow(10, Math.floor(Math.log10(top)));
-    const yMax = [1, 2, 5, 10].map((m) => m * p10).find((v) => v >= top);   // shared axis for both panels
+    const yMax = window.niceMax(top);              // one shared scale for both panels (drawing only)
     chartBlock(C.a, $("#chart-a"), { yMax, height: 260, valueLabel: "A" });
     chartBlock(C.b, $("#chart-b"), { yMax, height: 260, cls: "b", valueLabel: "B" });
     $("#compare-rule").textContent = C.a.series_rule;
@@ -115,12 +138,12 @@
     $("#saved-list").innerHTML = D.saved.map((x) => `
       <li class="card saved-item"><div>
         <h2 style="font-size:16px;margin:0 0 4px">${x.name}</h2>
-        <p class="small muted" style="margin:0">${scen(x.scenario_id).name} · ${styleName(x.scenario_id, x.style)} ·
-          ${STRATEGY[x.strategy]} · dividends ${x.reinvest ? "reinvested" : "kept as cash"}</p>
+        <p class="small muted" style="margin:0">Synthetic scenario: ${scen(x.scenario_id).name} ·
+          ${styleName(x.scenario_id, x.style).toLowerCase()} · ${STRATEGY[x.strategy]} · ${DIVIDENDS(x.reinvest).toLowerCase()}</p>
         <p class="small" style="margin:4px 0 0">Round-ups added ${money(x.summary.contributed)} · value at end
-          ${money(x.summary.ending_value)} on ${longDate(x.summary.as_of)}</p></div>
+          ${money(x.summary.ending_value)} on ${longDate(x.summary.as_of)} · engine ${x.meta.engine_version}</p></div>
         <div class="btn-row"><a class="btn" href="results.html" aria-label="Open ${x.name}">Open</a>
-          <button class="btn" type="button" aria-label="Delete ${x.name}">Delete</button></div></li>`).join("");
+          <button class="btn" type="button" aria-label="Delete ${x.name}" aria-haspopup="dialog">Delete</button></div></li>`).join("");
     const tabs = document.querySelectorAll("[data-state]");
     tabs.forEach((t) => t.addEventListener("click", () => {
       tabs.forEach((u) => u.setAttribute("aria-pressed", String(u === t)));

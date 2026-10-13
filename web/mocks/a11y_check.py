@@ -54,8 +54,10 @@ with sync_playwright() as p:
             if name in ("results", "compare") and mode == "desktop":
                 page.focus("svg.chart")
                 page.keyboard.press("Home")
+                page.wait_for_timeout(400)                   # announcements are throttled (250 ms)
                 t1 = page.locator(".tooltip").first.text_content()
                 page.keyboard.press("ArrowRight")
+                page.wait_for_timeout(400)
                 t2 = page.locator(".tooltip").first.text_content()
                 entry["chart_keyboard"] = {"home": t1, "after_arrow": t2, "changes": t1 != t2 and bool(t1)}
             if name == "compare" and mode == "mobile":
