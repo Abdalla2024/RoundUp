@@ -4,6 +4,7 @@ FastAPI service. Package `roundup_api` (in `api/`); the app object is `roundup_a
 
 ## Conventions
 
+- **Response headers (stage 6):** every response carries `X-Content-Type-Options: nosniff`, `Content-Security-Policy: default-src 'none'; frame-ancestors 'none'` and `Referrer-Policy: no-referrer`; every POST response and every error carries `Cache-Control: no-store`.
 - **Unknown fields are rejected** (422 `UNKNOWN_FIELD`) at every level of every request body.
 - **Strict types:** no coercion.
   - Booleans must be JSON `true`/`false`.
@@ -222,7 +223,7 @@ An independent tester, working only from this contract, listed 42 ambiguities (`
 | 20 | Malformed CSV | Ragged rows: missing cells are empty and extra cells are ignored. Stray quotes, NUL or binary data, and an empty file give 422 `CSV_INVALID`. A header-only file returns zero transactions. A UTF-8 BOM is stripped. |
 | 21 | Echo in errors | Never: see the parse endpoint. |
 | 22 | Parse → simulate | The client must drop `row` and `problem` (and rows with problems) before sending transactions to `/simulate`, which rejects unknown fields. |
-| 23, 24 | `fields` | Present for `INVALID_INPUT`, `UNKNOWN_FIELD` and mapping-related `CSV_INVALID`. Each entry is a dotted path to the offending key, e.g. `transactions.0.memo`. |
+| 23, 24 | `fields` | Present for `INVALID_INPUT`, `UNKNOWN_FIELD` and mapping-related `CSV_INVALID`. Each entry is a dotted path to the offending key, e.g. `transactions.0.memo`. Segments that are not plain names (letters, digits, underscore, up to 40 characters) are client-supplied text and are never echoed: they appear as `?` (stage 6). |
 | 25 | Ill-formed `scenario_id` | Up to 64 characters: 404 `UNKNOWN_SCENARIO`. Longer: 422 `INVALID_INPUT`. |
 | 27 | `difference` format | Strings: see compare above. |
 | 28 | Result format | `engine/fixtures/FORMAT.md`. |

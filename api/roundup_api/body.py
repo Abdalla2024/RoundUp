@@ -2,6 +2,7 @@
 JSON numbers with decimals parse here but are then rejected by the strict schemas (amounts must be strings)."""
 
 import json
+import re
 
 from fastapi import Request
 from pydantic import BaseModel, ValidationError
@@ -45,12 +46,21 @@ async def read_json(request: Request) -> dict:
     return data
 
 
+_PLAIN = re.compile(r"[A-Za-z0-9_]{1,40}")
+
+
+def _safe_path(loc) -> str:
+    """A dotted path to the offending field. Segments that are not plain names (letters, digits, underscore, at most
+    40 characters) come from the client, so they are never echoed back: they become '?' (stage 6)."""
+    return ".".join(s if _PLAIN.fullmatch(s) else "?" for s in (str(p) for p in loc))
+
+
 def validate(model: type[BaseModel], data: dict) -> BaseModel:
     try:
         return model.model_validate(data)
     except ValidationError as e:
         errs = e.errors(include_url=False, include_context=False, include_input=False)
-        fields = [".".join(str(p) for p in er["loc"]) for er in errs][:20]
+        fields = [_safe_path(er["loc"]) for er in errs][:20]
         if any(er["type"] == "extra_forbidden" for er in errs):
             raise ApiError(422, "UNKNOWN_FIELD", "The request contains a field that is not allowed.",
                            fields=[f for f, er in zip(fields, errs) if er["type"] == "extra_forbidden"]) from None

@@ -63,6 +63,11 @@ def create_app(supabase_url: str | None = None, publishable_key: str | None = No
             except Exception:                               # last-resort guard; details never leave the server
                 response = _error(ApiError(500, "INTERNAL", "Something went wrong on our side. Please try again."))
         latency = int((time.perf_counter() - started) * 1000)
+        response.headers["X-Content-Type-Options"] = "nosniff"        # JSON API: never rendered, never framed
+        response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
+        response.headers["Referrer-Policy"] = "no-referrer"
+        if request.method != "GET" or response.status_code >= 400:
+            response.headers["Cache-Control"] = "no-store"          # results and errors are never cached
         response.headers["X-Request-ID"] = request_id
         response.headers["Server-Timing"] = f"app;dur={latency}"
         accesslog.write(request_id=request_id, method=request.method, route=request.url.path[:64],

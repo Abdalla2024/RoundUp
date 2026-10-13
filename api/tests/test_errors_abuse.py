@@ -142,3 +142,34 @@ def test_injection_strings_are_inert(client):
         b["transactions"][0]["description"] = s
         r = client.post("/v1/simulate", json=b)
         assert r.status_code == 200 and s not in r.text
+
+
+# ---- stage 6: found on the deployed preview ------------------------------------------------------------
+def test_unknown_field_names_are_not_echoed_unless_plain(client):
+    """A hostile field NAME used to come back verbatim in error.fields. Plain names (letters, digits, _) are kept
+    because they help a developer; anything else is replaced by '?'."""
+    for hostile in ('<img src=x onerror=alert(1)>', "a b", "x" * 80, "ключ", 'q"; drop', "a.b"):
+        r = client.post("/v1/simulate", json={hostile: 1})
+        assert r.status_code == 422 and r.json()["error"]["code"] == "UNKNOWN_FIELD", hostile
+        fields = r.json()["error"]["fields"]
+        assert fields == ["?"], (hostile, fields)
+        assert hostile not in r.text
+    r = client.post("/v1/simulate", json={"memo": 1})
+    assert r.json()["error"]["fields"] == ["memo"]
+    body = base_body()
+    body["transactions"][0]["memo"] = "x"
+    assert client.post("/v1/simulate", json=body).json()["error"]["fields"] == ["transactions.0.memo"]
+    body = base_body()
+    body["transactions"][0]["<b>"] = "x"
+    assert client.post("/v1/simulate", json=body).json()["error"]["fields"] == ["transactions.0.?"]
+
+
+def test_response_headers_for_a_json_api(client):
+    ok = client.get("/v1/health")
+    bad = client.post("/v1/simulate", json={})
+    for r in (ok, bad):
+        assert r.headers["x-content-type-options"] == "nosniff"
+        assert r.headers["content-security-policy"] == "default-src 'none'; frame-ancestors 'none'"
+        assert r.headers["referrer-policy"] == "no-referrer"
+    assert bad.headers["cache-control"] == "no-store"
+    assert client.post("/v1/simulate", json=base_body()).headers["cache-control"] == "no-store"
