@@ -14,6 +14,8 @@ import tempfile
 
 HERE = pathlib.Path(__file__).resolve().parent.parent
 PY = HERE / ".venv" / "bin" / "python"
+if not PY.exists():                      # CI and the root README setup: use the running interpreter
+    PY = pathlib.Path(sys.executable)
 
 SPLIT_BLOCK = (
     "            if d in splits:                                                            # R-8.1 (1)\n"

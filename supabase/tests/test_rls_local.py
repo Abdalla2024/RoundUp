@@ -19,7 +19,9 @@ PG_BIN = os.environ.get("PG_BIN") or (
     "/Applications/Postgres.app/Contents/Versions/latest/bin"
     if pathlib.Path("/Applications/Postgres.app/Contents/Versions/latest/bin/initdb").exists() else "")
 INITDB = shutil.which("initdb", path=PG_BIN or None)
-pytestmark = pytest.mark.skipif(not INITDB, reason="Postgres binaries not found")
+if os.environ.get("REQUIRE_PG") == "1" and not INITDB:      # CI must not silently skip the database tests
+    raise RuntimeError("REQUIRE_PG=1 but Postgres binaries (initdb) were not found; set PG_BIN")
+pytestmark = pytest.mark.skipif(not INITDB, reason="Postgres binaries not found (set PG_BIN to run them)")
 
 
 def _bin(name):

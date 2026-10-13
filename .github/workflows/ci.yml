@@ -1,0 +1,61 @@
+# Runs every test suite on each push. No secrets are used. Actions are pinned to full commit SHAs
+# (GitHub: "Pin actions to a full-length commit SHA"); tool versions are pinned exactly.
+name: ci
+on: [push, pull_request]
+permissions:
+  contents: read
+
+jobs:
+  python:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97   # v7.0.0
+        with:
+          python-version: "3.13.2"
+      - name: Install (pinned)
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install -r requirements.txt -r requirements-test.txt
+      - name: Engine, scenario generator, cross-check agreement
+        run: .venv/bin/python -m pytest -q engine
+      - name: Independent implementation self-tests
+        run: cd crosscheck && python -I selftest/run_selftest.py
+      - name: API tests
+        run: .venv/bin/python -m pytest -q api/tests -W ignore::DeprecationWarning
+      - name: Independent API tests
+        run: .venv/bin/python -m pytest -q api/tests_independent -W ignore::DeprecationWarning -o pythonpath=api/tests_independent --rootdir=api/tests_independent
+      - name: Database schema and RLS (local Postgres from the runner image)
+        run: |
+          export PG_BIN=$(ls -d /usr/lib/postgresql/*/bin | sort -V | tail -1)
+          export REQUIRE_PG=1
+          .venv/bin/python -m pytest -q supabase/tests
+      - name: Fault injection (every rule mutation must be caught)
+        run: .venv/bin/python engine/tools/fault_injection.py
+
+  web:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97   # v7.0.0
+        with:
+          python-version: "3.13.2"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1   # v7.1.0
+        with:
+          node-version: "22.13.0"
+      - name: Install API for end-to-end tests (pinned)
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install -r requirements.txt -r requirements-test.txt
+      - name: Install web (exact versions from package-lock.json)
+        run: cd web && npm ci
+      - name: Typecheck
+        run: cd web && npm run typecheck
+      - name: Component tests and no-money-arithmetic check
+        run: cd web && npm test
+      - name: Install Playwright's pinned Chromium
+        run: cd web && npx playwright install --with-deps chromium
+      - name: End-to-end, accessibility (axe), keyboard and performance
+        run: cd web && npx playwright test
