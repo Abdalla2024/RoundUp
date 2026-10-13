@@ -80,7 +80,7 @@ The limits are kept in memory per server instance (see OPERATIONS.md).
 - `market_checksum` is the engine's checksum of the market series.
 - `input_checksum` is the engine's SHA-256 of the canonical scenario input: the market checksum, plus each transaction's date, amount, direction, status and **resolved category**, plus the config. Descriptions never feed the checksum (D-8). The same request always gives the same `input_checksum`. For compare, it covers the shared input with the default config, before the a/b overrides.
 
-**Result:** exactly the engine result format in `engine/fixtures/FORMAT.md` (`status`, `summary`, `buys`, `series`, …), unchanged, plus `engine_version`.
+**Result:** exactly the engine result format in `engine/fixtures/FORMAT.md` (`status`, `summary`, `buys`, `series`, …), unchanged, plus `engine_version`. The API asks the engine for `auto` chart points. Ranges up to 366 days get daily points; longer ranges get one point per week (the week's last trading day, plus the final day). The engine adds `series_resolution` and `series_rule`, and the chart must show `series_rule` (owner decision). All totals are computed daily either way.
 
 ## Endpoints
 

@@ -57,18 +57,39 @@ def error_result(code: str) -> dict:
             "transactions_used": None, "transactions_ignored": None, "engine_version": ENGINE_VERSION}
 
 
-def run_scenario(s: dict) -> dict:
+SERIES_MODES = ("daily", "auto")
+DAILY_MAX_DAYS = 366
+SERIES_RULE = ("Chart shows daily values for ranges up to 366 days and one value per week (the week's last trading "
+               "day) for longer ranges. All figures are calculated daily.")
+
+
+def run_scenario(s: dict, series: str = "daily") -> dict:
+    """series="daily" (default): every calendar-open day, as in FORMAT.md.
+    series="auto": daily for ranges up to 366 days, otherwise weekly. Display thinning only (owner decision)."""
+    if series not in SERIES_MODES:
+        raise ValueError(f"series must be one of {SERIES_MODES}")
     market, rows, cfg = parse_scenario(s)
     try:
         r = simulate(market, rows, cfg)
     except DataError as e:
         return error_result(e.code)
-    return result_dict(r)
+    return result_dict(r, cfg, series)
 
 
-def result_dict(r) -> dict:
+def _thin(points: list[dict], start: date, end: date) -> tuple[list[dict], str]:
+    if (end - start).days <= DAILY_MAX_DAYS:
+        return points, "daily"
+    kept = []
+    for i, p in enumerate(points):                  # keep each ISO week's last point, and always the final point
+        if i == len(points) - 1 or (date.fromisoformat(points[i + 1]["date"]).isocalendar()[:2]
+                                    != date.fromisoformat(p["date"]).isocalendar()[:2]):
+            kept.append(p)
+    return kept, "weekly"
+
+
+def result_dict(r, cfg=None, series: str = "daily") -> dict:
     pct = r.gain_pct
-    return {
+    out = {
         "status": "ok",
         "error_code": None,
         "summary": {
@@ -91,7 +112,11 @@ def result_dict(r) -> dict:
                   "delayed_by_data_gap": _b(b.delayed_by_data_gap)} for b in r.buys],
         "series": [{"date": p.date.isoformat(), "value": display_money(p.value), "carried": _b(p.carried)}
                    for p in r.series],
+        **({} if series == "daily" else {"series_resolution": None, "series_rule": SERIES_RULE}),
         "transactions_used": str(len(r.used)),
         "transactions_ignored": str(len(r.ignored)),
         "engine_version": ENGINE_VERSION,
     }
+    if series == "auto":
+        out["series"], out["series_resolution"] = _thin(out["series"], cfg.start, cfg.end)
+    return out

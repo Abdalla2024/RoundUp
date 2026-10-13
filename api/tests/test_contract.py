@@ -59,7 +59,7 @@ def test_simulate_equals_engine(client):
     assert r.status_code == 200, r.text
     out = r.json()
     s = engine_scenario(body)
-    assert out["result"] == run_scenario(s)
+    assert out["result"] == run_scenario(s, series="auto")
     m = out["meta"]
     assert m == {"engine_version": ENGINE_VERSION, "model_version": MODEL_VERSION, "scenario_id": "steady-growth",
                  "style": "broad", "scenario_seed": 1101,
@@ -74,7 +74,8 @@ def test_simulate_generate_equals_engine(client):
     del body["transactions"]
     body["generate"] = {"seed": 7, "max_per_day": 2}
     out = client.post("/v1/simulate", json=body).json()
-    assert out["result"] == run_scenario(engine_scenario(body))
+    assert out["result"] == run_scenario(engine_scenario(body), series="auto")
+    assert out["result"]["series_resolution"] == "weekly"          # 2012-2026: thinned for the chart
     assert int(out["result"]["summary"]["roundup_buys"]) > 100
 
 
@@ -93,7 +94,7 @@ def test_compare_equals_engine(client):
     out = r.json()
     s = engine_scenario(body)
     expected = compare_scenarios(s, {"strategy": "next_session", "reinvest": "true"},
-                                 {"strategy": "monthly", "reinvest": "false"})
+                                 {"strategy": "monthly", "reinvest": "false"}, series="auto")
     assert out["a"] == expected["a"] and out["b"] == expected["b"] and out["difference"] == expected["difference"]
     assert out["meta"]["input_checksum"] == input_checksum(s)
 
