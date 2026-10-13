@@ -112,6 +112,11 @@ MUTATIONS = [
        "dividends_paid=sum((e.amount for e in earned), Decimal(0)),")]),
     ("gain % shows 0.00 instead of n/a", "R-13.1", S + "scenario.py",
      [('"gain_pct": "n/a" if pct is None else display_pct(pct),', '"gain_pct": "0.00" if pct is None else display_pct(pct),')]),
+    ("chart thinning boundary 365 instead of 366 days", "display", S + "scenario.py",
+     [("DAILY_MAX_DAYS = 366", "DAILY_MAX_DAYS = 365")]),
+    ("weekly chart keeps the week's first day", "display", S + "scenario.py",
+     [("if i == len(points) - 1 or (date.fromisoformat(points[i + 1][\"date\"]).isocalendar()[:2]",
+       "if i == len(points) - 1 or (i == 0) or (date.fromisoformat(points[i - 1][\"date\"]).isocalendar()[:2]")]),
     ("posted date not preferred", "R-1.2", S + "importing.py",
      [("date_col = cmap.posted_date or cmap.date", "date_col = cmap.date or cmap.posted_date")]),
     ("silent sign-convention default", "R-1.3", S + "importing.py",
@@ -123,14 +128,17 @@ MUTATIONS = [
 ]
 
 
+IGNORE = shutil.ignore_patterns(".venv", "__pycache__", ".hypothesis", "*.egg-info", ".git", "node_modules")
+
+
 def run_one(mut) -> tuple[bool, str]:
     name, rule, rel, edits = mut
     with tempfile.TemporaryDirectory() as tmp:
         work = pathlib.Path(tmp) / "engine"
-        shutil.copytree(HERE, work, ignore=shutil.ignore_patterns(".venv", "__pycache__", ".hypothesis",
-                                                                   "*.egg-info"))
-        shutil.copytree(HERE.parent / "crosscheck", pathlib.Path(tmp) / "crosscheck",
-                        ignore=shutil.ignore_patterns("__pycache__"))
+        shutil.copytree(HERE, work, ignore=IGNORE)
+        shutil.copytree(HERE.parent / "crosscheck", pathlib.Path(tmp) / "crosscheck", ignore=IGNORE)
+        for doc in HERE.parent.glob("*.md"):            # tests read repo-level docs (e.g. SCENARIO-MODEL.md)
+            shutil.copy(doc, pathlib.Path(tmp) / doc.name)
         path = work / rel
         src = path.read_text()
         for old, new in edits:
@@ -148,6 +156,12 @@ def run_one(mut) -> tuple[bool, str]:
 
 
 def main() -> int:
+    # Baseline: the unmutated copy must pass, otherwise every "catch" below would be meaningless.
+    ok, info = run_one(("baseline", "-", "src/roundup_engine/__init__.py", []))
+    if ok:
+        print(f"HARNESS BROKEN: the unmutated copy fails: {info}")
+        return 2
+    print(f"baseline (no mutation): passes ({info})")
     survived = 0
     print(f"{'rule':<12} {'mutation':<48} result")
     for mut in MUTATIONS:
