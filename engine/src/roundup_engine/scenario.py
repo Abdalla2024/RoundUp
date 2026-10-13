@@ -63,7 +63,7 @@ SERIES_RULE = ("Chart shows daily values for ranges up to 366 days and one value
                "day) for longer ranges. All figures are calculated daily.")
 
 
-def run_scenario(s: dict, series: str = "daily") -> dict:
+def run_scenario(s: dict, series: str = "daily", include_buys: bool = True) -> dict:
     """series="daily" (default): every calendar-open day, as in FORMAT.md.
     series="auto": daily for ranges up to 366 days, otherwise weekly. Display thinning only (owner decision)."""
     if series not in SERIES_MODES:
@@ -73,7 +73,7 @@ def run_scenario(s: dict, series: str = "daily") -> dict:
         r = simulate(market, rows, cfg)
     except DataError as e:
         return error_result(e.code)
-    return result_dict(r, cfg, series)
+    return result_dict(r, cfg, series, include_buys)
 
 
 def _thin(points: list[dict], start: date, end: date) -> tuple[list[dict], str]:
@@ -87,7 +87,7 @@ def _thin(points: list[dict], start: date, end: date) -> tuple[list[dict], str]:
     return kept, "weekly"
 
 
-def result_dict(r, cfg=None, series: str = "daily") -> dict:
+def result_dict(r, cfg=None, series: str = "daily", include_buys: bool = True) -> dict:
     pct = r.gain_pct
     out = {
         "status": "ok",
@@ -101,11 +101,16 @@ def result_dict(r, cfg=None, series: str = "daily") -> dict:
             "shares": display_shares(r.shares),
             "holdings_value": display_money(r.holdings_value),
             "uninvested_cash": display_money(r.uninvested_cash),
+            "roundups_waiting": display_money(r.roundups_waiting),
+            "dividends_as_cash": display_money(r.dividends_as_cash),
             "receivables": display_money(r.receivables),
             "ending_value": display_money(r.ending_value),
             "gain": display_money(r.gain),
             "gain_pct": "n/a" if pct is None else display_pct(pct),
             "as_of": r.as_of.isoformat(),
+            "deepest_dip": None if r.deepest_dip is None else {
+                "date": r.deepest_dip.date.isoformat(), "value": display_money(r.deepest_dip.value),
+                "added": display_money(r.deepest_dip.added), "below_by": display_money(r.deepest_dip.below_by)},
         },
         "buys": [{"date": b.date.isoformat(), "kind": b.kind, "cash": display_money(b.cash),
                   "price": str(b.price), "shares": display_shares(b.shares),
@@ -117,6 +122,8 @@ def result_dict(r, cfg=None, series: str = "daily") -> dict:
         "transactions_ignored": str(len(r.ignored)),
         "engine_version": ENGINE_VERSION,
     }
+    if not include_buys:                                  # counts stay in the summary; the list is left out
+        out["buys"], out["buys_included"] = [], False
     if series == "auto":
         for point, p in zip(out["series"], r.series):          # chart context: round-ups added so far
             point["added"] = f"{p.added_cents // 100}.{p.added_cents % 100:02d}"

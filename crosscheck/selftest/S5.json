@@ -1,0 +1,13 @@
+{"id": "S5", "description": "Dip tie + carried gap day + reinvest off. 4 x 0.50 round-ups (01-02) = 2.00 bought 01-03 @10 = 0.2 sh. 01-04 @8: value 1.60, added 2.00, below 0.40. 01-05 gap, carried 8: below 0.40 again (tie, earliest 01-04 wins). 01-08 @8 + receivable 0.2*0.50=0.10 -> 1.70 (below 0.30). 01-09 @12: 2.40 + dividend cash 0.10 (reinvest off) + 0.30 waiting (01-09 round-up, next session after end) = 2.80 vs added 2.30. gain 0.50/2.30 = 21.739%.",
+ "covers": ["R-13.1","R-6.4","R-8.6"],
+ "market": {"symbol": "T", "calendar": ["2024-01-02","2024-01-03","2024-01-04","2024-01-05","2024-01-08","2024-01-09"],
+   "closes": {"2024-01-02":"10.00","2024-01-03":"10.00","2024-01-04":"8.00","2024-01-08":"8.00","2024-01-09":"12.00"},
+   "dividends": [{"ex_date":"2024-01-08","pay_date":"2024-01-09","amount_raw":"0.50"}], "splits": []},
+ "transactions": [
+  {"posted_date":"2024-01-02","amount":"0.50","direction":"debit","status":"posted","type":"","description":"a"},
+  {"posted_date":"2024-01-02","amount":"1.50","direction":"debit","status":"posted","type":"","description":"b"},
+  {"posted_date":"2024-01-02","amount":"2.50","direction":"debit","status":"posted","type":"","description":"c"},
+  {"posted_date":"2024-01-02","amount":"3.50","direction":"debit","status":"posted","type":"","description":"d"},
+  {"posted_date":"2024-01-09","amount":"0.70","direction":"debit","status":"posted","type":"","description":"e"}
+ ],
+ "config": {"strategy":"next_session","start":"2024-01-02","end":"2024-01-09","reinvest":"false"}}

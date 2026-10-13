@@ -147,3 +147,12 @@ def test_last_added_equals_contributed_when_end_is_a_session():
     s = _scenario("2015-01-02", "2019-12-31")
     r = run_scenario(s, series="auto")
     assert r["series"][-1]["date"] == "2019-12-31" and r["series"][-1]["added"] == r["summary"]["contributed"]
+
+
+def test_buys_can_be_left_out_without_changing_anything_else():
+    s = _scenario("2012-01-03", "2026-09-30")
+    full, slim = run_scenario(s, series="auto"), run_scenario(s, series="auto", include_buys=False)
+    assert slim["buys"] == [] and slim["buys_included"] is False and "buys_included" not in full
+    assert {k: v for k, v in slim.items() if k not in ("buys", "buys_included")} == \
+           {k: v for k, v in full.items() if k != "buys"}
+    assert int(slim["summary"]["roundup_buys"]) == len([b for b in full["buys"] if b["kind"] == "roundup"])

@@ -46,11 +46,14 @@ Each file in `fixtures/scenarios/` is one JSON scenario, a single-fund run (FINA
     "shares": "1.234567",
     "holdings_value": "62.10",
     "uninvested_cash": "0.47",
+    "roundups_waiting": "0.47",
+    "dividends_as_cash": "0.00",
     "receivables": "0.00",
     "ending_value": "62.57",
     "gain": "50.23",
     "gain_pct": "407.05",
-    "as_of": "2024-01-31"
+    "as_of": "2024-01-31",
+    "deepest_dip": {"date": "2024-01-10", "value": "4.80", "added": "5.00", "below_by": "0.20"}
   },
   "buys": [
     {"date": "2024-01-03", "kind": "roundup", "cash": "5.12", "price": "51.25",
@@ -64,6 +67,8 @@ Each file in `fixtures/scenarios/` is one JSON scenario, a single-fund run (FINA
 
 - Money values: exact value rounded to cents, `ROUND_HALF_EVEN`. Shares: 6 decimal places, `ROUND_HALF_EVEN`. `gain_pct`: 2 decimal places, `ROUND_HALF_EVEN`, or `"n/a"` when contributed is 0 (R-0.4, R-13.1).
 - `price` is the close used, exactly as given in the input.
+- `roundups_waiting` = round-ups not yet invested at `end`. `dividends_as_cash` = dividends paid (pay date ≤ `end`) and not reinvested by `end`. Exactly: `roundups_waiting + dividends_as_cash = uninvested_cash` (each displayed value rounded from its own exact value).
+- `deepest_dip`: over **every** series day (each calendar-open day in [start, end], computed daily, before any chart thinning), let *added* be the round-ups dated on or before that day, and *value* that day's series value. The dip is the day with the largest positive (*added* − *value*), with the **earliest** date winning ties. It is `null` if *value* ≥ *added* on every day. `below_by` = *added* − *value* (exact, then rounded). Each of `value`, `added` and `below_by` is rounded to cents from its own exact value.
 - `as_of` is the date of the last close on or before `end` (R-12.3).
 - `buys` are in execution order. On the same day, round-up batches come first in cut-off order, then dividend reinvestments in ex-date order.
 - `series` has one point per calendar-open day in [start, end] (R-13.2). This is the default `daily` mode. In `auto` mode (`run_scenario(s, series="auto")`, used by the API), ranges over 366 days keep only each ISO week's last point plus the final point. Two keys are then added: `series_resolution` (`"daily"` or `"weekly"`) and `series_rule`, the sentence to show on the chart. Each point also gains `added`: the round-ups contributed up to and including that date, in dollars and cents. Every other value is identical in both modes.

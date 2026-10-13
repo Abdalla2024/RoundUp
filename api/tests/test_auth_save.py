@@ -65,16 +65,19 @@ def test_save_success_forwards_user_token(client, storage, make_token):
     out = r.json()
     sim = client.post("/v1/simulate", json=base_body()).json()
     assert out["result"] == sim["result"] and out["meta"] == sim["meta"]
-    assert [c["url"].split("/rest/v1/")[1] for c in storage.calls] == ["scenarios", "scenario_results"]
-    for c in storage.calls:
-        assert c["headers"]["authorization"] == f"Bearer {token}"         # RLS applies to the API's writes
-        assert c["headers"]["apikey"] == "test-publishable-key"
-        assert c["headers"]["prefer"] == "return=representation"
-    scen, res = storage.calls[0]["body"], storage.calls[1]["body"]
-    assert scen["user_id"] == "11111111-2222-3333-4444-555555555555" and scen["name"] == "My first scenario"
-    assert scen["transactions"] is None                                    # save_transactions false
-    assert res["scenario_id"] == out["id"] and res["result"] == out["result"]
-    assert res["engine_version"] and res["market_checksum"] == out["meta"]["market_checksum"]
+    assert [c["url"].split("/rest/v1/")[1] for c in storage.calls] == ["rpc/save_scenario"]   # one atomic call
+    c = storage.calls[0]
+    assert c["headers"]["authorization"] == f"Bearer {token}"             # RLS applies to the API's write
+    assert c["headers"]["apikey"] == "test-publishable-key"
+    p = c["body"]
+    assert "p_user_id" not in p and "user_id" not in p                    # the function uses auth.uid()
+    assert p["p_name"] == "My first scenario" and p["p_transactions"] is None
+    assert p["p_result"] == out["result"] and p["p_market_checksum"] == out["meta"]["market_checksum"]
+    assert p["p_engine_version"] and p["p_data_kind"] == "sample" and p["p_data_end"] == out["result"]["summary"]["as_of"]
+    assert set(p) == {"p_name", "p_config", "p_transactions", "p_market_scenario", "p_style", "p_strategy",
+                      "p_reinvest", "p_result", "p_engine_version", "p_model_version", "p_scenario_seed",
+                      "p_data_kind", "p_data_end", "p_market_checksum", "p_input_checksum"}   # = SQL signature
+    assert isinstance(out["id"], str) and len(out["id"]) == 36
     assert "COFFEE" not in str(storage.calls)                               # descriptions never stored (D-8)
 
 
@@ -82,7 +85,7 @@ def test_save_transactions_without_descriptions(client, storage, make_token):
     r = client.post("/v1/saved", json=save_body(save_transactions=True),
                     headers={"Authorization": f"Bearer {make_token()}"})
     assert r.status_code == 201
-    saved = storage.calls[0]["body"]["transactions"]
+    saved = storage.calls[0]["body"]["p_transactions"]
     assert len(saved) == 3 and all("description" not in t for t in saved)
     assert "COFFEE" not in str(storage.calls)
 
@@ -101,7 +104,7 @@ def test_rsa_key_also_accepted(make_client, storage):
 
 
 def test_storage_failure_is_503(client, storage, make_token):
-    storage.fail_on = "scenarios"
+    storage.fail_on = "save_scenario"
     r = client.post("/v1/saved", json=save_body(), headers={"Authorization": f"Bearer {make_token()}"})
     assert r.status_code == 503 and r.json()["error"]["code"] == "STORAGE_UNAVAILABLE"
     assert "boom" not in r.text

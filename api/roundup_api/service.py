@@ -60,7 +60,7 @@ def _raise_engine_error(result: dict, meta: dict) -> None:
 
 def simulate(req) -> dict:
     scenario, meta = engine_input(req, req.strategy, req.reinvest)
-    result = run_scenario(scenario, series="auto")      # chart thinning is the engine's, not ours
+    result = run_scenario(scenario, series="auto", include_buys=req.buys == "all")   # thinning is the engine's
     if result["status"] != "ok":
         _raise_engine_error(result, meta)
     return {"result": result, "meta": build_meta(scenario, meta)}
@@ -71,7 +71,7 @@ def compare(req) -> dict:
     out = compare_scenarios(scenario,
                             {"strategy": req.a.strategy, "reinvest": "true" if req.a.reinvest else "false"},
                             {"strategy": req.b.strategy, "reinvest": "true" if req.b.reinvest else "false"},
-                            series="auto")
+                            series="auto", include_buys=req.buys == "all")
     for side in ("a", "b"):
         if out[side]["status"] != "ok":
             _raise_engine_error(out[side], meta)

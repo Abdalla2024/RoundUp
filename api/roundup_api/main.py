@@ -6,6 +6,7 @@ import uuid
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
@@ -38,7 +39,8 @@ def _client_ip(request: Request) -> str:
 
 
 def create_app(supabase_url: str | None = None, publishable_key: str | None = None, jwks: dict | None = None,
-               storage_transport=None, rate_limits: dict | None = None, slow_ms: int = 2000) -> FastAPI:
+               storage_transport=None, rate_limits: dict | None = None, slow_ms: int = 2000,
+               allowed_origin: str | None = None) -> FastAPI:
     app = FastAPI(title="RoundUp API", version=ENGINE_VERSION, docs_url=None, redoc_url=None, openapi_url=None)
     verifier = TokenVerifier(supabase_url, jwks)
     storage = Storage(supabase_url, publishable_key, storage_transport)
@@ -135,22 +137,26 @@ def create_app(supabase_url: str | None = None, publishable_key: str | None = No
             txs = [{"posted_date": t["posted_date"], "amount": t["amount"], "direction": t["direction"],
                     "status": t["status"], **({"category": t["category"]} if "category" in t else {})}
                    for t in service.engine_input(req, req.strategy, req.reinvest)[0]["transactions"]]
-        scenario_row = {"user_id": claims["sub"], "name": req.name, "transactions": txs,
-                        "config": {"scenario_id": req.scenario_id, "style": req.style, "start": req.start,
-                                   "end": req.end, "strategy": req.strategy, "reinvest": req.reinvest,
-                                   "generate": req.generate.model_dump() if req.generate else None}}
         m = out["meta"]
-        result_row = {"user_id": claims["sub"], "market_scenario": m["scenario_id"], "style": m["style"],
-                      "strategy": req.strategy, "reinvest": req.reinvest, "result": out["result"],
-                      "engine_version": m["engine_version"], "model_version": m["model_version"],
-                      "scenario_seed": m["scenario_seed"], "data_kind": "sample",
-                      "data_end": out["result"]["summary"]["as_of"], "market_checksum": m["market_checksum"],
-                      "input_checksum": m["input_checksum"]}
-        new_id = storage.save(token, scenario_row, result_row)
+        params = {"p_name": req.name, "p_transactions": txs,             # owner = auth.uid() inside the function
+                  "p_config": {"scenario_id": req.scenario_id, "style": req.style, "start": req.start,
+                               "end": req.end, "strategy": req.strategy, "reinvest": req.reinvest,
+                               "generate": req.generate.model_dump() if req.generate else None},
+                  "p_market_scenario": m["scenario_id"], "p_style": m["style"], "p_strategy": req.strategy,
+                  "p_reinvest": req.reinvest, "p_result": out["result"], "p_engine_version": m["engine_version"],
+                  "p_model_version": m["model_version"], "p_scenario_seed": m["scenario_seed"],
+                  "p_data_kind": "sample", "p_data_end": out["result"]["summary"]["as_of"],
+                  "p_market_checksum": m["market_checksum"], "p_input_checksum": m["input_checksum"]}
+        new_id = storage.save(token, params)
         return JSONResponse({"id": new_id, **out}, status_code=201)
 
+    if allowed_origin:      # exactly one origin (owner decision: the web project's default Vercel address)
+        app.add_middleware(CORSMiddleware, allow_origins=[allowed_origin], allow_methods=["GET", "POST"],
+                           allow_headers=["Content-Type", "Authorization"], allow_credentials=False,
+                           expose_headers=["X-Request-ID", "Retry-After"], max_age=600)
     return app
 
 
 app = create_app(supabase_url=os.environ.get("SUPABASE_URL"),
-                 publishable_key=os.environ.get("SUPABASE_PUBLISHABLE_KEY"))
+                 publishable_key=os.environ.get("SUPABASE_PUBLISHABLE_KEY"),
+                 allowed_origin=os.environ.get("ALLOWED_ORIGIN"))

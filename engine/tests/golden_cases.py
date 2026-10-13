@@ -252,7 +252,8 @@ case(scenario("G-H3", JAN, closes(JAN, [("2024-01-02", "10.00"), ("2024-01-17", 
               splits=[split("2024-01-17", "2")], dividends=[div("2024-01-17", "2024-01-19", "0.20")],
               description="Review H3: 1 sh, 2-for-1 split and 0.20 post-split dividend same day -> 0.40 (not 0.20)",
               covers=["R-8.1", "R-8.2"]),
-     summary={"dividends_earned": "0.40", "shares": "2.083333", "ending_value": "10.00"})
+     summary={"dividends_earned": "0.40", "shares": "2.083333", "ending_value": "10.00",
+              "deepest_dip": None})   # value equals added exactly (cross-check finding: no 1e-27 "dip")
 
 # H4: split-adjusted close combined with split events
 case(scenario("G-H4", JAN, closes(JAN, [("2024-01-02", "10.00")]), TWELVE_HALVES, "next_session",
@@ -308,6 +309,40 @@ case(scenario("G-SCHD-2024", OCT24, SCHD_RAW, repeat("2024-10-02", "4.60", 15), 
                           "and pay date after it",
               covers=["R-7.4", "R-7.5", "R-8.3"]),
      summary={"contributed": "6.00", "dividends_earned": "0.06", "shares": "0.224299", "ending_value": "6.00",
-              "gain": "0.00"},
+              "gain": "0.00", "deepest_dip": None},
      buys=[{"date": "2024-10-03", "cash": "6.00", "price": "81.00", "shares": "0.074074"},
            {"date": "2024-10-15", "kind": "dividend", "cash": "0.06", "price": "26.75", "shares": "0.002077"}])
+
+# ---------------------------------------------------------------- stage 5: cash split and deepest dip (hand-worked)
+# G-24 again: reinvest off. Round-ups all bought (0.00 waiting); the 0.20 dividend is kept as cash.
+# Value: Jan 9 = 0.5 x 10.00 = 5.00 vs added 5.00 (not below). Jan 10 onward: 0.5 x 9.60 + 0.20 = 5.00 -> never below.
+case(scenario("G-40-split-off", JAN, DIV, TEN_HALVES, "next_session", "2024-01-02", "2024-01-31", reinvest=False,
+              dividends=[div("2024-01-10", "2024-01-12", "0.40")],
+              description="Cash split: dividends kept as cash 0.20, round-ups waiting 0.00; never below added",
+              covers=["R-13.1"]),
+     summary={"uninvested_cash": "0.20", "roundups_waiting": "0.00", "dividends_as_cash": "0.20", "deepest_dip": None})
+
+# G-16c again: Sat round-up 0.40 never reaches $5 -> waiting 0.40; no dividends. Price flat 50 -> value = added always.
+case(scenario("G-41-split-waiting", JAN, FLAT50,
+              repeat("2024-01-08", "5.20", 2) + repeat("2024-01-09", "5.20", 2) + repeat("2024-01-10", "5.20", 2)
+              + [tx("2024-01-12", "2.70"), tx("2024-01-12", "3.10"), tx("2024-01-13", "1.60")],
+              "threshold", "2024-01-02", "2024-01-31",
+              description="Cash split: 0.40 of round-ups waiting, no dividend cash", covers=["R-13.1"]),
+     summary={"uninvested_cash": "0.40", "roundups_waiting": "0.40", "dividends_as_cash": "0.00", "deepest_dip": None})
+
+# G-22 again: 0.5 sh bought at 10.00 on Jan 9 (not entitled to the Jan 9 dividend); price 9.60 from Jan 10.
+# Jan 10..Jan 31: value 4.80 vs added 5.00 -> below by 0.20 every day; earliest such day is Jan 10.
+case(scenario("G-42-dip", JAN, DIV, TEN_HALVES, "next_session", "2024-01-02", "2024-01-31",
+              dividends=[div("2024-01-09", "2024-01-12", "0.40")],
+              description="Deepest dip: value 4.80 vs added 5.00 from Jan 10; ties go to the earliest date",
+              covers=["R-13.1"]),
+     summary={"deepest_dip": {"date": "2024-01-10", "value": "4.80", "added": "5.00", "below_by": "0.20"}})
+
+# Dip with a recovery and a carried gap day: flat 50, buy 0.63 Thu Jan 4; price 40 on Jan 8-9 (value 0.504 vs 0.63);
+# Jan 9 is missing -> carried at 40; price back to 50 from Jan 10. Deepest = Jan 8 (earliest of the tie), below by 0.126.
+DIP = closes(JAN, [("2024-01-02", "50.00"), ("2024-01-08", "40.00"), ("2024-01-10", "50.00")], missing=("2024-01-09",))
+case(scenario("G-43-dip-recovers", JAN, DIP, [tx("2024-01-03", "4.37")], "next_session", "2024-01-02", "2024-01-31",
+              description="Dip then recovery; carried gap day ties, earliest wins; exact value shown to the cent",
+              covers=["R-13.1", "R-6.4"]),
+     summary={"ending_value": "0.63",
+              "deepest_dip": {"date": "2024-01-08", "value": "0.50", "added": "0.63", "below_by": "0.13"}})

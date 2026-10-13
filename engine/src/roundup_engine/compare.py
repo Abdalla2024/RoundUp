@@ -9,22 +9,22 @@ from .scenario import error_result, parse_scenario, result_dict
 from .simulate import simulate
 
 
-def _run(s: dict, series: str):
+def _run(s: dict, series: str, include_buys: bool = True):
     market, rows, cfg = parse_scenario(s)
     try:
         r = simulate(market, rows, cfg)
     except DataError as e:
         return None, error_result(e.code)
-    return r, result_dict(r, cfg, series)
+    return r, result_dict(r, cfg, series, include_buys)
 
 
-def compare_scenarios(base: dict, a: dict, b: dict, series: str = "daily") -> dict:
+def compare_scenarios(base: dict, a: dict, b: dict, series: str = "daily", include_buys: bool = True) -> dict:
     """Run `base` with config overrides `a` and `b` (e.g. strategy, reinvest). Difference is b - a."""
     runs = []
     for override in (a, b):
         s = copy.deepcopy(base)
         s["config"].update(override)
-        runs.append(_run(s, series))
+        runs.append(_run(s, series, include_buys))
     (ra, da), (rb, db) = runs
     difference = None
     if ra is not None and rb is not None:

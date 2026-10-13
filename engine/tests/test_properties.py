@@ -184,3 +184,46 @@ def test_regression_r5288_half_cent_tie_in_series():
     out = run_scenario(s)
     point = [p for p in out["series"] if p["date"] == "2024-07-24"][0]
     assert point["value"] == "9.48"
+
+
+# ---------------------------------------------------------------- stage 5: cash split and deepest dip
+@settings(max_examples=150, deadline=None)
+@given(SEEDS)
+def test_p10_cash_split_is_exact(seed):
+    """roundups_waiting + dividends_as_cash == uninvested_cash, each re-derived independently."""
+    s = generate(seed)
+    res = _sim(s)
+    bought = sum(b.cash_cents for b in res.buys if b.kind == "roundup")
+    assert res.roundups_waiting == Decimal(res.contributed_cents - bought) / 100
+    reinvested = sum((b.cash for b in res.buys if b.kind == "dividend"), Decimal(0))
+    assert abs(res.dividends_as_cash - (res.dividends_earned - res.receivables - reinvested)) < TINY
+    assert abs(res.roundups_waiting + res.dividends_as_cash - res.uninvested_cash) < TINY
+    out = run_scenario(s)["summary"]
+    assert {"roundups_waiting", "dividends_as_cash", "deepest_dip"} <= set(out)
+
+
+@settings(max_examples=150, deadline=None)
+@given(SEEDS)
+def test_p11_deepest_dip_is_the_daily_maximum_shortfall(seed):
+    """Checked against the full DAILY series (not the thinned chart): largest (added - value), earliest on ties,
+    and null exactly when the value never falls below the round-ups added."""
+    s = generate(seed)
+    res = _sim(s)
+    from roundup_engine.money import SNAP          # same documented 1e-20 snap as R-0.4 (exact ties are not dips)
+    shortfalls = [((p.added_cents / Decimal(100) - p.value).quantize(SNAP), p.date) for p in res.series]
+    worst = max((sf for sf, _ in shortfalls), default=Decimal(0))
+    dip = res.deepest_dip
+    if worst <= 0:
+        assert dip is None
+    else:
+        first_day = min(d for sf, d in shortfalls if sf == worst)
+        assert dip.date == first_day and dip.below_by == worst
+        assert dip.below_by == (dip.added - dip.value).quantize(SNAP)
+
+
+@settings(max_examples=50, deadline=None)
+@given(SEEDS)
+def test_p12_dip_and_split_identical_in_daily_and_auto_modes(seed):
+    s = generate(seed, n_days=500)
+    a, b = run_scenario(s)["summary"], run_scenario(s, series="auto")["summary"]
+    assert a == b                       # figures come from daily values even when the chart is thinned

@@ -724,7 +724,7 @@ def test_rate_limit_saved_override(keys):
         run = default_run(c)
         tok = sign(keys, claims())
         _exhaust(lambda: c.post("/v1/saved", json=saved_body(run), headers={"Authorization": f"Bearer {tok}"}), 2)
-        assert len(storage.calls) == 4  # two successful saves only, nothing written once limited
+        assert len(storage.calls) == 2  # EDITED: two successful saves = two atomic calls; nothing once limited
 
 
 def test_rate_limit_default_parse_is_10(keys):
@@ -982,7 +982,7 @@ def test_jwks_with_only_hmac_key_does_not_enable_hs256():
 @pytest.mark.parametrize("mode,expected", [
     ("connect_error", {503}), ("timeout", {503}), ("server_error", {500, 503}),
     ("unauthorized", {401, 500, 503}), ("rls_denied", {401, 403, 500, 503}), ("not_json", {500, 503}),
-    ("empty_array", {500, 503}), ("results_fail", {500, 503}),
+    ("empty_array", {500, 503}), ("server_error", {500, 503}),  # EDITED: "results_fail" (second insert) no longer exists
 ])
 def test_storage_failures_are_plain(keys, mode, expected):
     storage = FakeStorage(mode)
@@ -1012,7 +1012,7 @@ def test_sql_injection_name_is_stored_as_plain_data(keys, auth_env):
     r = c.post("/v1/saved", json=saved_body(run, name=name), headers=_hdr(sign(keys, claims())))
     assert r.status_code == 201
     first = storage.calls[0]
-    assert first.url.path == "/rest/v1/scenarios"
+    assert first.url.path == "/rest/v1/rpc/save_scenario"  # EDITED (stage 5 contract: atomic function)
     assert "DROP" not in str(first.url), "values must go in the JSON body, not the URL/query"
 
 

@@ -125,7 +125,7 @@ class FakeStorage:
         if mode == "rls_denied":
             return httpx.Response(403, json={"code": "42501", "message": "new row violates row-level security policy SECRETPGDETAIL"})
         if mode == "not_json":
-            return httpx.Response(201, content=b"<html>SECRETPGDETAIL</html>",
+            return httpx.Response(200, content=b"<html>SECRETPGDETAIL</html>",  # EDITED: 200, as RPC answers
                                   headers={"Content-Type": "text/html"})
         if mode == "empty_array":
             return httpx.Response(201, json=[])
@@ -135,6 +135,12 @@ class FakeStorage:
             payload = json.loads(request.content or b"null")
         except ValueError:
             payload = None
+        # EDITED (stage 5): the contract now saves through one atomic database function. PostgREST returns a
+        # scalar function's result as a bare JSON value (docs: references/api/functions.rst, "Scalar functions").
+        if path.endswith("/rest/v1/rpc/save_scenario"):
+            if mode == "empty_array":
+                return httpx.Response(200, json=None)
+            return httpx.Response(200, json=self.scenario_id)
         if path.endswith("/rest/v1/scenarios"):
             row = payload[0] if isinstance(payload, list) and payload else payload
             row = dict(row) if isinstance(row, dict) else {}

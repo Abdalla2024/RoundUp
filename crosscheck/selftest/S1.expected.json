@@ -1,5 +1,66 @@
-{"status":"ok","error_code":null,
- "summary":{"contributed":"5.25","roundup_buys":"1","dividend_buys":"0","dividends_earned":"0.00","dividends_paid":"0.00","shares":"0.202000","holdings_value":"6.06","uninvested_cash":"0.20","receivables":"0.00","ending_value":"6.26","gain":"1.01","gain_pct":"19.24","as_of":"2024-01-09"},
- "buys":[{"date":"2024-01-08","kind":"roundup","cash":"5.05","price":"25.00","shares":"0.202000","delayed_by_data_gap":"false"}],
- "series":[{"date":"2024-01-02","value":"1.62","carried":"false"},{"date":"2024-01-03","value":"2.12","carried":"false"},{"date":"2024-01-04","value":"3.11","carried":"false"},{"date":"2024-01-05","value":"5.05","carried":"false"},{"date":"2024-01-08","value":"5.25","carried":"false"},{"date":"2024-01-09","value":"6.26","carried":"false"}],
- "transactions_used":"8","transactions_ignored":"9"}
+{
+ "status": "ok",
+ "error_code": null,
+ "summary": {
+  "contributed": "5.25",
+  "roundup_buys": "1",
+  "dividend_buys": "0",
+  "dividends_earned": "0.00",
+  "dividends_paid": "0.00",
+  "shares": "0.202000",
+  "holdings_value": "6.06",
+  "uninvested_cash": "0.20",
+  "roundups_waiting": "0.20",
+  "dividends_as_cash": "0.00",
+  "receivables": "0.00",
+  "ending_value": "6.26",
+  "gain": "1.01",
+  "gain_pct": "19.24",
+  "as_of": "2024-01-09",
+  "deepest_dip": null
+ },
+ "buys": [
+  {
+   "date": "2024-01-08",
+   "kind": "roundup",
+   "cash": "5.05",
+   "price": "25.00",
+   "shares": "0.202000",
+   "delayed_by_data_gap": "false"
+  }
+ ],
+ "series": [
+  {
+   "date": "2024-01-02",
+   "value": "1.62",
+   "carried": "false"
+  },
+  {
+   "date": "2024-01-03",
+   "value": "2.12",
+   "carried": "false"
+  },
+  {
+   "date": "2024-01-04",
+   "value": "3.11",
+   "carried": "false"
+  },
+  {
+   "date": "2024-01-05",
+   "value": "5.05",
+   "carried": "false"
+  },
+  {
+   "date": "2024-01-08",
+   "value": "5.25",
+   "carried": "false"
+  },
+  {
+   "date": "2024-01-09",
+   "value": "6.26",
+   "carried": "false"
+  }
+ ],
+ "transactions_used": "8",
+ "transactions_ignored": "9"
+}

@@ -68,6 +68,7 @@ The limits are kept in memory per server instance (see OPERATIONS.md).
 {"scenario_id": "steady-growth", "style": "broad", "start": "2015-01-02", "end": "2020-12-31",
  "transactions": [ ... ]}
 ```
+- Optional `"buys": "all"` (default) or `"none"`. With `"none"` the engine leaves out the per-buy list: `buys` is `[]` and `"buys_included": false`. The summary counts are unchanged. Over a full 2012–2026 range the buy list is most of the response, and the screens show only counts.
 - Give either `transactions` (1–20,000 items) **or** `"generate": {"seed": 0..2147483647, "max_per_day": 1..3}`. Exactly one is required; both or neither → 422 `INVALID_INPUT`.
 - Generated transactions are seeded synthetic purchases (R-1.7) between `start` and `end`.
 
@@ -81,6 +82,12 @@ The limits are kept in memory per server instance (see OPERATIONS.md).
 - `input_checksum` is the engine's SHA-256 of the canonical scenario input: the market checksum, plus each transaction's date, amount, direction, status and **resolved category**, plus the config. Descriptions never feed the checksum (D-8). The same request always gives the same `input_checksum`. For compare, it covers the shared input with the default config, before the a/b overrides.
 
 **Result:** exactly the engine result format in `engine/fixtures/FORMAT.md` (`status`, `summary`, `buys`, `series`, …), unchanged, plus `engine_version`. The API asks the engine for `auto` chart points. Ranges up to 366 days get daily points; longer ranges get one point per week (the week's last trading day, plus the final day). The engine adds `series_resolution` and `series_rule`, and the chart must show `series_rule` (owner decision). All totals are computed daily either way.
+
+The summary also carries the stage-5 engine figures (FORMAT.md):
+- `roundups_waiting` + `dividends_as_cash` = `uninvested_cash`;
+- `deepest_dip`: the day the value was furthest below the round-ups added, or `null`.
+
+The browser shows these strings as they are and never derives them.
 
 ## Endpoints
 
@@ -162,14 +169,16 @@ Body: the simulate body, plus `"name"` (1–80 characters) and `"save_transactio
 {"id": "<uuid>", "result": <engine result>, "meta": <meta>}
 ```
 - The API verifies the token (Supabase JWKS; ES256/RS256 only; `aud` = `authenticated`; `iss` = `<SUPABASE_URL>/auth/v1`; `exp`, `sub`, `iss` and `aud` required; `sub` a UUID; `is_anonymous` not true).
-- It computes the result with the engine, then inserts `app.scenarios` and `app.scenario_results` through the Supabase Data API, **forwarding the user's token** so RLS applies.
+- It computes the result with the engine, then makes **one** call, `POST <SUPABASE_URL>/rest/v1/rpc/save_scenario`, through the Supabase Data API, **forwarding the user's token** so RLS applies. The function (`supabase/migrations/0002_rls.sql`) inserts the scenario and its result in one transaction, with the owner taken from `auth.uid()`. PostgREST returns the scalar result, the new id, as a bare JSON value with HTTP 200 ([PostgREST functions](https://github.com/PostgREST/postgrest/blob/main/docs/references/api/functions.rst)). Any other answer gives 503 `STORAGE_UNAVAILABLE`. This closes question #34 below (no partial saves).
 - Transactions are saved only if `save_transactions` is true, and never with descriptions.
 
 Signed-out users can use every endpoint except this one.
 
 ## Configuration and testing hooks
 
-Production configuration comes from environment variables: `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `LOG_SALT`, and `ROUNDUP_TRUST_PROXY=1` on Vercel. That last one makes the client IP come from `X-Forwarded-For`, which Vercel overwrites to prevent spoofing ([Vercel request headers](https://vercel.com/docs/headers/request-headers)). Without it, the socket address is used. Without `SUPABASE_URL`, `POST /v1/saved` returns 503 `STORAGE_UNAVAILABLE`; everything else works.
+Production configuration comes from environment variables: `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `LOG_SALT`, `ALLOWED_ORIGIN`, and `ROUNDUP_TRUST_PROXY=1` on Vercel. That last one makes the client IP come from `X-Forwarded-For`, which Vercel overwrites to prevent spoofing ([Vercel request headers](https://vercel.com/docs/headers/request-headers)). Without it, the socket address is used.
+
+**CORS:** `ALLOWED_ORIGIN` is the web project's default Vercel address, e.g. `https://<web-project>.vercel.app` (owner decision). It is the **only** origin allowed, with methods `GET` and `POST`, headers `Content-Type` and `Authorization`, and exposed headers `X-Request-ID` and `Retry-After`. Credentials (cookies) are not allowed: the token travels in the `Authorization` header. Without `ALLOWED_ORIGIN`, no CORS headers are sent, so browsers on other sites cannot read responses ([FastAPI CORS](https://fastapi.tiangolo.com/tutorial/cors/)). Without `SUPABASE_URL`, `POST /v1/saved` returns 503 `STORAGE_UNAVAILABLE`; everything else works.
 
 Tests build an app with the factory:
 
@@ -186,7 +195,8 @@ app = create_app(
 ```
 
 - `roundup_api.main:app` is the default app built from the environment.
-- Storage calls are `POST <supabase_url>/rest/v1/scenarios`, then `POST <supabase_url>/rest/v1/scenario_results`. Each carries the headers `apikey: <publishable_key>`, `Authorization: Bearer <the user's token>`, `Prefer: return=representation` and `Content-Type: application/json`. A successful insert answers `201` with a JSON array of the created rows ([PostgREST](https://github.com/PostgREST/postgrest/blob/main/docs/references/api/preferences.rst)). The `scenarios` row's `id` is the `id` returned by `POST /v1/saved`.
+- The storage call is `POST <supabase_url>/rest/v1/rpc/save_scenario`, with the headers `apikey: <publishable_key>`, `Authorization: Bearer <the user's token>` and `Content-Type: application/json`. The body holds the function's `p_*` parameters. Success is `200` with the new id as a bare JSON string, which is the `id` returned by `POST /v1/saved`.
+- `allowed_origin=` (optional) turns on CORS for that single origin.
 - `rate_limits` keys: `simulate`, `compare`, `parse`, `saved`, `read`.
 
 ## Resolved questions (from the independent contract review)
@@ -221,10 +231,10 @@ An independent tester, working only from this contract, listed 42 ambiguities (`
 | 31 | Tokens on open endpoints | Ignored. |
 | 32 | No `SUPABASE_URL` | 503 before any token check. |
 | 33 | Data API answers anything but 201 | 503 `STORAGE_UNAVAILABLE`. |
-| 34 | Partial save | If the results insert fails after the scenario insert, the API returns 503 and an orphan scenario row (with no results) can remain. **OPEN:** the accounts stage will replace the two inserts with one Postgres function call (atomic). |
+| 34 | Partial save | **Resolved (stage 5):** one call to the atomic `save_scenario()` function. Either both rows are stored or neither (verified on local Postgres, `supabase/tests`). |
 | 35 | Stored row shapes | Sent to the `public` schema (no `Content-Profile`). `user_id` is sent explicitly and RLS `with check` verifies it equals `auth.uid()`. Saved transactions use the API's decimal-string format, without descriptions. Deleted users: the token stays valid until `exp`, but the insert then fails its foreign key, giving 503. |
 | 36 | Rate limits | Separate buckets per route group. Sliding 60 s window. Every request counts, including 4xx; `/v1/health` counts toward `read`. `Retry-After` is 1–60. Client IP rules: Configuration section. Per-user limits are not implemented (explainer stage). State is per app instance. |
-| 37 | Other paths | `/docs`, `/redoc` and `/openapi.json` are disabled (404). Unknown query parameters are ignored. **OPEN for the web stage:** CORS is not configured yet; it must allow only the site's origin. |
+| 37 | Other paths | `/docs`, `/redoc` and `/openapi.json` are disabled (404). Unknown query parameters are ignored. CORS: see Configuration (one allowed origin). |
 | 38 | Degraded health | Returns 503 with the health body, not the error envelope. This is deliberate, so monitors can read the fields. |
 | 39 | Label | `meta.label` is exactly the `LABEL` constant in `roundup_scenarios`. |
 | 41 | `generate` + `save_transactions` | The generated transactions are saved. |

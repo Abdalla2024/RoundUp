@@ -24,6 +24,23 @@ for p in sorted(glob.glob(os.path.join(HERE, "S*.json"))):
     for k in want:
         check("%s %s" % (sc["id"], k), got[k], want[k])
 
+# 1b. summary key order must follow the FORMAT.md example
+ORDER = ["contributed", "roundup_buys", "dividend_buys", "dividends_earned", "dividends_paid", "shares",
+         "holdings_value", "uninvested_cash", "roundups_waiting", "dividends_as_cash", "receivables",
+         "ending_value", "gain", "gain_pct", "as_of", "deepest_dip"]
+check("summary key order", list(cc.run(json.load(open(os.path.join(HERE, "S5.json"))))["summary"]), ORDER)
+
+# 1c. deepest dip: exact comparison, earliest date on exact ties. Both days display below_by 0.01,
+# but day 2 is exactly deeper (0.0144 vs 0.0136), so day 2 must win.
+dip_sc = {"id": "dip-exact", "market": {"symbol": "T", "calendar": ["2024-01-02", "2024-01-03", "2024-01-04", "2024-01-05"],
+          "closes": {"2024-01-02": "1.00", "2024-01-03": "1.00", "2024-01-04": "0.966", "2024-01-05": "0.964"},
+          "dividends": [], "splits": []},
+          "transactions": [{"posted_date": "2024-01-02", "amount": "0.60", "direction": "debit", "status": "posted",
+                            "type": "", "description": "x"}],
+          "config": {"strategy": "next_session", "start": "2024-01-02", "end": "2024-01-05", "reinvest": "true"}}
+check("dip exact beats display tie", cc.run(dip_sc)["summary"]["deepest_dip"],
+      {"date": "2024-01-05", "value": "0.39", "added": "0.40", "below_by": "0.01"})
+
 # 2. rounding (half-even on exact fractions)
 for x, places, want in [(F(5, 1000), 2, "0.00"), (F(15, 1000), 2, "0.02"), (F(25, 1000), 2, "0.02"),
                         (F(-15, 1000), 2, "-0.02"), (F(-4, 1000), 2, "0.00"), (F(1, 3), 6, "0.333333"),

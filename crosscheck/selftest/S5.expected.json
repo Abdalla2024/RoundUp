@@ -1,0 +1,6 @@
+{"status":"ok","error_code":null,
+ "summary":{"contributed":"2.30","roundup_buys":"1","dividend_buys":"0","dividends_earned":"0.10","dividends_paid":"0.10","shares":"0.200000","holdings_value":"2.40","uninvested_cash":"0.40","roundups_waiting":"0.30","dividends_as_cash":"0.10","receivables":"0.00","ending_value":"2.80","gain":"0.50","gain_pct":"21.74","as_of":"2024-01-09",
+   "deepest_dip":{"date":"2024-01-04","value":"1.60","added":"2.00","below_by":"0.40"}},
+ "buys":[{"date":"2024-01-03","kind":"roundup","cash":"2.00","price":"10.00","shares":"0.200000","delayed_by_data_gap":"false"}],
+ "series":[{"date":"2024-01-02","value":"2.00","carried":"false"},{"date":"2024-01-03","value":"2.00","carried":"false"},{"date":"2024-01-04","value":"1.60","carried":"false"},{"date":"2024-01-05","value":"1.60","carried":"true"},{"date":"2024-01-08","value":"1.70","carried":"false"},{"date":"2024-01-09","value":"2.80","carried":"false"}],
+ "transactions_used":"5","transactions_ignored":"0"}

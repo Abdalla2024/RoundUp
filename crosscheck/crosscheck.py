@@ -307,11 +307,18 @@ def run(sc):
     divs_sorted = sorted(divs, key=lambda x: (x["ex"], x["idx"]))
     splits_sorted = sorted(splits, key=lambda x: (x["ex"], x["idx"]))
 
+    def added_by(day):
+        """Round-ups contributed (dated) on or before `day`, exact dollars."""
+        return Fraction(sum(c for dt, c in roundups if dt <= day), 100)
+
     def value_parts(day):
-        rcash = Fraction(sum(c for dt, c in roundups if dt <= day) - bought_cents, 100)
+        """(round-ups waiting, dividends as cash, receivables) at the end of `day`."""
+        rcash = added_by(day) - Fraction(bought_cents, 100)
         dcash = sum((f["cash"] for f in fixed if f["pay"] <= day and not f["reinvested"]), Fraction(0))
         recv = sum((f["cash"] for f in fixed if f["pay"] > day), Fraction(0))
-        return rcash + dcash, recv
+        return rcash, dcash, recv
+
+    dip = None          # (below_by, day, value, added), exact; strictly larger wins -> earliest on ties
 
     for day in calendar:
         if day < start or day > end:
@@ -358,14 +365,21 @@ def run(sc):
             price = closes[lc][0]
             carried = True
         # R-8.1 (4) valuation (R-13.2)
-        cash, recv = value_parts(day)
-        series.append({"date": day.isoformat(), "value": money(shares * price + cash + recv),
+        rcash, dcash, recv = value_parts(day)
+        value = shares * price + rcash + dcash + recv
+        series.append({"date": day.isoformat(), "value": money(value),
                        "carried": "true" if carried else "false"})
+        # Deepest dip (R-13.1, FORMAT.md): largest positive (added - value), exact.
+        added = added_by(day)
+        below = added - value
+        if below > 0 and (dip is None or below > dip[0]):
+            dip = (below, day, value, added)
 
     # R-13.1 summary, as of the end date.
     as_of = last_close_on_or_before(end)
     holdings = shares * closes[as_of][0]
-    cash, recv = value_parts(end)
+    rcash, dcash, recv = value_parts(end)
+    cash = rcash + dcash
     ending = holdings + cash + recv
     contributed = Fraction(contributed_cents, 100)
     gain = ending - contributed
@@ -380,11 +394,16 @@ def run(sc):
         "shares": shares_str(shares),
         "holdings_value": money(holdings),
         "uninvested_cash": money(cash),
+        "roundups_waiting": money(rcash),
+        "dividends_as_cash": money(dcash),
         "receivables": money(recv),
         "ending_value": money(ending),
         "gain": money(gain),
         "gain_pct": "n/a" if contributed == 0 else fmt(gain / contributed * 100, 2),
         "as_of": as_of.isoformat(),
+        "deepest_dip": None if dip is None else {
+            "date": dip[1].isoformat(), "value": money(dip[2]),
+            "added": money(dip[3]), "below_by": money(dip[0])},
     }
     return {"status": "ok", "error_code": None, "summary": summary, "buys": buys,
             "series": series, "transactions_used": str(len(used)),

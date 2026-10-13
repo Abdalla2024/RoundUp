@@ -696,13 +696,13 @@ def test_saved_success(keys, saved_env, alg):
     check_result(b["result"], b["meta"])
 
     paths = [req.url.path for req in storage.calls]
-    assert paths == ["/rest/v1/scenarios", "/rest/v1/scenario_results"]
+    # EDITED (stage 5 contract): one atomic call to the save_scenario() database function, no Prefer header.
+    assert paths == ["/rest/v1/rpc/save_scenario"]
     for req in storage.calls:
         assert req.method == "POST"
         assert str(req.url).startswith(SUPABASE_URL + "/rest/v1/")
         assert req.headers["apikey"] == PUBLISHABLE_KEY
         assert req.headers["authorization"] == f"Bearer {token}"
-        assert "return=representation" in req.headers["prefer"]
         assert req.headers["content-type"].startswith("application/json")
 
 
@@ -723,7 +723,7 @@ def test_saved_without_transactions(keys, saved_env):
     assert r.status_code == 201
     scen = storage.bodies()[0]
     row = scen[0] if isinstance(scen, list) else scen
-    assert row.get("transactions") is None
+    assert row.get("p_transactions") is None  # EDITED: function parameter name
     assert DESC_MARKER not in storage.raw()
     assert DESC_MARKER not in r.text
 
@@ -735,7 +735,7 @@ def test_saved_with_transactions_never_stores_descriptions(keys, saved_env):
     assert r.status_code == 201
     scen = storage.bodies()[0]
     row = scen[0] if isinstance(scen, list) else scen
-    assert row.get("transactions"), "transactions should be saved when save_transactions is true"
+    assert row.get("p_transactions"), "transactions should be saved when save_transactions is true"  # EDITED: function parameter name
     assert DESC_MARKER not in storage.raw()
     assert not find_key(storage.bodies(), "description")
     assert DESC_MARKER not in r.text

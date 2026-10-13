@@ -42,6 +42,7 @@ class RunOptions(Strict):
     end: str = Field(pattern=DATE)
     transactions: Optional[list[TransactionIn]] = Field(default=None, min_length=1, max_length=MAX_TRANSACTIONS)
     generate: Optional[GenerateIn] = None
+    buys: Literal["all", "none"] = "all"           # "none": leave the buy list out (counts stay in the summary)
 
     _s = field_validator("start", "end")(_real_date)
 

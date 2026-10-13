@@ -198,3 +198,41 @@ def test_parse_strips_utf8_bom(client):
     r = client.post("/v1/transactions/parse", json={"csv": "﻿" + CSV, "mapping": {"date": "Date", "amount": "Amount"},
                                                    "sign_convention": "debits_positive"})
     assert r.status_code == 200 and r.json()["columns"][0] == "Date"
+
+
+def test_buys_none_option_equals_engine(client):
+    body = base_body(start="2012-01-03", end="2026-09-30", buys="none")
+    del body["transactions"]
+    body["generate"] = {"seed": 3, "max_per_day": 2}
+    out = client.post("/v1/simulate", json=body).json()
+    eng = run_scenario(engine_scenario(body), series="auto", include_buys=False)
+    assert out["result"] == eng and out["result"]["buys"] == [] and out["result"]["buys_included"] is False
+    assert out["result"]["summary"]["deepest_dip"] is None or set(out["result"]["summary"]["deepest_dip"]) == \
+        {"date", "value", "added", "below_by"}
+
+
+def test_buys_option_validated(client):
+    assert client.post("/v1/simulate", json=base_body(buys="some")).status_code == 422
+
+
+def test_cors_allows_only_the_configured_origin(make_client):
+    c = make_client(allowed_origin="https://roundup-web.vercel.app")
+    pre = c.options("/v1/simulate", headers={"Origin": "https://roundup-web.vercel.app",
+                                              "Access-Control-Request-Method": "POST",
+                                              "Access-Control-Request-Headers": "content-type,authorization"})
+    assert pre.status_code == 200
+    assert pre.headers["access-control-allow-origin"] == "https://roundup-web.vercel.app"
+    assert "authorization" in pre.headers["access-control-allow-headers"].lower()
+    ok = c.post("/v1/simulate", json=base_body(), headers={"Origin": "https://roundup-web.vercel.app"})
+    assert ok.headers["access-control-allow-origin"] == "https://roundup-web.vercel.app"
+    bad = c.post("/v1/simulate", json=base_body(), headers={"Origin": "https://evil.example"})
+    assert "access-control-allow-origin" not in bad.headers
+    bad_pre = c.options("/v1/simulate", headers={"Origin": "https://evil.example",
+                                                 "Access-Control-Request-Method": "POST"})
+    assert "access-control-allow-origin" not in bad_pre.headers
+    assert "access-control-allow-credentials" not in ok.headers          # tokens go in a header, not cookies
+
+
+def test_no_cors_without_configuration(client):
+    r = client.post("/v1/simulate", json=base_body(), headers={"Origin": "https://roundup-web.vercel.app"})
+    assert "access-control-allow-origin" not in r.headers

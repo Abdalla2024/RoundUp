@@ -99,3 +99,26 @@ Each entry lists the rule, the competing readings, and the reading implemented. 
 - Reading A: that applies only to transaction amounts, which are user cash flows (R-0.2).
 - Reading B: it also applies to prices.
 - **Chosen: A.** Prices, dividend `amount_raw` and split ratios are parsed exactly at any precision (R-0.5(b) treats them separately). The `price` field echoes the input string unchanged.
+
+## AMB-19 — `deepest_dip`: compare on exact or displayed values [output-affecting, rare]
+- Reading A: rank days by the exact (added − value).
+- Reading B: rank days by the difference of the displayed, cent-rounded series values.
+- **Chosen: A.** FORMAT.md says `below_by` is "exact, then rounded", and R-0.4 has one rounding point. The tie-break ("earliest wins") therefore applies only to **exact** ties.
+- Two days whose `below_by` both display as 0.01 can resolve to the later day (self-test "dip exact beats display tie"). A value that is exactly below `added` by less than half a cent still counts as a dip, with `below_by` "0.00".
+
+## AMB-20 — `deepest_dip.added`: what counts as "round-ups dated on or before that day"
+- **Chosen:** every in-window round-up whose purchase date is ≤ the series day, whether invested or not.
+  - This includes purchases on non-calendar days, such as a Saturday purchase, which counts on the following Monday's point.
+  - Whole-dollar purchases add $0.
+- `added` never includes dividends. A dividend can therefore lift the value above `added`, but cannot add to it.
+
+## AMB-21 — FORMAT.md series `auto` mode, `series_resolution`, `series_rule`, per-point `added`
+- These are described for the API's `run_scenario(s, series="auto")`.
+- **Chosen:** not implemented. The cross-check covers only the default `daily` mode, whose output shape has none of these keys.
+- `deepest_dip` is always judged over every daily point, which matches the "before any chart thinning" wording.
+
+## AMB-22 — `roundups_waiting` / `dividends_as_cash` when `end` is not a calendar-open day
+- Same reading as AMB-13: both parts are evaluated at `end` itself, not at the last calendar-open day.
+  - Round-ups dated after the last calendar-open day but ≤ end are waiting.
+  - Dividends with pay date ≤ end are cash.
+- The exact parts sum to `uninvested_cash`. The displayed parts can differ from the displayed total by $0.01 (R-0.4).

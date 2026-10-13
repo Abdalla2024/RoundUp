@@ -43,7 +43,8 @@ def make_token(ec_key):
 
 
 class Storage:
-    """Records Data API calls; answers like PostgREST with Prefer: return=representation (201 + array)."""
+    """Records Data API calls. POST /rest/v1/rpc/save_scenario answers like PostgREST for a scalar function:
+    200 with the bare JSON value (the new scenario id)."""
 
     def __init__(self):
         self.calls, self.fail_on = [], None
@@ -51,11 +52,10 @@ class Storage:
     def handler(self, request: httpx.Request) -> httpx.Response:
         body = json.loads(request.content)
         self.calls.append({"url": str(request.url), "headers": dict(request.headers), "body": body})
-        table = request.url.path.rsplit("/", 1)[-1]
-        if self.fail_on == table:
+        name = request.url.path.rsplit("/", 1)[-1]
+        if self.fail_on == name:
             return httpx.Response(500, json={"message": "boom"})
-        row = dict(body, id=str(uuid.uuid4()))
-        return httpx.Response(201, json=[row])
+        return httpx.Response(200, json=str(uuid.uuid4()))
 
 
 @pytest.fixture

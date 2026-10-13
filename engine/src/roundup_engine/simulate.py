@@ -6,7 +6,7 @@ from datetime import date
 from decimal import Decimal, localcontext
 
 from .market import DataError, MarketSeries, validate_series
-from .money import CONTEXT, cents_to_decimal
+from .money import CONTEXT, SNAP, cents_to_decimal
 from .roundup import roundup_cents
 from .strategies import make_batches
 from .transactions import Transaction, select_purchases
@@ -47,6 +47,15 @@ class Point:
     added_cents: int = 0          # round-ups contributed up to and including this date (for the chart)
 
 
+@dataclass(frozen=True)
+class Dip:
+    """The day the value was furthest below the round-ups added so far (earliest on ties)."""
+    date: date
+    value: Decimal
+    added: Decimal
+    below_by: Decimal
+
+
 @dataclass
 class _Earned:
     ex_date: date
@@ -76,6 +85,9 @@ class RunResult:
     used: tuple[Transaction, ...]
     ignored: tuple[tuple[int, str], ...]
     market_checksum: str = field(default="")
+    roundups_waiting: Decimal = Decimal(0)     # round-ups not yet invested (part of uninvested_cash)
+    dividends_as_cash: Decimal = Decimal(0)    # dividends paid and not reinvested (the rest of uninvested_cash)
+    deepest_dip: Dip | None = None
 
     @property
     def gain(self) -> Decimal:
@@ -187,6 +199,14 @@ def _simulate(m: MarketSeries, rows, cfg: Config) -> RunResult:
     # ---- summary as of the end date (R-13.1)
     rcash, dcash, recv = cash_and_receivables(cfg.end)
     as_of = m.last_close_on_or_before(cfg.end)
+    dip = None
+    for pt in series:                                   # every daily point, not the thinned chart points
+        added = cents_to_decimal(pt.added_cents)
+        # Snap away the <= 1e-24 residue of 28-digit division (as R-0.4 does for display): a value exactly equal
+        # to the round-ups added must not count as a dip. Found by the independent cross-check (G-H3, G-SCHD).
+        below = (added - pt.value).quantize(SNAP)
+        if below > 0 and (dip is None or below > dip.below_by):
+            dip = Dip(pt.date, pt.value, added, below)
     holdings = shares * last_price
     uninvested = cents_to_decimal(rcash) + dcash
     return RunResult(
@@ -197,4 +217,5 @@ def _simulate(m: MarketSeries, rows, cfg: Config) -> RunResult:
         dividends_paid=sum((e.amount for e in earned if e.pay_date <= cfg.end), Decimal(0)),
         buys=tuple(buys), series=tuple(series), used=tuple(used), ignored=tuple(ignored),
         market_checksum=m.checksum(),
+        roundups_waiting=cents_to_decimal(rcash), dividends_as_cash=dcash, deepest_dip=dip,
     )

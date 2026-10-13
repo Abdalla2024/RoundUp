@@ -1,7 +1,4 @@
-"""Saving through the Supabase Data API with the user's own token, so RLS applies to the API's writes.
-
-PostgREST: POST /rest/v1/<table> with "Prefer: return=representation" answers 201 and the created rows.
-"""
+"""Saving through the Supabase Data API with the user's own token, so RLS applies to the API's writes."""
 
 import httpx
 
@@ -17,27 +14,23 @@ class Storage:
         self.key = publishable_key
         self.transport = transport
 
-    def _insert(self, client: httpx.Client, table: str, token: str, row: dict) -> dict:
-        try:
-            r = client.post(f"{self.base}/{table}", json=row, headers={
-                "apikey": self.key, "Authorization": f"Bearer {token}",
-                "Prefer": "return=representation", "Content-Type": "application/json"})
-        except httpx.HTTPError:
-            raise UNAVAILABLE from None
-        if r.status_code != 201:
-            raise UNAVAILABLE
-        try:
-            return r.json()[0]
-        except (ValueError, IndexError, KeyError, TypeError):
-            raise UNAVAILABLE from None
-
-    def save(self, token: str, scenario_row: dict, result_row: dict) -> str:
+    def save(self, token: str, params: dict) -> str:
+        """One call to the atomic save_scenario() database function (supabase/migrations/0002_rls.sql).
+        PostgREST returns a scalar function's result as a bare JSON value: here, the new scenario id."""
         if not self.base or not self.key:
             raise UNAVAILABLE
-        with httpx.Client(transport=self.transport, timeout=5) as client:
-            created = self._insert(client, "scenarios", token, scenario_row)
-            scenario_id = created.get("id")
-            if not scenario_id:
-                raise UNAVAILABLE
-            self._insert(client, "scenario_results", token, dict(result_row, scenario_id=scenario_id))
-        return scenario_id
+        try:
+            with httpx.Client(transport=self.transport, timeout=5) as client:
+                r = client.post(f"{self.base}/rpc/save_scenario", json=params, headers={
+                    "apikey": self.key, "Authorization": f"Bearer {token}", "Content-Type": "application/json"})
+        except httpx.HTTPError:
+            raise UNAVAILABLE from None
+        if r.status_code != 200:
+            raise UNAVAILABLE
+        try:
+            new_id = r.json()
+        except ValueError:
+            raise UNAVAILABLE from None
+        if not isinstance(new_id, str) or len(new_id) != 36:
+            raise UNAVAILABLE
+        return new_id
