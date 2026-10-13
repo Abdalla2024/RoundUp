@@ -53,7 +53,7 @@ All counts below are from runs on 2026-10-13, after the last change.
 | M8 | A long name scrolled the phone layout sideways | `overflow-wrap: anywhere`; e2e check at 390 px |
 | L1–L11, L13 | Double-submit, rate-limit wait, mobile reading order, axis labels, technical details, "reclassify" overclaim, flat/one-point summary, plurals and "+0.00%", CSV messages, `<bdi>`, focus after delete, wording not in COPY.md, small targets | All changed (COPY.md "Added after the stage-5 web review"). The L1 unit test cannot tell old from new code, because React re-renders between test clicks; the guard is a backstop |
 | L12 | Reload loses results | Kept by design (nothing is stored in the browser); the "No results yet" state explains |
-| Note | "+64.78%" reads like a performance figure | Kept (approved wording); owner may choose to drop the percentage |
+| Note | "+64.78%" reads like a performance figure | **Dropped** (owner decision 2026-10-13): the tile shows the dollar figure only |
 
 ### 0.2 Screen-reader pass (for the owner's VoiceOver check)
 

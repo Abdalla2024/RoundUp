@@ -110,7 +110,7 @@
       tile("div", "Dividends (simulated)", "Cash the made-up fund paid out from what its holdings earned.",
            money(s.dividends_earned), `${s.dividend_buys} payments reinvested`) +
       tile("diff", "Growth on round-ups", "How far the value at the end is above, or below, the round-ups added. It can be negative.",
-           sign(s.gain), `${s.gain_pct.startsWith("-") ? "" : "+"}${s.gain_pct}% compared with the round-ups added`);
+           sign(s.gain), "compared with the round-ups added");
     wireTerms($("#stats"));
     $("#chips").innerHTML = [`${count(r.transactions_used)} sample purchases`,
       `${scen(req.scenario_id).name}, ${styleName(req.scenario_id, req.style).toLowerCase()}`,

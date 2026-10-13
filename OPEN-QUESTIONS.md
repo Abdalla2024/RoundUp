@@ -33,8 +33,8 @@ You asked for the most conservative reasonable default on everything you did not
 | OQ-4 | Real cost per simulation on Vercel's Python runtime | Hobby has 4 CPU-hours/month | Measured locally (≈ 0.15 s, OPERATIONS.md); confirm in Vercel logs after the first deploy | Nothing |
 | ~~OQ-5~~ | Chart library | — | **Resolved:** Recharts 3 (owner decision, stage 5), with our own keyboard layer | — |
 | ~~OQ-6~~ | Hand calculations | — | **Resolved:** owner's spreadsheet matched HC-1..HC-5 | — |
-| OQ-8 | Approval of the new on-screen wording | Wording was added to fix review findings | Review COPY.md "Added after the stage-5 web review" | Launch |
-| OQ-9 | Keep or drop the "+64.78%" growth percentage | The reviewer called it borderline performance wording | Your call; dropping it is a display change only | Nothing |
-| OQ-10 | Day-first dates (01/06/2020 = 1 June) in uploaded files | The engine reads only ISO and US month/day/year; the app now warns | Add a date-format option to the parse endpoint if invitees use non-US banks | Nothing for a US cohort |
+| ~~OQ-8~~ | New on-screen wording | — | **Resolved 2026-10-13:** approved by the owner | — |
+| ~~OQ-9~~ | Growth percentage | — | **Resolved 2026-10-13:** dropped; the tile shows the dollar figure only | — |
+| ~~OQ-10~~ | Day-first dates in uploaded files | — | **Resolved 2026-10-13:** not supported in version one; the existing warning stays | — |
 | OQ-11 | Session across tabs after the magic link | The link opens a new tab; whether the first tab sees the sign-in depends on supabase-js syncing storage between tabs (not verified) | Check during the first-deploy smoke test (DEPLOY.md §4) | Nothing (reload + Saved works) |
 | OQ-7 | Whether to show **real** VOO/SCHD results locally in a recorded walkthrough (e.g. a video for the cohort) | A recording shown to others is arguably display | Include in the provider emails' answers | Any recording using real data |

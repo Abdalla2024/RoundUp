@@ -33,7 +33,9 @@ describe("Results screen", () => {
       expect(screen.getByRole("button", { name: t })).toBeTruthy();
     }
     expect(text).toContain("+$1,159.45");
-    expect(text).toContain("+64.78% compared with the round-ups added");
+    // owner decision 2026-10-13: dollar figure only, no percentage next to "Growth on round-ups"
+    expect(text).toContain("+$1,159.45compared with the round-ups added");
+    expect(text).not.toMatch(/\d%/);
     expect(text).toContain("Lowest point compared with money put in: on Nov 6, 2017 the value was $344.52, which was $164.98 below the $509.50 of round-ups added by then.");
     expect(text).toContain("On the last day, $0.95 of round-ups was waiting to be invested and $0.00 of dividends was kept as cash.");
     expect(text).toContain(simulate.response.result.series_rule);

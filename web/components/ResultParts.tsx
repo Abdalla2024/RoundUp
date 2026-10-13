@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { counted, longDate, money, signedMoney, signedPct, unsignedMoney, isNegative } from "@/lib/format";
+import { counted, longDate, money, signedMoney, unsignedMoney, isNegative } from "@/lib/format";
 import type { Dip, Result } from "@/lib/types";
 
 export function Headline({ result, sample }: { result: Result; sample: boolean }) {
@@ -39,7 +39,7 @@ export function StatTiles({ result, sample }: { result: Result; sample: boolean 
         note={`${counted(s.dividend_buys, "payment", "payments")} reinvested`}
         def="Cash the made-up fund paid out from what its holdings earned." />
       <Tile id="growth" term="Growth on round-ups" value={signedMoney(s.gain)}
-        note={s.gain_pct === "n/a" ? "no round-ups were added" : `${signedPct(s.gain_pct)} compared with the round-ups added`}
+        note={s.gain_pct === "n/a" ? "no round-ups were added" : "compared with the round-ups added"}
         def="How far the value at the end is above, or below, the round-ups added. It can be negative." />
     </dl>
   );

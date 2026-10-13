@@ -36,7 +36,7 @@ Below it, collapsed by default on every screen size:
 | Round-ups added | {contributed} | from {n} sample purchases | The spare change set aside from the purchases. This is money going in, not growth. |
 | Value at end | {ending_value} | on {as_of} | What the shares, cash waiting to be invested and dividends kept as cash would be worth on the last day. |
 | Dividends (simulated) | {dividends_earned} | {dividend_buys} payments reinvested | Cash the made-up fund paid out from what its holdings earned. |
-| **Growth on round-ups** | {±gain} | {±gain_pct}% compared with the round-ups added | How far the value at the end is above, or below, the round-ups added. It can be negative. |
+| **Growth on round-ups** | {±gain} | compared with the round-ups added (no percentage: owner decision 2026-10-13) | How far the value at the end is above, or below, the round-ups added. It can be negative. |
 
 - **Lowest point** (under the chart, from `deepest_dip`):
   - With a dip: "**Lowest point compared with money put in:** on {date} the value was {value}, which was {below_by} below the {added} of round-ups added by then."
@@ -96,7 +96,7 @@ The API's plain-language `error.message` is shown as is. The web app adds only t
 - **No results yet** (results page opened directly): "No results yet" / "Run a simulation first." Button: "Set up a simulation"
 - **All whole-dollar purchases:** "These purchases were all whole-dollar amounts, so there was no spare change to invest."
 
-## Added after the stage-5 web review (new wording, for owner approval)
+## Added after the stage-5 web review (approved by the owner on 2026-10-13)
 
 Each line fixes a reviewer finding (H = high, M = medium, L = low; see TEST-STRATEGY.md §stage 5).
 
@@ -109,7 +109,7 @@ Each line fixes a reviewer finding (H = high, M = medium, L = low; see TEST-STRA
 - **Chart summary, special cases** (L7): one point: "On {date} the value is {value} and the round-ups added are {added}." Value unchanged throughout: "From {start} to {end} the value stays at {value}, while the round-ups added go from {first added} to {last added}."
 - **Sign in to save** (M7; the form now opens on the results page instead of leaving it). After the link is sent: "Check your email for a sign-in link. It works once. Keep this tab open: your results stay here, and you can save them once you're signed in."
 - **Technical details** (L5): "Scenario {id} ({style}), scenario seed {seed}, model {model_version}; engine {engine_version}; input checksum {checksum}. Settings: {purchases}; {start} to {end}; {strategy}; {dividends}. The same settings and purchases give exactly these numbers again." `{purchases}` is "sample number {n}, up to {k} purchases a day", "purchases from your file" or "purchases as saved".
-- **Plurals** (L8): "from 1 sample purchase", "1 payment reinvested", "invested 1 time". A zero percentage shows as "0.00%" with no sign.
+- **Plurals** (L8): "from 1 sample purchase", "1 payment reinvested", "invested 1 time".
 
 **Setup**
 - **Sample number hint** (M3): "A whole number from 0 to 2,147,483,647." Errors: "Use a whole number from 0 to 2,147,483,647 for the sample number." / "Use 1, 2 or 3 for purchases per day." Only the wrong field is marked.

@@ -32,12 +32,6 @@ export function count(s: string | number, signed = false): string {
   return signed && body !== "0" ? `+${body}` : body;
 }
 
-/** "64.78" -> "+64.78%"; "0.00" -> "0.00%" (no sign on zero); "n/a" stays "n/a". */
-export function signedPct(s: string): string {
-  if (s === "n/a") return "n/a";
-  if (/^0+(\.0+)?$/.test(s)) return `${s}%`;
-  return s.startsWith("-") ? `−${s.slice(1)}%` : `+${s}%`;
-}
 
 /** "1" -> "1 purchase", "3606" -> "3,606 purchases" (the count string is compared as text, never computed). */
 export function counted(s: string | number, one: string, many: string): string {
