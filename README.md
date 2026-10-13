@@ -24,6 +24,8 @@ python3 -m venv .venv
     -o pythonpath=api/tests_independent --rootdir=api/tests_independent              # independent API tests
 ```
 
+Database SQL (needs local Postgres binaries, e.g. Postgres.app; skipped otherwise): `.venv/bin/python -m pytest -q supabase/tests`. See [supabase/README.md](supabase/README.md).
+
 Run the API locally: `.venv/bin/python -m uvicorn app:app` (uvicorn is not pinned; install it for local runs only).
 
 ## Deploying the API to Vercel
