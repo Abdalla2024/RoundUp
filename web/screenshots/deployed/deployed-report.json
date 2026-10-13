@@ -1,0 +1,133 @@
+{
+ "setup/light": {
+  "violations": [],
+  "passes": 41
+ },
+ "results/light": {
+  "violations": [],
+  "passes": 44
+ },
+ "compare/light": {
+  "violations": [],
+  "passes": 51
+ },
+ "saved-signed-out/light": {
+  "violations": [],
+  "passes": 42
+ },
+ "how/light": {
+  "violations": [],
+  "passes": 40
+ },
+ "privacy/light": {
+  "violations": [],
+  "passes": 37
+ },
+ "setup/dark": {
+  "violations": [],
+  "passes": 41
+ },
+ "results/dark": {
+  "violations": [],
+  "passes": 44
+ },
+ "compare/dark": {
+  "violations": [],
+  "passes": 51
+ },
+ "saved-signed-out/dark": {
+  "violations": [],
+  "passes": 42
+ },
+ "how/dark": {
+  "violations": [],
+  "passes": 40
+ },
+ "privacy/dark": {
+  "violations": [],
+  "passes": 37
+ },
+ "setup/mobile": {
+  "violations": [],
+  "passes": 41
+ },
+ "results/mobile": {
+  "violations": [],
+  "passes": 44
+ },
+ "compare/mobile": {
+  "violations": [],
+  "passes": 51
+ },
+ "saved-signed-out/mobile": {
+  "violations": [],
+  "passes": 42
+ },
+ "how/mobile": {
+  "violations": [],
+  "passes": 40
+ },
+ "privacy/mobile": {
+  "violations": [],
+  "passes": 37
+ },
+ "perf": {
+  "setup_first_load": {
+   "ms": 806,
+   "total_bytes": 859897,
+   "transferred_bytes": 285255,
+   "by_type": {
+    "document": 12415,
+    "script": 762625,
+    "font": 48432,
+    "stylesheet": 14306,
+    "fetch": 21881,
+    "other": 238
+   }
+  },
+  "api_simulate_full_range_buys_none": {
+   "bytes": 59313,
+   "ms_each_of_5": [
+    435,
+    376,
+    341,
+    441,
+    372
+   ],
+   "series_points": 770
+  },
+  "api_simulate_full_range_buys_all": {
+   "bytes": 553448,
+   "ms_each_of_5": [
+    441,
+    425,
+    477,
+    433,
+    439
+   ],
+   "series_points": 770
+  },
+  "api_compare_full_range": {
+   "bytes": 118384,
+   "ms_each_of_5": [
+    649,
+    659,
+    677,
+    651,
+    678
+   ]
+  },
+  "run_full_range_to_results": {
+   "ms": 1267,
+   "total_bytes": 1262278,
+   "transferred_bytes": 119318,
+   "by_type": {
+    "stylesheet": 14306,
+    "script": 1141650,
+    "document": 12415,
+    "fetch": 93431,
+    "other": 476
+   }
+  }
+ }
+}
