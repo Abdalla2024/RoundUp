@@ -78,7 +78,7 @@ Checked from outside: ✅ sign-ups are disabled (`disable_signup: true`), email 
 **By hand (✋ needs a real invited address; sends one email):**
 1. Authentication → Users → invite one address. (Open sign-ups stay off.)
 2. On the results page choose **Sign in to save**, enter that address, open the email link. It opens a new tab.
-3. ⚠️ Check whether the original tab now shows **Save this scenario** (OQ-11). If not, reload Saved scenarios in the new tab.
+3. ⚠️ Check whether the original tab now shows **Save this scenario** (OQ-11). If not, reload Saved scenarios in the new tab. (Steps 1–4 were done by the owner on 2026-10-13 and worked.)
 4. Save, see it listed, open it, delete it.
 5. Two-user check: user B must not see A's scenario (supabase/README.md §4).
 6. Vercel → API project → Logs: one JSON line per request, no emails, amounts or merchant names.
@@ -93,7 +93,7 @@ Checked from outside: ✅ sign-ups are disabled (`disable_signup: true`), email 
 | Tables closed to signed-out visitors | Requests with the publishable key only are refused (401, permission denied) on all three tables for read, insert and delete, and on both RPC functions | ✅ |
 | Row-level security, two users | `supabase/tests/rls_negative_test_selfcontained.sql` in the SQL editor: `ALL RLS CHECKS PASSED` | ✅ (you ran it; it leaves no users by design) |
 | Forged tokens refused | Six forged tokens (none, garbage, HS256, `alg=none`, own ES256 key with a real key id, unknown key id) → all 401 | ✅ |
-| A real token accepted | Needs a real sign-in | ⚠️ |
+| A real token accepted | The owner signed in with a real magic link, saved a scenario through the API and saw it in Saved scenarios | ✅ owner, 2026-10-13 |
 | Rate limits on | 24 quick POSTs answered, then `429` | ✅ (per server instance only) |
 | Cost cap | Hobby has no paid usage; Supabase Free has fixed quotas; no AI key. If you ever move to Pro, set Spend Management ([docs](https://vercel.com/docs/projects/managing-projects)) | ✅ |
 | No secrets in the repo | `git grep -nE "sb_secret_\|-----BEGIN [A-Z ]*PRIVATE KEY\|eyJhbGciOi[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}" -- ':!DEPLOY.md'` returns nothing | run before each launch |
@@ -118,11 +118,14 @@ Checked from outside: ✅ sign-ups are disabled (`disable_signup: true`), email 
 
 The setup page is bigger on Vercel because the deployed build loads the Supabase browser library (243 KB uncompressed, verified by listing the scripts) on every page, while the local test build does not. Loading it only when someone signs in would remove that; this is not done yet.
 
-## 8. Still not verified
+## 8. Verified by the owner on 2026-10-13, and still not verified
 
-- A real magic link end to end: email delivery, the code exchange on `/auth/callback`, and whether the first tab sees the session (OQ-11).
-- `shouldCreateUser: false` together with the dashboard switch: the settings and an unknown-address request were checked, but not a real invited sign-in.
-- Supabase listing saved scenarios with nested results under row-level security (needs a signed-in user).
+**✅ Verified by the owner on 2026-10-13, on the preview with the real services:** invited their own address, signed in with a real magic link (so email delivery, the code exchange on `/auth/callback`, and `shouldCreateUser: false` with the invite flow work), ran a simulation, saved it (the API accepted the real token and called `save_scenario` with it), and saw it in Saved scenarios (the nested-results read under row-level security works). Also a short VoiceOver pass (a fuller one is planned).
+
+**Still not verified:**
+
+- Whether the tab that started the sign-in sees the session created in the magic-link tab (OQ-11): the owner's note does not say which tab was used.
+- Deleting a saved scenario, and the two-user check on the real service (user B must not see A's scenario).
 - Site URL and Redirect URLs read back from Supabase.
 - GitHub Actions on the new commits.
 - A Python 3.12 job in CI (the suites pass on 3.12 locally, but CI runs only 3.13.2).
@@ -136,7 +139,7 @@ Do these in order. Each has a check afterwards. ⚠️ **None of these commands 
 1. **Vercel (both projects)**
    a. Quick stop (reversible): `npx vercel@63.1.2 project pause roundup-web` and `… pause roundup-api`. You type each project name to confirm. This pauses *production* traffic only, so the preview addresses keep working: do (b) as well ([docs](https://vercel.com/docs/cli/project)).
    b. Remove the previews: `npx vercel@63.1.2 alias rm roundup-demo-web-pr.vercel.app` and `… roundup-demo-api-pr.vercel.app`, then delete the projects: `npx vercel@63.1.2 project rm roundup-web` and `… roundup-api`. Deleting a project deletes its deployments, domains and environment variables. The `.vercel.app` names become free for anyone to take.
-   c. The accidental production deployment of `roundup-web` goes with the project in (b). If you keep the project, remove that deployment first: `npx vercel@63.1.2 remove <deployment-url>`.
+   c. The accidental production deployment of `roundup-web` goes with the project in (b). If you keep the project, remove that one deployment first: `npx vercel@63.1.2 remove roundup-2r96zp4tq-abdalla-abdelmagids-projects.vercel.app`. **Always pass the full deployment URL.** Vercel's own docs warn that `vercel remove <project-name>` removes the entire project ([docs](https://vercel.com/docs/cli/remove)).
    d. Check: `curl -sI https://roundup-demo-web-pr.vercel.app/` and `…api-pr.vercel.app/v1/health` return `404` with `x-vercel-error: DEPLOYMENT_NOT_FOUND`; so does `https://roundup-web.vercel.app/`.
 2. **Supabase**
    a. Authentication → Users: delete every user you invited (this also removes their saved scenarios, through the foreign keys). Check Table Editor → `scenarios` and `scenario_results` are empty.
