@@ -18,7 +18,7 @@
 <div class="layout"><div>
 <h1>Your sample round-ups in a made-up market</h1>
 <ul class="chips" id="chips" aria-label="Simulation settings"></ul>
-<p class="assumptions-button-wrap"><button class="btn assumptions-button" id="open-assumptions" type="button" aria-haspopup="dialog">Assumptions</button></p>
+<p class="assumptions-button-wrap"><button class="btn assumptions-button" id="open-assumptions" type="button" aria-haspopup="dialog">Key points and assumptions</button></p>
 <div class="notice" role="note"><p><strong>Hypothetical simulation on a synthetic market.</strong> These results show how sample round-ups behave in a made-up market scenario. No money was invested, the prices are not real, and this is not a forecast. It is not investment, tax or financial advice.</p></div>
 <p class="headline" id="headline"></p>
 <dl class="stats" id="stats"></dl>
@@ -30,18 +30,16 @@
 <p class="tooltip" aria-live="polite"></p>
 <figcaption><span class="rule"></span> Scenario dates follow a real calendar, but the prices are made up.</figcaption>
 </figure>
+<p id="dip"></p>
 <p id="detail" class="muted"></p>
 <details><summary>Show the chart as a table</summary><div id="table"></div></details>
 <h2 style="margin-top:24px">Questions about these numbers</h2>
-<p class="small muted">Planned: an AI explainer that only describes these numbers. It never predicts or advises.</p>
-<div class="btn-row"><button class="btn" type="button" aria-disabled="true" aria-describedby="ai-note">Why did the value dip?</button>
-<button class="btn" type="button" aria-disabled="true" aria-describedby="ai-note">What did dividends add?</button>
-<span id="ai-note" class="small muted">Not available in this mock.</span></div>
+<p class="small muted"><strong>Coming later:</strong> an AI explainer that only describes these numbers. It will never predict or advise.</p>
 <div class="btn-row" style="margin-top:24px"><a class="btn btn-primary" href="#sign-in">Sign in to save</a>
 <a class="btn" href="compare.html">Compare with another way of investing</a></div>
 <details class="tech"><summary>Technical details</summary><p class="small muted" id="meta"></p></details>
 <dialog id="assumptions-dialog" aria-labelledby="assumptions-mobile-h"><div class="dialog-head">
-<h2 id="assumptions-mobile-h" tabindex="-1">Assumptions</h2><button class="btn" type="button" data-close>Close</button></div>
+<h2 id="assumptions-mobile-h" tabindex="-1">Key points</h2><button class="btn" type="button" data-close>Close</button></div>
 <div class="assumptions" id="assumptions-mobile" data-assumptions></div></dialog>
 </div>
 <aside class="assumptions assumptions-rail panel" id="assumptions-rail" data-assumptions></aside>

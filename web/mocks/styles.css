@@ -152,6 +152,10 @@ details summary { cursor: pointer; min-height: 44px; display: flex; align-items:
 
 /* assumptions */
 .assumptions h2 { font-size: 18px; }
+.key-points { margin: 0 0 12px; padding-left: 18px; font-size: 14px; }
+.key-points li { margin-bottom: 6px; }
+.all-assumptions summary, .refs summary { font-size: 15px; }
+.refs { margin-top: 8px; }
 .assumptions dl { margin: 0; }
 .assumptions dt { font-weight: 650; margin-top: 12px; }
 .assumptions dd { margin: 2px 0 0; color: var(--ink-2); font-size: 14px; }

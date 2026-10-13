@@ -17,13 +17,23 @@
   const styleName = (id, st) => scen(id).styles.find((x) => x.style === st).name.replace(" (synthetic)", "");
 
   // ---------------------------------------------------------------- assumptions (rail + mobile dialog)
+  const KEY_POINTS = [
+    ["Made-up prices.", "The scenario is invented. It is not a real fund or a real market."],
+    ["Not a forecast.", "It says nothing about what any market will do."],
+    ["No fees included.", "Real round-up apps may charge fees that matter a lot for small balances."],
+    ["Not advice.", "Nothing here suggests what you should do with your money."],
+  ];
   function assumptions(target, inDialog) {
-    const items = D.assumptions.assumptions.map((a) =>
-      `<dt>${a.title} <span class="rule-id">(${a.id})</span></dt>` +
-      `<dd>${a.text}</dd>`).join("");
-    target.innerHTML = (inDialog ? "" : `<h2 id="${target.id}-h">Assumptions</h2>`) +
-      `<p class="small muted">The rules behind every number on this page. <a href="#how">How these rules work</a></p><dl>${items}</dl>
-      <p class="small muted" style="margin-top:16px">${D.assumptions.disclaimer}</p>`;
+    const A = D.assumptions.assumptions;
+    const items = A.map((a) => `<dt>${a.title}</dt><dd>${a.text}</dd>`).join("");
+    const refs = A.map((a) => `<li>${a.title}: ${a.id}</li>`).join("");
+    const keys = KEY_POINTS.map(([k, t]) => `<li><strong>${k}</strong> ${t}</li>`).join("");
+    target.innerHTML = (inDialog ? "" : `<h2 id="${target.id}-h">Key points</h2>`) +
+      `<ul class="key-points">${keys}</ul>
+      <details class="all-assumptions"><summary>All assumptions (${A.length})</summary><dl>${items}</dl>
+        <p class="small muted" style="margin-top:12px">${D.assumptions.disclaimer}</p>
+        <details class="refs"><summary>Rule references</summary><ul class="small">${refs}</ul></details>
+      </details>`;
     if (!inDialog) target.setAttribute("aria-labelledby", target.id + "-h");
   }
   document.querySelectorAll("[data-assumptions]").forEach((t) => assumptions(t, !!t.closest("dialog")));
@@ -74,6 +84,12 @@
       <tbody>${rows}</tbody></table></div>`;
   }
 
+  function dipSentence(d, prefix) {
+    const lead = `<strong>${prefix ? prefix + ", lowest" : "Lowest"} point compared with money put in:</strong> `;
+    return d ? lead + `on ${longDate(d.date)} the value was ${money(d.value)}, which was ${money(d.below_by)} below ` +
+               `the ${money(d.added)} of round-ups added by then.`
+             : lead + "the value never fell below the round-ups added in this scenario.";
+  }
   const tile = (id, term, def, value, note) => `<div class="stat"><dt><button type="button" class="term"
       aria-expanded="false" aria-controls="def-${id}">${term}</button></dt>
       <dd><span class="stat-value">${value}</span><span class="stat-note">${note}</span>
@@ -93,15 +109,17 @@
            money(s.ending_value), `on ${longDate(s.as_of)}`) +
       tile("div", "Dividends (simulated)", "Cash the made-up fund paid out from what its holdings earned.",
            money(s.dividends_earned), `${s.dividend_buys} payments reinvested`) +
-      tile("diff", "Value minus round-ups added", "Value at end minus the round-ups added. It can be negative.",
+      tile("diff", "Growth on round-ups", "How far the value at the end is above, or below, the round-ups added. It can be negative.",
            sign(s.gain), `${s.gain_pct.startsWith("-") ? "" : "+"}${s.gain_pct}% compared with the round-ups added`);
     wireTerms($("#stats"));
     $("#chips").innerHTML = [`${count(r.transactions_used)} sample purchases`,
       `${scen(req.scenario_id).name}, ${styleName(req.scenario_id, req.style).toLowerCase()}`,
       STRATEGY[set.strategy], DIVIDENDS(set.reinvest), `${longDate(req.start)} – ${longDate(req.end)}`]
       .map((c) => `<li>${c}</li>`).join("") + `<li><a href="setup.html">Edit settings</a></li>`;
-    $("#detail").textContent = `Money was invested ${count(s.roundup_buys)} times from round-ups and ` +
-      `${s.dividend_buys} times from dividends. ${money(s.uninvested_cash)} was still waiting to be invested on the last day.`;
+    $("#dip").innerHTML = dipSentence(s.deepest_dip);
+    $("#detail").textContent = `On the last day, ${money(s.roundups_waiting)} of round-ups was waiting to be invested ` +
+      `and ${money(s.dividends_as_cash)} of dividends was kept as cash. Money was invested ${count(s.roundup_buys)} ` +
+      `times from round-ups and ${s.dividend_buys} times from dividends.`;
     chartBlock(r, $("#chart"), { valueLabel: "Value" });
     $("#table").innerHTML = table(r);
     $("#meta").textContent = `Scenario ${D.results.meta.scenario_id}, seed ${D.results.meta.scenario_seed}, ` +
@@ -117,10 +135,10 @@
     const rows = [
       ["Round-ups added", money(a.contributed), money(b.contributed), "same input"],
       ["Value at end", money(a.ending_value), money(b.ending_value), sign(d.ending_value)],
-      ["Value minus round-ups added", sign(a.gain), sign(b.gain), sign(d.gain)],
+      ["Growth on round-ups", sign(a.gain), sign(b.gain), sign(d.gain)],
       ["Dividends (simulated)", money(a.dividends_earned), money(b.dividends_earned), sign(d.dividends_earned)],
-      ["Cash not invested (round-ups waiting, plus dividends kept as cash)", money(a.uninvested_cash),
-       money(b.uninvested_cash), sign(d.uninvested_cash)],
+      ["Round-ups waiting to be invested", money(a.roundups_waiting), money(b.roundups_waiting), "shown per side"],
+      ["Dividends kept as cash", money(a.dividends_as_cash), money(b.dividends_as_cash), "shown per side"],
       ["Times invested from round-ups", a.roundup_buys, b.roundup_buys, signCount(d.roundup_buys)],
       ["Times invested from dividends", a.dividend_buys, b.dividend_buys, signCount(d.dividend_buys)],
     ];
@@ -131,6 +149,8 @@
     chartBlock(C.a, $("#chart-a"), { yMax, height: 260, valueLabel: "A" });
     chartBlock(C.b, $("#chart-b"), { yMax, height: 260, cls: "b", valueLabel: "B" });
     $("#compare-rule").textContent = C.a.series_rule;
+    $("#dip-a").innerHTML = dipSentence(a.deepest_dip, "A");
+    $("#dip-b").innerHTML = dipSentence(b.deepest_dip, "B");
   }
 
   // ---------------------------------------------------------------- saved

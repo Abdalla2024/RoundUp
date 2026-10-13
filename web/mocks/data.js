@@ -318,11 +318,19 @@ window.ROUNDUP_MOCK = {
     "shares": "8.413960",
     "holdings_value": "2948.42",
     "uninvested_cash": "0.95",
+    "roundups_waiting": "0.95",
+    "dividends_as_cash": "0.00",
     "receivables": "0.00",
     "ending_value": "2949.37",
     "gain": "1159.45",
     "gain_pct": "64.78",
-    "as_of": "2024-12-31"
+    "as_of": "2024-12-31",
+    "deepest_dip": {
+     "date": "2017-11-06",
+     "value": "344.52",
+     "added": "509.50",
+     "below_by": "164.98"
+    }
    },
    "series": [
     {
@@ -3536,11 +3544,19 @@ window.ROUNDUP_MOCK = {
     "shares": "0.741427",
     "holdings_value": "181.12",
     "uninvested_cash": "4.53",
+    "roundups_waiting": "4.53",
+    "dividends_as_cash": "0.00",
     "receivables": "0.00",
     "ending_value": "185.65",
     "gain": "10.10",
     "gain_pct": "5.75",
-    "as_of": "2020-12-31"
+    "as_of": "2020-12-31",
+    "deepest_dip": {
+     "date": "2020-06-10",
+     "value": "66.73",
+     "added": "69.06",
+     "below_by": "2.33"
+    }
    },
    "series": [
     {
@@ -5134,11 +5150,19 @@ window.ROUNDUP_MOCK = {
     "shares": "8.413960",
     "holdings_value": "2948.42",
     "uninvested_cash": "0.95",
+    "roundups_waiting": "0.95",
+    "dividends_as_cash": "0.00",
     "receivables": "0.00",
     "ending_value": "2949.37",
     "gain": "1159.45",
     "gain_pct": "64.78",
-    "as_of": "2024-12-31"
+    "as_of": "2024-12-31",
+    "deepest_dip": {
+     "date": "2017-11-06",
+     "value": "344.52",
+     "added": "509.50",
+     "below_by": "164.98"
+    }
    },
    "series": [
     {
@@ -8340,11 +8364,19 @@ window.ROUNDUP_MOCK = {
     "shares": "7.692933",
     "holdings_value": "2695.76",
     "uninvested_cash": "188.51",
+    "roundups_waiting": "13.44",
+    "dividends_as_cash": "175.07",
     "receivables": "0.00",
     "ending_value": "2884.26",
     "gain": "1094.34",
     "gain_pct": "61.14",
-    "as_of": "2024-12-31"
+    "as_of": "2024-12-31",
+    "deepest_dip": {
+     "date": "2017-11-06",
+     "value": "348.15",
+     "added": "509.50",
+     "below_by": "161.35"
+    }
    },
    "series": [
     {
@@ -11569,11 +11601,19 @@ window.ROUNDUP_MOCK = {
     "shares": "8.413960",
     "holdings_value": "2948.42",
     "uninvested_cash": "0.95",
+    "roundups_waiting": "0.95",
+    "dividends_as_cash": "0.00",
     "receivables": "0.00",
     "ending_value": "2949.37",
     "gain": "1159.45",
     "gain_pct": "64.78",
-    "as_of": "2024-12-31"
+    "as_of": "2024-12-31",
+    "deepest_dip": {
+     "date": "2017-11-06",
+     "value": "344.52",
+     "added": "509.50",
+     "below_by": "164.98"
+    }
    },
    "meta": {
     "engine_version": "0.2.0",
@@ -11601,11 +11641,19 @@ window.ROUNDUP_MOCK = {
     "shares": "102.854123",
     "holdings_value": "2682.66",
     "uninvested_cash": "1.03",
+    "roundups_waiting": "1.03",
+    "dividends_as_cash": "0.00",
     "receivables": "0.00",
     "ending_value": "2683.69",
     "gain": "893.77",
     "gain_pct": "49.93",
-    "as_of": "2024-12-31"
+    "as_of": "2024-12-31",
+    "deepest_dip": {
+     "date": "2015-03-02",
+     "value": "25.10",
+     "added": "25.52",
+     "below_by": "0.42"
+    }
    },
    "meta": {
     "engine_version": "0.2.0",
@@ -11633,11 +11681,19 @@ window.ROUNDUP_MOCK = {
     "shares": "81.347708",
     "holdings_value": "1783.59",
     "uninvested_cash": "131.76",
+    "roundups_waiting": "13.44",
+    "dividends_as_cash": "118.32",
     "receivables": "0.00",
     "ending_value": "1915.35",
     "gain": "125.43",
     "gain_pct": "7.01",
-    "as_of": "2024-12-31"
+    "as_of": "2024-12-31",
+    "deepest_dip": {
+     "date": "2022-12-13",
+     "value": "1156.84",
+     "added": "1427.88",
+     "below_by": "271.04"
+    }
    },
    "meta": {
     "engine_version": "0.2.0",

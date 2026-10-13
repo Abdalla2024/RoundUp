@@ -10,10 +10,10 @@
  "results/desktop": {
   "axe_violations": [],
   "axe_passes": 46,
-  "tab_stops": 21,
+  "tab_stops": 19,
   "first_tab_stop": "Skip to main content",
   "stops_without_visible_focus": [],
-  "visible_interactive_elements": 23,
+  "visible_interactive_elements": 22,
   "chart_keyboard": {
    "home": "Jan 2, 2015: value $1.35, round-ups added $1.35",
    "after_arrow": "Jan 9, 2015: value $2.59, round-ups added $2.59",
@@ -22,11 +22,11 @@
  },
  "compare/desktop": {
   "axe_violations": [],
-  "axe_passes": 47,
+  "axe_passes": 48,
   "tab_stops": 9,
   "first_tab_stop": "Skip to main content",
   "stops_without_visible_focus": [],
-  "visible_interactive_elements": 13,
+  "visible_interactive_elements": 14,
   "chart_keyboard": {
    "home": "Jan 2, 2015: value $1.35, round-ups added $1.35",
    "after_arrow": "Jan 9, 2015: value $2.59, round-ups added $2.59",
@@ -52,10 +52,10 @@
  "results/mobile": {
   "axe_violations": [],
   "axe_passes": 45,
-  "tab_stops": 21,
+  "tab_stops": 19,
   "first_tab_stop": "Skip to main content",
   "stops_without_visible_focus": [],
-  "visible_interactive_elements": 23
+  "visible_interactive_elements": 21
  },
  "compare/mobile": {
   "axe_violations": [],
@@ -88,7 +88,7 @@
  },
  "compare/dark": {
   "axe_violations": [],
-  "axe_passes": 47
+  "axe_passes": 48
  },
  "saved/dark": {
   "axe_violations": [],
