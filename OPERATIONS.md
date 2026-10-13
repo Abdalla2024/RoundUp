@@ -18,6 +18,18 @@
 
 **Stage 3 cost impact: none.** The API runs on the same Vercel Hobby project budget, the scenarios are generated from code (no storage), and no paid service was added. Measured cost per request locally: ≈ 0.15 CPU-seconds for a full-range simulation, so 4 active CPU-hours ≈ 96,000 such requests a month. Responses are large (≈ 0.7–1 MB for a full-range run with its daily series), which counts against the 100 GB transfer allowance: ≈ 100,000 full-range responses a month.
 
+**Stage 5 cost impact: none.** No paid service was added and there is no AI key yet. Measured locally on 2026-10-13 (`web/screenshots/perf-report.json`, production build, Chrome):
+
+| Measure | Result |
+|---|---|
+| Setup page first load | 613,518 bytes uncompressed, **201,734 bytes transferred**, 594 ms |
+| Run a full-range simulation through to the results page | +1,015,314 bytes uncompressed (Recharts is loaded only now), **174,284 transferred**, 727 ms |
+| `POST /v1/simulate`, 2015–2024, `buys: "none"` (what the site sends) | **59,313 bytes**, 147 ms, 770 chart points |
+| Same with `buys: "all"` | 553,448 bytes (why the site asks for `none`) |
+| `POST /v1/compare`, same range | 118,384 bytes, 249 ms |
+
+At ≈ 60 KB per run, the 100 GB Hobby transfer allowance is about 1.7 million simulations a month. Timings are on a laptop, not Vercel (not verified there).
+
 **Compute budget check.** Hobby includes 4 active CPU-hours (14,400 CPU-seconds) a month. The engine runs one fund × strategy over ~3,700 calendar-open days (2012 → 2026). Phase 3 will measure the actual cost per run on Vercel. If one full comparison (2 funds × 4 strategies) costs ≤ 1 CPU-second, the allowance covers ≥ 14,000 comparisons a month, far beyond an invite-only cohort. Exceeding it pauses the feature for up to 30 days ([Hobby docs](https://vercel.com/docs/plans/hobby)), so the API caches results by input hash.
 
 ## 2. AI cost per request

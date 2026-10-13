@@ -17,6 +17,61 @@ The engine is the product. If its numbers are wrong, nothing else matters. This 
 | Totals after stage 3 | Engine 362 tests · API 90 + 514 independent · cross-check agreement on 70 fixtures + 101 random scenarios in CI. |
 | Real-data golden cases, pipeline checks, RLS against a live database, AI explainer, frontend | Later stages. |
 
+### 0.1 Status after stage 5 (web app, 2026-10-13)
+
+All counts below are from runs on 2026-10-13, after the last change.
+
+| Suite | Count | Result | Command |
+|---|---|---|---|
+| Engine (golden, properties, thinning, importing, cross-check agreement on fixtures, …) | **446** tests; **47** golden cases; 77 exported fixtures | all pass | `cd engine && .venv/bin/pytest -q` |
+| Cross-check self-tests (`crosscheck/selftest`) | **96** | 0 failures | `.venv/bin/python crosscheck/selftest/run_selftest.py` |
+| Cross-check on generated scenarios | **208** scenarios, 65,764 buys | **0 differences** | `engine/tools/crosscheck_generated.py` |
+| Fault injection | **44** mutations | 44 caught | `engine/tools/fault_injection.py` |
+| API, own tests | **98** | all pass | `.venv/bin/pytest -q api/tests` |
+| API, independent (written blind from API.md) | **514** | all pass | `.venv/bin/pytest -q api/tests_independent` |
+| Supabase RLS on local Postgres (shim) | **8** | all pass | `.venv/bin/pytest -q supabase/tests` |
+| Web unit and component (Vitest) | **52** | all pass | `cd web && npx vitest run` |
+| Web end-to-end (Playwright, real API + local sign-in stand-in) | **22** | all pass | `cd web && npx playwright test` |
+| Accessibility (axe-core, WCAG 2.0–2.2 A/AA + best practice) | **24** page/mode runs (8 screens × light, dark, mobile) | **0 violations** | part of the Playwright run; `web/screenshots/axe-report.json` |
+| No money arithmetic in the browser | static TypeScript-AST check over `web/app`, `components`, `lib` | pass | `web/tests/no-money-arithmetic.test.ts` |
+
+**Engine changes in stage 5.** The cross-check found 3 scenarios where a 1e-27 residue was reported as a "dip" (fixed with the R-0.4 snap). The web review found that a weekend- or holiday-only window returned an empty result. R-12.1 now requires at least one trading day; this is golden cases G-44..46, a fault-injection mutation and AMB-23 in the blind cross-check.
+
+**Independent web review** (separate agent; plans, API.md, screenshots, black-box browser; no source). Findings and what changed:
+
+| # | Finding | Change |
+|---|---|---|
+| H1 | Weekend-only dates crashed the results page | Engine/API refuse such windows (422 `WINDOW_OUTSIDE_DATA`), and the chart shows a message for an empty series |
+| H2 | Rows outside the dates were dropped silently and blamed on whole dollars | `transactions_ignored` shown; separate "no purchases between the dates" message; the check step shows the file's dates, warns, and offers "Use this file's dates" |
+| M1 | Back / Edit settings wiped the form | Form state kept in memory (`RunContext.draft`) |
+| M2 | Double-click saved twice; saved scenarios could be re-saved | Guarded and disabled while saving; no Save on opened saved scenarios |
+| M3 | Check accepted amounts the run rejected; vague errors | Parse uses the simulate amount limit; sample-number range shown and checked; only the wrong field marked |
+| M4 | Two sign options could never work | Money out/in and debit-or-credit column pickers; the API names the missing column |
+| M5 | Slash dates read US-style silently | A notice when the file has slash dates, plus the file's date range. A day-first option needs an engine change (OPEN-QUESTIONS OQ-10) |
+| M6 | Chart keyboard unreliable, nothing announced | Own keyboard handling (arrows, Home, End, Page Up/Down), polite live readout, tap/click sets it. The "tooltip at rest" was the test's mouse pointer left over the chart; a test now checks the resting state |
+| M7 | "Sign in to save" left the results | The sign-in form opens on the results page; the sent message says to keep the tab open |
+| M8 | A long name scrolled the phone layout sideways | `overflow-wrap: anywhere`; e2e check at 390 px |
+| L1–L11, L13 | Double-submit, rate-limit wait, mobile reading order, axis labels, technical details, "reclassify" overclaim, flat/one-point summary, plurals and "+0.00%", CSV messages, `<bdi>`, focus after delete, wording not in COPY.md, small targets | All changed (COPY.md "Added after the stage-5 web review"). The L1 unit test cannot tell old from new code, because React re-renders between test clicks; the guard is a backstop |
+| L12 | Reload loses results | Kept by design (nothing is stored in the browser); the "No results yet" state explains |
+| Note | "+64.78%" reads like a performance figure | Kept (approved wording); owner may choose to drop the percentage |
+
+### 0.2 Screen-reader pass (for the owner's VoiceOver check)
+
+Automated checks cannot judge these; please cover each with VoiceOver on macOS (Safari) and, if possible, iOS:
+1. **Landmarks and headings:** VO-U rotor shows one H1 per page, banner/main/contentinfo, and the "Key points" region before the results.
+2. **Skip link:** first Tab stop; activating it lands in main content.
+3. **Label strip and disclaimer:** read in order before any figure; the yellow box is announced as a note.
+4. **Stat tiles:** each label is a button with expanded/collapsed state; the definition is read after pressing it.
+5. **Chart:** the chart is announced as a group with its name and the keyboard hint. Arrow keys need VoiceOver's Quick Nav turned off or interaction mode (VO-Shift-Down). Each move should be announced once through the live readout, without repeating the whole sentence history. Check that Home, End and Page Up/Down work.
+6. **Chart table:** "Show the chart as a table" announces expanded; the table has a caption and column headers read with each cell.
+7. **Compare table:** row headers ("Value at end") are read with each A, B and "B minus A" cell, including on a phone, where the table becomes stacked blocks.
+8. **Forms:** every setup field reads its label and hint; errors are announced (role alert) and focus moves to the error; invalid fields read as invalid.
+9. **CSV check result:** the status message is announced after "Check this file".
+10. **Sign-in and save:** the email field gets focus when the form opens; "Saved as …" is announced; an expired session is announced as an alert.
+11. **Delete dialog:** focus starts on "Keep it"; Escape closes it; after a delete, "Deleted …" is announced and focus is on the page heading.
+12. **Minus signs and money:** "−$65.11" is read as minus, not dash; "B minus A" values are read with their sign.
+13. **Loading states:** "Loading chart…" and "Running…" are not read repeatedly.
+
 The §4 tolerance is tightened by the result: engine vs cross-check must be **identical** at display precision, with no tolerance. Engine vs spreadsheet allows ≤ $0.01 (spreadsheets use binary floating point).
 
 ## 1. Layers

@@ -66,8 +66,8 @@ There is no Anthropic or other AI key in this stage: the explainer is a placehol
 
 1. Open the web address signed out. Run the default sample simulation, then compare.
 2. Upload a small CSV (date, amount, description). Choose "Purchases are positive numbers" and check the file. Run it.
-3. Sign in with an invited email. Check the magic-link email arrives and lands on Saved scenarios.
-4. Save a scenario. It should appear in the list; open it, then delete it.
+3. On the results page choose **Sign in to save** and enter an invited email. Check the magic-link email arrives; the link opens a new tab on Saved scenarios.
+4. Go back to the first tab. If **Save this scenario** has appeared, the session reached it (OPEN-QUESTIONS OQ-11); if not, reload Saved scenarios in the new tab and save from a fresh run there. Save a scenario. It should appear in the list; open it, then delete it.
 5. Two-user check: as user B in a private window, A's scenario must not appear (supabase/README.md §4).
 6. Look at Vercel → API project → Logs. There should be one JSON line per request, with no emails, amounts or merchant names.
 
@@ -90,6 +90,7 @@ There is no Anthropic or other AI key in this stage: the explainer is a placehol
 - Vercel's Python installer accepting the local-path lines `./engine` and `./api` in `requirements.txt`.
 - Vercel detecting the root `app.py` while `web/` holds a separate Next.js project in the same repository.
 - The Supabase magic-link round trip and PKCE code exchange on `/auth/callback`. Tested only against the local stand-in; supabase-js handles it with `detectSessionInUrl`.
+- Whether a tab that started the sign-in sees the session created in the magic-link tab (OQ-11).
 - `shouldCreateUser: false` blocking uninvited emails, together with the dashboard sign-up switch.
 - Supabase listing saved scenarios with nested results (`select=…,scenario_results(…)`) under RLS. The local stand-in implements the same shape.
 

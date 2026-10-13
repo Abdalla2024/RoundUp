@@ -7,6 +7,8 @@
 - **A test stand-in for sign-in** (`tools/standin/`, `NEXT_PUBLIC_AUTH_MODE=standin`) lets the end-to-end tests sign in and save with no real credentials. `web/next.config.ts` refuses to build it on Vercel.
 - **Lazy loading:** the Supabase client loads on first sign-in use, and Recharts loads when a chart is shown (`components/ChartCanvas.tsx`). That cut the setup page's first load from 1,090 KB to 606 KB uncompressed (200 KB transferred).
 - **Key points always visible:** on mobile they sit at the top of the page, with the full list collapsed, instead of in a dialog.
+- **Chart keyboard (stage-5 review):** Recharts' own accessibility layer is turned off. The chart wrapper is one tab stop (`role="group"`) with arrows, Home, End and Page Up/Down, and a polite live readout under the chart. Recharts handles only drawing and the mouse tooltip.
+- **Sign-in to save** opens on the results page, so results stay on screen (stage-5 review M7). The setup form is kept in memory between pages (M1).
 - **The only number-from-string conversion** is in the chart's drawing files (`ValueChart.tsx` for the axis top, `ChartCanvas.tsx` for line positions). A test enforces this (`web/tests/no-money-arithmetic.test.ts`).
 
 ## 1. Stack
