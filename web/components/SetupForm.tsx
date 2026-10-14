@@ -82,6 +82,7 @@ export function SetupForm() {
     if (!text.trim()) { setError(new ApiError(422, "CSV_INVALID", COPY.emptyFile)); return; }
     const columns = csvHeader(text);
     if (columns.length === 1 && columns[0].includes(";")) { setError(new ApiError(422, "CSV_INVALID", COPY.semicolons)); return; }
+    if (columns.length === 1 && columns[0].includes("\t")) { setError(new ApiError(422, "CSV_INVALID", COPY.tabs)); return; }
     const guess = (re: RegExp) => columns.find((c) => re.test(c)) ?? null;
     const mapping: Mapping = {
       date: guess(/date/i), amount: guess(/amount/i), description: guess(/desc|merchant|name|memo/i),
@@ -182,7 +183,10 @@ export function SetupForm() {
               <div className="convention">
                 <div className="field"><label htmlFor="convention">How are amounts signed?</label>
                   <select id="convention" value={f.convention}
-                    onChange={(e) => set({ convention: e.target.value, convNote: "", parsed: null })}
+                    onChange={(e) => {
+                      set({ convention: e.target.value, convNote: "", parsed: null });
+                      if (e.target.value && error?.fields.includes("sign_convention")) setError(null);
+                    }}
                     aria-invalid={invalid("sign_convention")} aria-describedby="conv-help">
                     <option value="">{COPY.signingPrompt}</option>
                     {CONVENTIONS.map(([v, t]) => <option key={v} value={v}>{t}</option>)}</select></div>
@@ -206,10 +210,15 @@ export function SetupForm() {
                   {" "}{COPY.checkCredits(count(f.parsed.summary.credits))}
                   {" "}Not purchases (payments, transfers or fees), so no round-ups: {count(f.parsed.summary.non_purchases)}.
                   {f.parsed.summary.not_posted > 0 && ` ${COPY.checkNotPosted(count(f.parsed.summary.not_posted))}`}
+                  {f.parsed.summary.rows > 0 && ` ${COPY.checkPurchases(count(f.parsed.summary.purchases))}`}
                   {f.parsed.summary.whole_dollar > 0 && ` ${COPY.checkWholeDollar(count(f.parsed.summary.whole_dollar))}`}
                   {Object.entries(f.parsed.summary.problems).filter(([, n]) => n > 0).map(([k, n]) =>
                     ` ${k === "invalid_amount" ? "Rows with an amount we can’t read" : k === "invalid_date" ? "Rows with a date we can’t read" : "Rows with a zero amount"}: ${count(n)}.`)}
                   {f.parsed.summary.possible_duplicates > 0 && ` Possible duplicates (kept): ${count(f.parsed.summary.possible_duplicates)}.`}</p>
+                {f.parsed.summary.rows === 0 && <p style={{ margin: "8px 0 0" }}><strong>{COPY.checkNoRows}</strong></p>}
+                {f.parsed.summary.rows > 0 && f.parsed.summary.purchases === 0 && <p style={{ margin: "8px 0 0" }}><strong>{COPY.checkNoPurchases}</strong></p>}
+                {f.parsed.summary.ragged_rows > 0 && <p style={{ margin: "8px 0 0" }}><strong>{COPY.checkRagged(count(f.parsed.summary.ragged_rows))}</strong></p>}
+                {f.parsed.summary.problems.invalid_date > 0 && <p style={{ margin: "8px 0 0" }}>{COPY.dateFormats}</p>}
                 {first && <p style={{ margin: "8px 0 0" }}>{COPY.fileDates(longDate(first), longDate(last))}
                   {outside && <> <strong>{COPY.outsideDates}</strong></>}</p>}
                 {f.slashDates && <p style={{ margin: "8px 0 0" }}>{COPY.slashDates}</p>}

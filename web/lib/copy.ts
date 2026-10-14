@@ -58,6 +58,14 @@ export const COPY = {
   checkCredits: (n: string) => `Money coming in (refunds, deposits): ${n}. These never add round-ups.`,
   checkNotPosted: (n: string) => `Pending or cancelled rows: ${n}. These are left out.`,
   checkWholeDollar: (n: string) => `Purchases of an exact dollar amount: ${n}. These add $0.00, because there is no spare change.`,
+  tabs: "This file seems to use tabs between columns. Save it as a CSV with commas between columns and upload it again.",
+  checkPurchases: (n: string) => `Purchases that will add round-ups: ${n}.`,
+  checkNoPurchases: "None of these rows would add round-ups. If you expected some, check the box named \u201cHow are amounts signed?\u201d: " +
+    "with the wrong choice, purchases can look like money coming in.",
+  checkRagged: (n: string) => (n === "1" ? "1 row has more values than the header has columns." : `${n} rows have more values than the header has columns.`) +
+    " A comma inside a number (like 6,16) splits it in two, so the amount can be read wrongly. Put such amounts in quotes, or use a dot (6.16).",
+  checkNoRows: "This file has no rows below the header.",
+  dateFormats: "Dates must look like 2024-01-31, or like 01/31/2024 (month first). A time after the date is not accepted.",
   seedHint: "A whole number from 0 to 2,147,483,647.",
   seedError: "Use a whole number from 0 to 2,147,483,647 for the sample number.",
   perDayError: "Use 1, 2 or 3 for purchases per day.",

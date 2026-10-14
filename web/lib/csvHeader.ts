@@ -1,7 +1,7 @@
 // Reads ONLY the header row of a CSV in the browser, so the user can choose columns. All row parsing,
 // classification and validation happen in the API's parse endpoint.
 export function csvHeader(text: string): string[] {
-  const t = text.replace(/^﻿/, "");
+  const t = text.replace(/^﻿/, "").replace(/^(?:[ \t]*\r?\n)+/, "");      // blank lines before the header are ignored
   const out: string[] = [];
   let cur = "", quoted = false;
   for (let i = 0; i < t.length; i++) {

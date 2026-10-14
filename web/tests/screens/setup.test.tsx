@@ -307,4 +307,65 @@ describe("Setup screen", () => {
     expect(status.textContent).toContain(COPY.checkNotPosted("1"));
     expect(status.textContent).toContain(COPY.checkWholeDollar("3"));
   });
+
+  // ---- stage 6: findings from the independent review of the upload flow ----
+  test("a tab-separated file gets a message about tabs, not about columns", async () => {
+    renderWith(<SetupForm />);
+    await ready();
+    await upload("Date\tAmount\tDescription\n2024-01-02\t6.16\tCoffee\n");
+    await waitFor(() => expect(screen.getByRole("alert").textContent).toContain(COPY.tabs));
+  });
+
+  test("blank lines before the header are skipped, so the column pickers still appear", async () => {
+    renderWith(<SetupForm />);
+    await ready();
+    await upload("\n\nDate,Amount,Description\n2024-01-02,6.16,Coffee\n");
+    await waitFor(() => screen.getByLabelText("Date column"));
+    expect((screen.getByLabelText("Amount column") as HTMLSelectElement).value).toBe("Amount");
+  });
+
+  async function checked(summary: Record<string, unknown>) {
+    const res = JSON.parse(JSON.stringify(parseFx.response));
+    res.summary = { ...res.summary, ...summary };
+    parse.mockResolvedValue(res);
+    renderWith(<SetupForm />);
+    await ready();
+    await upload(parseFx.csv);
+    await waitFor(() => screen.getByLabelText("Date column"));
+    fireEvent.change(signing(), { target: { value: "debits_positive" } });
+    fireEvent.click(screen.getByRole("button", { name: "Check this file" }));
+    return (await screen.findByRole("status")).textContent ?? "";
+  }
+
+  test("the check says how many purchases will add round-ups, and warns when there are none", async () => {
+    const t = await checked({ purchases: 2 });
+    expect(t).toContain(COPY.checkPurchases("2"));
+    expect(t).not.toContain(COPY.checkNoPurchases);
+  });
+  test("zero purchases: a plain warning that points at the sign box", async () => {
+    const t = await checked({ rows: 2, usable: 2, credits: 2, purchases: 0 });
+    expect(t).toContain(COPY.checkNoPurchases);
+    expect(t).toContain("How are amounts signed?");
+  });
+  test("rows with more values than the header: a warning that explains the comma", async () => {
+    expect(await checked({ ragged_rows: 2 })).toContain(COPY.checkRagged("2"));
+  });
+  test("a header-only file says so", async () => {
+    expect(await checked({ rows: 0, usable: 0, purchases: 0, credits: 0, non_purchases: 0 })).toContain(COPY.checkNoRows);
+  });
+  test("unreadable dates come with the formats that work", async () => {
+    expect(await checked({ problems: { invalid_amount: 0, invalid_date: 3, zero_amount: 0 } })).toContain(COPY.dateFormats);
+  });
+
+  test("choosing an option clears the sign-box error", async () => {
+    renderWith(<SetupForm />);
+    await ready();
+    await upload(parseFx.csv);
+    await waitFor(() => screen.getByLabelText("Date column"));
+    fireEvent.click(screen.getByRole("button", { name: "Check this file" }));
+    expect(screen.getByRole("alert")).toBeTruthy();
+    fireEvent.change(signing(), { target: { value: "debits_positive" } });
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(signing().getAttribute("aria-invalid")).toBe("false");
+  });
 });

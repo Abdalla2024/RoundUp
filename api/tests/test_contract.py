@@ -326,3 +326,31 @@ def test_parsed_rows_run_through_simulate_with_the_expected_counts(client):
     assert res["transactions_used"] == "2"          # the coffee and the whole-dollar purchase
     assert res["transactions_ignored"] == "4"       # refund, transfer, pending, cancelled
     assert res["summary"]["contributed"] == "0.84"
+
+
+# ---- stage 6, from the independent review of the upload flow ----
+def _parse(client, csv, mapping=None, conv="debits_positive"):
+    return client.post("/v1/transactions/parse", json={"csv": csv, "mapping": mapping or {"date": "Date", "amount": "Amount", "description": "Description"},
+                                                       "sign_convention": conv})
+
+
+def test_parse_skips_blank_lines_before_the_header(client):
+    r = _parse(client, "\n\nDate,Amount,Description\n2024-01-02,6.16,Coffee\n\n2024-01-03,4.00,Bakery\n")
+    assert r.status_code == 200, r.text
+    out = r.json()
+    assert out["columns"] == ["Date", "Amount", "Description"] and out["summary"]["rows"] == 2
+    assert [t["row"] for t in out["transactions"]] == [4, 6]          # line numbers in the file (header on line 3)
+
+
+def test_parse_counts_rows_with_more_values_than_the_header(client):
+    # an unquoted European amount "6,16" splits into two cells and the amount column reads "6"
+    r = _parse(client, "Date,Amount,Description\n2024-01-02,6,16,Coffee\n2024-01-03,4.50,Bakery\n2024-01-04,7,30,Lunch\n")
+    s = r.json()["summary"]
+    assert s["rows"] == 3 and s["ragged_rows"] == 2
+
+
+def test_parse_counts_the_purchases_that_will_add_round_ups(client):
+    r = _parse(client, SAMPLE_WITH_STATUS, {"date": "Date", "amount": "Amount", "description": "Description", "status": "Status"})
+    assert r.json()["summary"]["purchases"] == 2                       # the coffee and the whole-dollar purchase
+    allcredits = _parse(client, "Date,Amount\n2024-01-02,-5.00\n2024-01-03,-7.25\n", {"date": "Date", "amount": "Amount"}).json()["summary"]
+    assert (allcredits["usable"], allcredits["credits"], allcredits["purchases"]) == (2, 2, 0)

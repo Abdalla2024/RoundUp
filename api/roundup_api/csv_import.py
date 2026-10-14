@@ -45,8 +45,9 @@ def parse_csv(text: str, mapping: dict, sign_convention: str | None) -> dict:
     except csv.Error:
         raise _bad("The file could not be read as CSV. Check for unmatched quotes, or a cell that is very long "
                    f"(the limit is {MAX_FIELD:,} characters).") from None
-    header = rows[0]
-    numbered = [(i + 2, r) for i, r in enumerate(rows[1:]) if any(c.strip() for c in r)]   # header is row 1
+    first = next((i for i, r in enumerate(rows) if any(c.strip() for c in r)), 0)   # blank lines before the header are skipped
+    header = rows[first]
+    numbered = [(i + 1, r) for i, r in enumerate(rows) if i > first and any(c.strip() for c in r)]   # line numbers in the file
     data = [r for _, r in numbered]
     if len(header) > MAX_COLUMNS or any(len(h) > 100 for h in header):
         raise _bad("The file has too many columns or a column name is too long.")
@@ -76,7 +77,7 @@ def parse_csv(text: str, mapping: dict, sign_convention: str | None) -> dict:
                        "are refunds or payments. Choose how this file signs its amounts.") from None
     report = ImportSession().add_file(nf)
     out, problems, non_purchases = [], {"invalid_amount": 0, "invalid_date": 0, "zero_amount": 0}, 0
-    credits = not_posted = whole_dollar = 0          # counts of rows (stage 6), so the check step can say why rows add nothing
+    credits = not_posted = whole_dollar = purchases = 0          # counts of rows (stage 6), so the check step can say why rows add nothing
     for i, r in enumerate(nf.rows):
         category = "non_purchase" if is_non_purchase(r.type, r.description) else "purchase"
         non_purchases += category == "non_purchase"
@@ -88,8 +89,9 @@ def parse_csv(text: str, mapping: dict, sign_convention: str | None) -> dict:
             problems[problem] += 1
         credits += r.direction == "credit"
         not_posted += r.status in ("pending", "cancelled")
-        whole_dollar += (problem is None and r.direction == "debit" and r.status == "posted" and category == "purchase"
-                         and re.fullmatch(r"\d+(\.00)?", f["amount"]) is not None)
+        counts = problem is None and r.direction == "debit" and r.status == "posted" and category == "purchase"
+        purchases += counts                                   # rows that will add a round-up (or $0.00 for a whole dollar)
+        whole_dollar += counts and re.fullmatch(r"\d+(\.00)?", f["amount"]) is not None
         out.append({"row": numbered[i][0], "posted_date": f["posted_date"] or None,
                     "amount": f["amount"] if problem != "invalid_amount" else None,
                     "direction": r.direction, "status": r.status, "category": category, "problem": problem})
@@ -97,5 +99,6 @@ def parse_csv(text: str, mapping: dict, sign_convention: str | None) -> dict:
             "sign_convention": nf.sign_convention, "transactions": out,
             "summary": {"rows": len(out), "usable": sum(1 for x in out if x["problem"] is None),
                         "problems": problems, "non_purchases": non_purchases, "credits": credits,
-                        "not_posted": not_posted, "whole_dollar": whole_dollar,
+                        "not_posted": not_posted, "whole_dollar": whole_dollar, "purchases": purchases,
+                        "ragged_rows": sum(1 for _, r in numbered if len(r) > len(columns) and any(c.strip() for c in r[len(columns):])),
                         "possible_duplicates": report.possible_duplicates}}

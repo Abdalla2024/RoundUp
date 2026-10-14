@@ -153,3 +153,13 @@ Proposal (plain language: the number picks which made-up purchases are used; the
 - Technical details: "sample number 42, up to 2 purchases a day" becomes "purchase list number 42, up to 2 purchases a day".
 
 Shorter alternative for the label: "Purchase set number". Nothing else on screen uses the words "sample number", so the change is limited to the setup form and the technical-details line.
+
+## Check step, after the independent review of the upload flow (2026-10-14; applied, for the owner's sign-off)
+
+- "Purchases that will add round-ups: {n}." (always shown, so a wrong sign choice shows up as a surprising number)
+- **No purchases:** "None of these rows would add round-ups. If you expected some, check the box named “How are amounts signed?”: with the wrong choice, purchases can look like money coming in."
+- **Rows with extra values:** "{n} rows have more values than the header has columns. A comma inside a number (like 6,16) splits it in two, so the amount can be read wrongly. Put such amounts in quotes, or use a dot (6.16)."
+- **Empty:** "This file has no rows below the header."
+- **Dates:** "Dates must look like 2024-01-31, or like 01/31/2024 (month first). A time after the date is not accepted." (shown when any date cannot be read)
+- **Tabs:** "This file seems to use tabs between columns. Save it as a CSV with commas between columns and upload it again."
+- Blank lines before the header are skipped. Choosing an option in the sign box clears its error.

@@ -33,7 +33,7 @@ All three hold the same 92 transactions, dated 2024-01-02 to 2024-03-29. Use the
 
 ## Numbers the app must show (also in `expected.json`)
 
-- **Check step:** 92 of 92 rows can be used; 2 are not purchases (transfer and payment); 2 are money coming in; 2 are pending or cancelled; 1 purchase has a whole-dollar amount.
+- **Check step:** 92 of 92 rows can be used; 2 are not purchases (transfer and payment); 2 are money coming in; 2 are pending or cancelled; 1 purchase has a whole-dollar amount; **86 purchases will add round-ups**.
 - **Results, with the window above:** 86 purchases used (85 ordinary + the whole-dollar one), 6 rows ignored (2 refunds, transfer, payment, pending, cancelled), **$38.70** of round-ups added. That total is worked out in `make_samples.py` with plain integer arithmetic on cents, independently of the parser and the engine.
 
 If you change the generator seed, the window or the special rows in `make_samples.py`, run it again and commit the new files and `expected.json` together.

@@ -40,6 +40,7 @@ for (const [file, convention, note] of [
     await expect(status).toContainText("so no round-ups: 2.");                       // transfer and card payment
     await expect(status).toContainText("Pending or cancelled rows: 2.");
     await expect(status).toContainText("Purchases of an exact dollar amount: 1.");
+    await expect(status).toContainText("Purchases that will add round-ups: 86.");
     await expect(status).toContainText("Dates in this file run from Jan 2, 2024 to Mar 29, 2024.");
     await expect(status).not.toContainText("fall outside the dates");              // 2024 sits inside the default scenario range
     await chooseDates(page, "2024-01-02", "2024-03-29");
@@ -69,6 +70,7 @@ test("owner's own export (OWNER_SAMPLE_CSV): pending, refund, transfer and whole
   await expect(status).toContainText("so no round-ups: 1.");
   await expect(status).toContainText("Pending or cancelled rows: 1.");
   await expect(status).toContainText("Purchases of an exact dollar amount: 3.");
+  await expect(status).toContainText("Purchases that will add round-ups: 136.");
   await chooseDates(page, "2024-01-02", "2024-03-29");
   await page.getByRole("button", { name: "Run simulation" }).click();
   await page.waitForURL("**/results");

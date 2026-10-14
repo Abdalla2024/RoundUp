@@ -58,6 +58,8 @@
    "credits": 1,
    "not_posted": 0,
    "whole_dollar": 0,
+   "purchases": 1,
+   "ragged_rows": 0,
    "possible_duplicates": 0
   }
  }

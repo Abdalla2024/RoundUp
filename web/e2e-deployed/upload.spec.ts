@@ -28,6 +28,7 @@ for (const [file, convention] of [["sample-transactions.csv", null], ["sample-sp
     const status = page.getByRole("status").filter({ hasText: "rows can be used" });
     await expect(status).toContainText("92 of 92 rows can be used.");
     await expect(status).toContainText("Pending or cancelled rows: 2.");
+    await expect(status).toContainText("Purchases that will add round-ups: 86.");
     await page.getByLabel("Start date").fill("2024-01-02");
     await page.getByLabel("End date").fill("2024-03-29");
     await page.getByRole("button", { name: "Run simulation" }).click();
