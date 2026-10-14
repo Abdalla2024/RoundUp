@@ -63,4 +63,5 @@ def test_the_ignored_rows_are_the_right_ones(client):
         if why:
             ignored[line.split(",")[1]] = why
     assert ignored == {"Bookshop refund": "credit", "Online shop refund": "credit", "Transfer to savings": "non_purchase",
-                       "Card payment": "non_purchase", "Maple Grocery": "pending", "Bakery": "cancelled"}
+                       "Card payment": "non_purchase", "Maple Grocery": "pending", "Bakery": "cancelled",
+                       "Gym membership": "unrecognised"}

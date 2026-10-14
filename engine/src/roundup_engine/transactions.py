@@ -22,6 +22,9 @@ class Transaction:
     description: str
 
 
+POSTED_WORDS = ("posted", "settled", "cleared", "completed")     # R-1.4a (after normalize_description)
+
+
 def normalize_description(text: str) -> str:
     """R-4.5: trimmed, case-folded, internal whitespace collapsed."""
     return " ".join((text or "").split()).casefold()
@@ -72,6 +75,8 @@ def select_purchases(rows, start: date, end: date):
             reason = "pending"
         elif status in ("cancelled", "canceled", "void", "voided"):
             reason = "cancelled"                   # R-3.2
+        elif status not in POSTED_WORDS:
+            reason = "unrecognised_status"         # R-1.4a: only clearly posted statuses count; anything else waits for the owner's call
         elif cents == 0:
             reason = "zero_amount"                 # R-1.5
         elif row.get("category") == "non_purchase" or (

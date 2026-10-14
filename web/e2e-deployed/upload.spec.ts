@@ -26,16 +26,17 @@ for (const [file, convention] of [["sample-transactions.csv", null], ["sample-sp
     }
     await page.getByRole("button", { name: "Check this file" }).click();
     const status = page.getByRole("status").filter({ hasText: "rows can be used" });
-    await expect(status).toContainText("92 of 92 rows can be used.");
+    await expect(status).toContainText("93 of 93 rows can be used.");
     await expect(status).toContainText("Pending or cancelled rows: 2.");
     await expect(status).toContainText("Purchases that will add round-ups: 86.");
+    await expect(status).toContainText("1 row has a status we don’t recognise.");
     await page.getByLabel("Start date").fill("2024-01-02");
     await page.getByLabel("End date").fill("2024-03-29");
     await page.getByRole("button", { name: "Run simulation" }).click();
     await page.waitForURL("**/results");
     await expect(page.locator(".chips")).toContainText("86 purchases");
     await expect(page.locator("#headline")).toContainText("$38.70");
-    await expect(page.getByTestId("not-counted")).toContainText("6 rows add no round-ups");
+    await expect(page.getByTestId("not-counted")).toContainText("7 rows add no round-ups");
   });
 }
 

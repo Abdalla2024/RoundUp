@@ -140,7 +140,7 @@ Each line fixes a reviewer finding (H = high, M = medium, L = low; see TEST-STRA
 - **New picker:** "Status column (optional)", found automatically when a column is named Status. Without it, pending and cancelled rows were counted as purchases.
 - **Check step, new sentences:** "Money coming in (refunds, deposits): {n}. These never add round-ups." · "Pending or cancelled rows: {n}. These are left out." · "Purchases of an exact dollar amount: {n}. These add $0.00, because there is no spare change."
 
-## Proposed, NOT applied: clearer "Sample number" wording (waiting for the owner)
+## Applied 2026-10-14 (approved by the owner): clearer "Sample number" wording
 
 Today: label "Sample number (same number, same purchases)", hint "A whole number from 0 to 2,147,483,647."; "Purchases per day, at most", hint "1, 2 or 3."
 
@@ -152,7 +152,7 @@ Proposal (plain language: the number picks which made-up purchases are used; the
 - Error: "Use a whole number from 0 to 2,147,483,647 for the made-up purchase list number." (the "Use 1, 2 or 3…" error keeps its wording)
 - Technical details: "sample number 42, up to 2 purchases a day" becomes "purchase list number 42, up to 2 purchases a day".
 
-Shorter alternative for the label: "Purchase set number". Nothing else on screen uses the words "sample number", so the change is limited to the setup form and the technical-details line.
+The first label, "Made-up purchase list number", was approved; the shorter alternative was not used. The change is limited to the setup form, its errors and the technical-details line.
 
 ## Check step, after the independent review of the upload flow (2026-10-14; applied, for the owner's sign-off)
 
@@ -163,3 +163,7 @@ Shorter alternative for the label: "Purchase set number". Nothing else on screen
 - **Dates:** "Dates must look like 2024-01-31, or like 01/31/2024 (month first). A time after the date is not accepted." (shown when any date cannot be read)
 - **Tabs:** "This file seems to use tabs between columns. Save it as a CSV with commas between columns and upload it again."
 - Blank lines before the header are skipped. Choosing an option in the sign box clears its error.
+
+## Statuses (R-1.4a, owner decision OQ-12, applied 2026-10-14)
+- **Check step, when a Status column holds words other than posted, settled, cleared, completed, pending or cancelled:** "{n} rows have a status we don’t recognise. We count only the statuses posted, settled, cleared and completed as purchases, so these rows are left out for now." (singular: "1 row has a status we don’t recognise. …"), with a box "**Count these rows as purchases too**" (off by default). When ticked: "{n} rows will be counted as purchases." Status words from the file are never shown.
+- **Dates with a time (OQ-13):** still rejected. The message is the one above: "Dates must look like 2024-01-31, or like 01/31/2024 (month first). A time after the date is not accepted."

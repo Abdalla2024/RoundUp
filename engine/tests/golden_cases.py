@@ -357,3 +357,23 @@ case(scenario("G-45-holiday-only", JAN, FLAT50, [tx("2024-01-15", "4.37")], "nex
 case(scenario("G-46-single-session", JAN, FLAT50, [tx("2024-01-16", "4.37")], "next_session", "2024-01-16", "2024-01-16",
               description="Window of one trading day is valid (purchase that day stays cash)", covers=["R-12.1", "R-5.4"]),
      summary={"as_of": "2024-01-16", "uninvested_cash": "0.63", "roundup_buys": "0"})
+
+# R-1.4a (stage 6, owner decision OQ-12, the cautious rule): only clearly posted statuses count as purchases.
+# G-47, worked by hand. One session (Tue 2024-01-16), next_session, window = that day, so round-ups stay as cash:
+#   4.37 Settled -> 0.63 | 3.10 CLEARED -> 0.90 | 2.20 "completed " -> 0.80 | 5.50 posted -> 0.50 | 1.00 Posted -> 0.00 (whole dollar)
+#   used 5, ignored 0, contributed 0.63 + 0.90 + 0.80 + 0.50 = 2.83
+case(scenario("G-47-posted-words", JAN, FLAT50,
+              [tx("2024-01-16", "4.37", status="Settled"), tx("2024-01-16", "3.10", status="CLEARED"),
+               tx("2024-01-16", "2.20", status="completed "), tx("2024-01-16", "5.50"), tx("2024-01-16", "1.00", status="Posted")],
+              "next_session", "2024-01-16", "2024-01-16",
+              description="Settled, cleared, completed and posted (any case, extra spaces) all count as posted purchases", covers=["R-1.4", "R-1.4a"]),
+     summary={"as_of": "2024-01-16", "uninvested_cash": "2.83", "roundup_buys": "0"}, transactions_used="5", transactions_ignored="0")
+# G-48: 4.37 settled -> 0.63 | 9.10 with an empty status -> 0.90 (no status given at the engine boundary means posted) |
+#   6.60 reversed, 7.70 declined, 1.30 "on hold", 2.40 unrecognised -> ignored. used 2, ignored 4, contributed 1.53.
+case(scenario("G-48-unrecognised-status", JAN, FLAT50,
+              [tx("2024-01-16", "4.37", status="settled"), tx("2024-01-16", "9.10", status=""),
+               tx("2024-01-16", "6.60", status="reversed"), tx("2024-01-16", "7.70", status="declined"),
+               tx("2024-01-16", "1.30", status="on hold"), tx("2024-01-16", "2.40", status="unrecognised")],
+              "next_session", "2024-01-16", "2024-01-16",
+              description="Any status that is not clearly posted, pending or cancelled is ignored, never counted", covers=["R-1.4", "R-1.4a"]),
+     summary={"as_of": "2024-01-16", "uninvested_cash": "1.53", "roundup_buys": "0"}, transactions_used="2", transactions_ignored="4")

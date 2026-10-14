@@ -17,7 +17,7 @@ PYTHONPATH=engine/src .venv/bin/python samples/make_samples.py --check   # verif
 | `sample-split-columns.csv` | `Date, Description, Money out, Money in, Status` | Signing: **Money out and money in columns** (the app should pick this for you and say so) |
 | `sample-type-column.csv` | `Date, Description, Amount, Type, Status`. `Type` says `debit` or `credit` | Signing: **A column says debit or credit** (the app should pick this for you and say so) |
 
-All three hold the same 92 transactions, dated 2024-01-02 to 2024-03-29. Use the dates 2024-01-02 to 2024-03-29 in step 4 (the scenario runs 2012 to 2026, so any scenario works).
+All three hold the same 93 transactions, dated 2024-01-02 to 2024-03-29. Use the dates 2024-01-02 to 2024-03-29 in step 4 (the scenario runs 2012 to 2026, so any scenario works).
 
 ## Which rows count, and which do not
 
@@ -30,10 +30,11 @@ All three hold the same 92 transactions, dated 2024-01-02 to 2024-03-29. Use the
 | A card payment (`Card payment`, 500.00) | 1 | **No** | Not a purchase: the description contains the whole word "payment" (R-1.4) |
 | A pending row (`Maple Grocery`, 31.40, status `pending`) | 1 | **No** | Only posted rows count (R-1.4) |
 | A cancelled row (`Bakery`, 4.57, status `cancelled`) | 1 | **No** | Cancelled rows never count (R-3.2) |
+| A row with an unrecognised status (`Gym membership`, 29.99, status `reversed`) | 1 | **No, and flagged** | Only the statuses posted, settled, cleared and completed count (R-1.4a). The check step says "1 row has a status we don’t recognise" and offers a box to count such rows; it is off by default |
 
 ## Numbers the app must show (also in `expected.json`)
 
-- **Check step:** 92 of 92 rows can be used; 2 are not purchases (transfer and payment); 2 are money coming in; 2 are pending or cancelled; 1 purchase has a whole-dollar amount; **86 purchases will add round-ups**.
-- **Results, with the window above:** 86 purchases used (85 ordinary + the whole-dollar one), 6 rows ignored (2 refunds, transfer, payment, pending, cancelled), **$38.70** of round-ups added. That total is worked out in `make_samples.py` with plain integer arithmetic on cents, independently of the parser and the engine.
+- **Check step:** 93 of 93 rows can be used; 2 are not purchases (transfer and payment); 2 are money coming in; 2 are pending or cancelled; 1 has a status we do not recognise; 1 purchase has a whole-dollar amount; **86 purchases will add round-ups**.
+- **Results, with the window above:** 86 purchases used (85 ordinary + the whole-dollar one), 7 rows ignored (2 refunds, transfer, payment, pending, cancelled, reversed), **$38.70** of round-ups added. That total is worked out in `make_samples.py` with plain integer arithmetic on cents, independently of the parser and the engine.
 
 If you change the generator seed, the window or the special rows in `make_samples.py`, run it again and commit the new files and `expected.json` together.

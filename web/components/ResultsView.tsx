@@ -14,7 +14,7 @@ import { SignInForm } from "./SignIn";
 import { ValueChart } from "./ValueChart";
 
 function purchasesSetting(req: SimulateRequest, savedName?: string): string {
-  if (req.generate) return `sample number ${req.generate.seed}, up to ${req.generate.max_per_day} purchases a day`;
+  if (req.generate) return `purchase list number ${req.generate.seed}, up to ${req.generate.max_per_day} purchases a day`;
   return savedName ? "purchases as saved" : "purchases from your file";
 }
 

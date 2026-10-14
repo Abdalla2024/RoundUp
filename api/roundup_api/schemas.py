@@ -23,7 +23,7 @@ class TransactionIn(Strict):
     posted_date: str = Field(pattern=DATE)
     amount: str = Field(pattern=AMOUNT)
     direction: Literal["debit", "credit"]
-    status: Literal["posted", "pending", "cancelled"] = "posted"
+    status: Literal["posted", "pending", "cancelled", "unrecognised"] = "posted"
     category: Optional[Literal["purchase", "non_purchase"]] = None
     description: Optional[str] = Field(default=None, max_length=140)
 

@@ -59,6 +59,7 @@
    "not_posted": 0,
    "whole_dollar": 0,
    "purchases": 1,
+   "unrecognised_status": 0,
    "ragged_rows": 0,
    "possible_duplicates": 0
   }

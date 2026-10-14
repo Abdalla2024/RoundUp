@@ -59,7 +59,7 @@ The limits are kept in memory per server instance (see OPERATIONS.md).
 ```
 - `posted_date`, `amount` and `direction` are required.
 - `direction` is one of `debit`, `credit`.
-- `status` is optional: `posted` (default), `pending` or `cancelled`.
+- `status` is optional: `posted` (default), `pending`, `cancelled` or `unrecognised` (ignored like a pending row, R-1.4a).
 - `category` is optional: `purchase` or `non_purchase`. It overrides keyword classification, so the user can reclassify a row (R-1.4).
 - `description` is optional, ≤ 140 characters, and used only for classification (R-1.4). It is **never stored, logged or echoed**.
 - `amount` must match `^\d{1,7}(\.\d{1,2})?$`. Amounts with 3 decimals, signs, or other text are rejected with 422 `INVALID_INPUT`. This is stricter than the engine, which ignores such rows; the API refuses them outright.
@@ -154,7 +154,7 @@ Body:
  "summary": {"rows": 1, "usable": 1, "problems": {"invalid_amount": 0, "invalid_date": 0, "zero_amount": 0},
    "non_purchases": 0, "credits": 0, "not_posted": 0, "whole_dollar": 0, "possible_duplicates": 0}}
 ```
-- `summary` counts rows (stage 6): `non_purchases` (payments, transfers, fees by type or description, R-1.4), `credits` (money in: refunds and deposits, R-1.8), `not_posted` (status pending or cancelled, R-1.4, R-3.2) and `whole_dollar` (posted purchases of an exact dollar amount, which add $0.00, R-2.2). A row can be counted in more than one (a pending transfer is both `non_purchases` and `not_posted`). Also (stage 6): `purchases` = posted debit rows classed as purchases, the rows that add a round-up (or $0.00 for a whole dollar); `ragged_rows` = rows with more non-empty values than the header has columns (typically an unquoted comma inside a number, such as `6,16`, which makes the amount column read "6"). Blank lines before the header are skipped, and `row` stays the line number in the file.
+- `summary` counts rows (stage 6): `non_purchases` (payments, transfers, fees by type or description, R-1.4), `credits` (money in: refunds and deposits, R-1.8), `not_posted` (status pending or cancelled, R-1.4, R-3.2) and `whole_dollar` (posted purchases of an exact dollar amount, which add $0.00, R-2.2). A row can be counted in more than one (a pending transfer is both `non_purchases` and `not_posted`). Also (stage 6): `purchases` = posted debit rows classed as purchases, the rows that add a round-up (or $0.00 for a whole dollar); `ragged_rows` = rows with more non-empty values than the header has columns (typically an unquoted comma inside a number, such as `6,16`, which makes the amount column read "6"). Blank lines before the header are skipped, and `row` stays the line number in the file. **Statuses (R-1.4a, stage 6):** when a Status column is mapped, each row's `status` is `posted` (the words posted, settled, cleared, completed), `pending`, `cancelled` (cancelled, canceled, void, voided) or `unrecognised` (any other word, and a blank cell). `summary.unrecognised_status` counts the unrecognised rows. `/v1/simulate` accepts `status: "unrecognised"` on a transaction and ignores such a row like a pending one; a client that wants them counted sends them as `posted`.
 - `row` is the line number in the file (header = 1).
 - **Descriptions are never returned.** Classification happens here and is returned as `category`.
 - **Error messages never echo user-supplied text.** A missing mapped column is reported through `fields` (e.g. `["mapping.date"]`).

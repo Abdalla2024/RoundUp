@@ -265,3 +265,4 @@ footer div { max-width: 1120px; margin: 0 auto; padding: 16px; font-size: 14px; 
 .stat-value { overflow-wrap: anywhere; }
 .compare-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); }
 .compare-grid .field select { padding-left: 10px; padding-right: 10px; }
+.fields.wide { grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 340px)); }   /* room for the longer purchase-list hints */

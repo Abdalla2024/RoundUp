@@ -33,6 +33,10 @@ BUY_BLOCK = (
 
 S = "src/roundup_engine/"
 MUTATIONS = [
+    ("unrecognised status counted as a purchase", "R-1.4a", S + "transactions.py",
+     [("elif status not in POSTED_WORDS:", "elif False:")]),
+    ("only 'posted' counts (settled/cleared/completed dropped)", "R-1.4a", S + "transactions.py",
+     [('POSTED_WORDS = ("posted", "settled", "cleared", "completed")', 'POSTED_WORDS = ("posted",)')]),
     ("window with no trading day accepted", "R-12.1", S + "simulate.py",
      [("if not any(cfg.start <= d <= cfg.end for d in m.closes):", "if False:")]),
     # id, rule, file, [(old, new), ...]
@@ -47,9 +51,15 @@ MUTATIONS = [
      [("if normalize_description(type_) in NON_PURCHASE_TYPES:", "if False:")]),
     ("refunds/credits round up", "R-1.8", S + "transactions.py",
      [('if row.get("direction") != "debit":', 'if False:')]),
-    ("pending rows round up", "R-1.4", S + "transactions.py", [('elif status == "pending":', 'elif False:')]),
+    # With R-1.4a (stage 6) pending and cancelled rows are ignored because they are not in the posted list, so the old
+    # mutations (delete the explicit branches) are equivalent and can never fail. These break the list itself instead.
+    ("pending rows round up", "R-1.4", S + "transactions.py",
+     [('elif status == "pending":', 'elif False:'),
+      ('POSTED_WORDS = ("posted", "settled", "cleared", "completed")', 'POSTED_WORDS = ("posted", "settled", "cleared", "completed", "pending")')]),
     ("cancelled rows round up", "R-3.2", S + "transactions.py",
-     [('elif status in ("cancelled", "canceled", "void", "voided"):', 'elif False:')]),
+     [('elif status in ("cancelled", "canceled", "void", "voided"):', 'elif False:'),
+      ('POSTED_WORDS = ("posted", "settled", "cleared", "completed")',
+       'POSTED_WORDS = ("posted", "settled", "cleared", "completed", "cancelled", "canceled", "void", "voided")')]),
     ("out-of-window rows used", "R-1.6", S + "transactions.py",
      [("elif not (start <= day <= end):", "elif False:")]),
     ("3-decimal amounts accepted", "R-0.1", S + "money.py",

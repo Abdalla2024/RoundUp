@@ -132,3 +132,28 @@ def test_r_1_7_generator_is_deterministic_and_purchases_only():
     assert a == b and a
     assert all(t["direction"] == "debit" and t["status"] == "posted" for t in a)
     assert generate_transactions(seed=8, start="2024-01-01", end="2024-03-31") != a
+
+
+# ---- R-1.4a (OQ-12): free-text statuses from a file ----
+import pytest as _pytest  # noqa: E402
+from roundup_engine.importing import _status  # noqa: E402
+
+
+@_pytest.mark.parametrize("text", ["posted", "Posted", "SETTLED", " cleared ", "Completed", "completed  "])
+def test_r_1_4a_clearly_posted_words(text):
+    assert _status(text, mapped=True) == "posted"
+
+
+@_pytest.mark.parametrize("text,want", [("pending", "pending"), ("Pending", "pending"), ("cancelled", "cancelled"), ("CANCELED", "cancelled"),
+                                         ("void", "cancelled"), ("Voided", "cancelled")])
+def test_r_1_4a_pending_and_cancelled_keep_their_own_meaning(text, want):
+    assert _status(text, mapped=True) == want
+
+
+@_pytest.mark.parametrize("text", ["reversed", "returned", "declined", "failed", "on hold", "authorized", "hold", "refunded", "x", ""])
+def test_r_1_4a_everything_else_is_unrecognised_when_a_status_column_is_mapped(text):
+    assert _status(text, mapped=True) == "unrecognised"
+
+
+def test_r_1_4a_no_status_column_means_posted():
+    assert _status("", mapped=False) == "posted"

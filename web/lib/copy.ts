@@ -58,6 +58,10 @@ export const COPY = {
   checkCredits: (n: string) => `Money coming in (refunds, deposits): ${n}. These never add round-ups.`,
   checkNotPosted: (n: string) => `Pending or cancelled rows: ${n}. These are left out.`,
   checkWholeDollar: (n: string) => `Purchases of an exact dollar amount: ${n}. These add $0.00, because there is no spare change.`,
+  checkUnrecognised: (n: string) => (n === "1" ? "1 row has a status we don\u2019t recognise." : `${n} rows have a status we don\u2019t recognise.`) +
+    " We count only the statuses posted, settled, cleared and completed as purchases, so these rows are left out for now.",
+  countUnrecognised: "Count these rows as purchases too",
+  willCountUnrecognised: (n: string) => (n === "1" ? "1 row will be counted as a purchase." : `${n} rows will be counted as purchases.`),
   tabs: "This file seems to use tabs between columns. Save it as a CSV with commas between columns and upload it again.",
   checkPurchases: (n: string) => `Purchases that will add round-ups: ${n}.`,
   checkNoPurchases: "None of these rows would add round-ups. If you expected some, check the box named \u201cHow are amounts signed?\u201d: " +
@@ -66,8 +70,10 @@ export const COPY = {
     " A comma inside a number (like 6,16) splits it in two, so the amount can be read wrongly. Put such amounts in quotes, or use a dot (6.16).",
   checkNoRows: "This file has no rows below the header.",
   dateFormats: "Dates must look like 2024-01-31, or like 01/31/2024 (month first). A time after the date is not accepted.",
-  seedHint: "A whole number from 0 to 2,147,483,647.",
-  seedError: "Use a whole number from 0 to 2,147,483,647 for the sample number.",
+  purchaseListIntro: "RoundUp makes up a list of everyday purchases for you. The number below picks which list.",
+  seedHint: "Pick any whole number from 0 to 2,147,483,647. The same number always gives the same purchases and the same results. A different number gives a different list.",
+  perDayHint: "Choose 1, 2 or 3. Each day gets anywhere from none up to this many made-up purchases.",
+  seedError: "Use a whole number from 0 to 2,147,483,647 for the made-up purchase list number.",
   perDayError: "Use 1, 2 or 3 for purchases per day.",
   fileDates: (a: string, b: string) => `Dates in this file run from ${a} to ${b}.`,
   outsideDates: "Some rows fall outside the dates in step 4, so they won\u2019t add round-ups.",

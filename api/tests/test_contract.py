@@ -354,3 +354,36 @@ def test_parse_counts_the_purchases_that_will_add_round_ups(client):
     assert r.json()["summary"]["purchases"] == 2                       # the coffee and the whole-dollar purchase
     allcredits = _parse(client, "Date,Amount\n2024-01-02,-5.00\n2024-01-03,-7.25\n", {"date": "Date", "amount": "Amount"}).json()["summary"]
     assert (allcredits["usable"], allcredits["credits"], allcredits["purchases"]) == (2, 2, 0)
+
+
+STATUS_FILE = ("Date,Amount,Description,Status\n"
+               "2024-01-02,6.16,Coffee,Posted\n2024-01-03,3.10,Shop,Settled\n2024-01-04,2.20,Shop,CLEARED\n2024-01-05,5.50,Shop,completed\n"
+               "2024-01-06,4.40,Shop,Pending\n2024-01-07,1.10,Shop,Voided\n"
+               "2024-01-08,6.60,Shop,Reversed\n2024-01-09,7.70,Shop,Declined\n2024-01-10,8.80,Shop,\n")
+
+
+def test_r_1_4a_unrecognised_statuses_are_flagged_and_left_out(client):
+    r = _parse(client, STATUS_FILE, {"date": "Date", "amount": "Amount", "description": "Description", "status": "Status"})
+    out = r.json()
+    assert [t["status"] for t in out["transactions"]] == ["posted", "posted", "posted", "posted", "pending", "cancelled",
+                                                           "unrecognised", "unrecognised", "unrecognised"]
+    s = out["summary"]
+    assert (s["rows"], s["purchases"], s["not_posted"], s["unrecognised_status"]) == (9, 4, 2, 3)
+    assert "Reversed" not in r.text and "Declined" not in r.text            # status words are never echoed
+
+
+def test_r_1_4a_no_status_column_means_every_row_is_posted(client):
+    r = _parse(client, "Date,Amount\n2024-01-02,6.16\n2024-01-03,3.10\n", {"date": "Date", "amount": "Amount"})
+    s = r.json()["summary"]
+    assert (s["purchases"], s["unrecognised_status"]) == (2, 0)
+
+
+def test_r_1_4a_simulate_ignores_unrecognised_rows_and_counts_them_when_sent_as_posted(client):
+    rows = [{"posted_date": "2024-01-16", "amount": "4.37", "direction": "debit", "status": "posted"},
+            {"posted_date": "2024-01-16", "amount": "6.60", "direction": "debit", "status": "unrecognised"}]
+    body = base_body(scenario_id="steady-growth", start="2024-01-16", end="2024-03-28", transactions=rows)
+    res = client.post("/v1/simulate", json=body).json()["result"]
+    assert (res["transactions_used"], res["transactions_ignored"], res["summary"]["contributed"]) == ("1", "1", "0.63")
+    rows[1]["status"] = "posted"
+    res = client.post("/v1/simulate", json=base_body(scenario_id="steady-growth", start="2024-01-16", end="2024-03-28", transactions=rows)).json()["result"]
+    assert (res["transactions_used"], res["summary"]["contributed"]) == ("2", "1.03")

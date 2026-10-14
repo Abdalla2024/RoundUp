@@ -35,12 +35,14 @@ for (const [file, convention, note] of [
     }
     await page.getByRole("button", { name: "Check this file" }).click();
     const status = page.getByRole("status").filter({ hasText: "rows can be used" });
-    await expect(status).toContainText("92 of 92 rows can be used.");
+    await expect(status).toContainText("93 of 93 rows can be used.");
     await expect(status).toContainText("Money coming in (refunds, deposits): 2.");
     await expect(status).toContainText("so no round-ups: 2.");                       // transfer and card payment
     await expect(status).toContainText("Pending or cancelled rows: 2.");
     await expect(status).toContainText("Purchases of an exact dollar amount: 1.");
     await expect(status).toContainText("Purchases that will add round-ups: 86.");
+    await expect(status).toContainText("1 row has a status we don’t recognise.");       // R-1.4a: the reversed row is flagged and left out
+    await expect(page.getByRole("checkbox", { name: "Count these rows as purchases too" })).not.toBeChecked();
     await expect(status).toContainText("Dates in this file run from Jan 2, 2024 to Mar 29, 2024.");
     await expect(status).not.toContainText("fall outside the dates");              // 2024 sits inside the default scenario range
     await chooseDates(page, "2024-01-02", "2024-03-29");
@@ -49,7 +51,7 @@ for (const [file, convention, note] of [
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Your round-ups in a made-up market");
     await expect(page.locator(".chips")).toContainText("86 purchases");
     await expect(page.locator("#headline")).toContainText("$38.70");
-    await expect(page.getByTestId("not-counted")).toContainText("6 rows add no round-ups");
+    await expect(page.getByTestId("not-counted")).toContainText("7 rows add no round-ups");
     await expect(page.locator("body")).not.toContainText("Maple Grocery");          // descriptions are never kept or shown
   });
 }

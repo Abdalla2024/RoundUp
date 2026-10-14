@@ -30,6 +30,7 @@ SPECIAL = [
     ("2024-02-06", "Hardware Store", 2000, "posted", "whole_dollar_purchase"),
     ("2024-02-15", "Card payment", 50000, "posted", "payment"),
     ("2024-03-04", "Online shop refund", 899, "posted", "refund"),
+    ("2024-02-22", "Gym membership", 2999, "reversed", "unrecognised"),     # R-1.4a: not clearly posted, so left out and flagged
 ]
 
 
@@ -80,6 +81,7 @@ def expected():
             "non_purchases": sum(r[4] in ("transfer", "payment") for r in rs),
             "credits": sum(r[4] == "refund" for r in rs),
             "not_posted": sum(r[3] in ("pending", "cancelled") for r in rs),
+            "unrecognised_status": sum(r[4] == "unrecognised" for r in rs),
             "whole_dollar": sum(r[2] % 100 == 0 for r in purchases),
         },
         "simulate": {

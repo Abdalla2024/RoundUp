@@ -3,18 +3,19 @@
   "start": "2024-01-02",
   "end": "2024-03-29"
  },
- "rows": 92,
+ "rows": 93,
  "parse_summary": {
-  "rows": 92,
-  "usable": 92,
+  "rows": 93,
+  "usable": 93,
   "non_purchases": 2,
   "credits": 2,
   "not_posted": 2,
+  "unrecognised_status": 1,
   "whole_dollar": 1
  },
  "simulate": {
   "transactions_used": 86,
-  "transactions_ignored": 6,
+  "transactions_ignored": 7,
   "contributed": "38.70"
  }
 }

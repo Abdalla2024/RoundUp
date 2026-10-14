@@ -4,7 +4,7 @@ export type Style = "broad" | "dividend";
 
 export interface TransactionIn {
   posted_date: string; amount: string; direction: "debit" | "credit";
-  status?: "posted" | "pending" | "cancelled"; category?: "purchase" | "non_purchase";
+  status?: "posted" | "pending" | "cancelled" | "unrecognised"; category?: "purchase" | "non_purchase";
 }
 export interface RunOptions {
   scenario_id: string; style: Style; start: string; end: string;
@@ -40,13 +40,13 @@ export interface ScenariosResponse { label: string; model_version: string; scena
 export interface AssumptionsResponse { disclaimer: string; assumptions: { id: string; title: string; text: string }[] }
 export interface ParsedRow {
   row: number; posted_date: string | null; amount: string | null; direction: "debit" | "credit";
-  status: "posted" | "pending" | "cancelled"; category: "purchase" | "non_purchase";
+  status: "posted" | "pending" | "cancelled" | "unrecognised"; category: "purchase" | "non_purchase";
   problem: "invalid_amount" | "invalid_date" | "zero_amount" | null;
 }
 export interface ParseResponse {
   columns: string[]; date_column_used: string; sign_convention: string; transactions: ParsedRow[];
   summary: { rows: number; usable: number; problems: Record<string, number>; non_purchases: number; credits: number;
-    not_posted: number; whole_dollar: number; purchases: number; ragged_rows: number; possible_duplicates: number };
+    not_posted: number; whole_dollar: number; purchases: number; unrecognised_status: number; ragged_rows: number; possible_duplicates: number };
 }
 export type Mapping = Partial<Record<"date" | "posted_date" | "amount" | "debit" | "credit" | "type" | "status" |
   "description" | "external_id" | "account", string | null>>;

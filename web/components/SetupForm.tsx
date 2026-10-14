@@ -29,7 +29,7 @@ const SLASH_DATE = /(^|[,"\s])\d{1,2}\/\d{1,2}\/\d{4}([,"\s]|$)/m;
 
 const DEFAULTS: SetupDraft = { source: "generate", seed: "42", perDay: "2", scenarioId: "crash-and-recovery",
   style: "broad", strategy: "threshold", reinvest: true, start: "2015-01-02", end: "2024-12-31", csv: null,
-  columns: [], mapping: {}, convention: "", convNote: "", parsed: null, slashDates: false };
+  columns: [], mapping: {}, convention: "", convNote: "", countUnrecognised: false, parsed: null, slashDates: false };
 
 /** Which column pickers a sign option needs (reviewer M4). */
 function visibleColumns(convention: string, mapping: Mapping): Col[] {
@@ -137,7 +137,8 @@ export function SetupForm() {
     } else {
       if (!f.parsed) { setError(new ApiError(422, "INVALID_INPUT", "Upload a CSV file and check it first.")); return; }
       const txs: TransactionIn[] = f.parsed.transactions.filter((t) => t.problem === null && t.posted_date && t.amount)
-        .map((t) => ({ posted_date: t.posted_date!, amount: t.amount!, direction: t.direction, status: t.status, category: t.category }));
+        .map((t) => ({ posted_date: t.posted_date!, amount: t.amount!, direction: t.direction,
+          status: t.status === "unrecognised" && f.countUnrecognised ? ("posted" as const) : t.status, category: t.category }));   // R-1.4a: the user's decision
       if (txs.length === 0) { setError(new ApiError(422, "INVALID_INPUT", "No usable rows were found in this file.")); return; }
       req = { ...req, transactions: txs };
     }
@@ -164,17 +165,18 @@ export function SetupForm() {
             onChange={() => set({ source: "upload" })} /><span className="title">Upload a CSV</span>
             <span className="desc">You choose which columns hold the date and amount. Merchant names are never stored.</span></label>
         </div>
-        {f.source === "generate" ? (
-          <div className="fields">
-            <div className="field"><label htmlFor="seed">Sample number (same number, same purchases)</label>
+        {f.source === "generate" ? (<>
+          <p className="muted small" style={{ marginTop: 12, marginBottom: 0 }}>{COPY.purchaseListIntro}</p>
+          <div className="fields wide">
+            <div className="field"><label htmlFor="seed">Made-up purchase list number</label>
               <input id="seed" inputMode="numeric" value={f.seed} onChange={(e) => set({ seed: e.target.value })}
                 aria-invalid={invalid("generate.seed")} aria-describedby="seed-help" />
               <span id="seed-help" className="small muted">{COPY.seedHint}</span></div>
-            <div className="field"><label htmlFor="perday">Purchases per day, at most</label>
+            <div className="field"><label htmlFor="perday">Most purchases in one day</label>
               <input id="perday" inputMode="numeric" value={f.perDay} onChange={(e) => set({ perDay: e.target.value })}
                 aria-invalid={invalid("generate.max_per_day")} aria-describedby="perday-help" />
-              <span id="perday-help" className="small muted">1, 2 or 3.</span></div>
-          </div>
+              <span id="perday-help" className="small muted">{COPY.perDayHint}</span></div>
+          </div></>
         ) : (
           <div>
             <div className="field" style={{ marginTop: 12 }}><label htmlFor="csv">CSV file (up to 2 MB)</label>
@@ -217,6 +219,10 @@ export function SetupForm() {
                   {f.parsed.summary.possible_duplicates > 0 && ` Possible duplicates (kept): ${count(f.parsed.summary.possible_duplicates)}.`}</p>
                 {f.parsed.summary.rows === 0 && <p style={{ margin: "8px 0 0" }}><strong>{COPY.checkNoRows}</strong></p>}
                 {f.parsed.summary.rows > 0 && f.parsed.summary.purchases === 0 && <p style={{ margin: "8px 0 0" }}><strong>{COPY.checkNoPurchases}</strong></p>}
+                {f.parsed.summary.unrecognised_status > 0 && (<p style={{ margin: "8px 0 0" }}><strong>{COPY.checkUnrecognised(count(f.parsed.summary.unrecognised_status))}</strong>
+                  <label className="switch" style={{ marginTop: 8 }}><input type="checkbox" checked={f.countUnrecognised}
+                    onChange={(e) => set({ countUnrecognised: e.target.checked })} /><span>{COPY.countUnrecognised}</span></label>
+                  {f.countUnrecognised && <span className="small">{COPY.willCountUnrecognised(count(f.parsed.summary.unrecognised_status))}</span>}</p>)}
                 {f.parsed.summary.ragged_rows > 0 && <p style={{ margin: "8px 0 0" }}><strong>{COPY.checkRagged(count(f.parsed.summary.ragged_rows))}</strong></p>}
                 {f.parsed.summary.problems.invalid_date > 0 && <p style={{ margin: "8px 0 0" }}>{COPY.dateFormats}</p>}
                 {first && <p style={{ margin: "8px 0 0" }}>{COPY.fileDates(longDate(first), longDate(last))}

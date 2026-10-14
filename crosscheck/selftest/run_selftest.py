@@ -163,6 +163,23 @@ check("single-trading-day window ok",
 check("window touching one close at its end ok",
       variant(config__start="2024-01-13", config__end="2024-01-16", **win_mkt), None)
 
+# 4c. R-1.4a (cautious status rule): only posted/settled/cleared/completed (normalised) or empty/absent count.
+def status_tx(status, direction="debit", absent=False):
+    t = {"posted_date": "2024-01-16", "amount": "0.60", "direction": direction, "type": "", "description": "a"}
+    if not absent:
+        t["status"] = status
+    return t
+S, E = cc.parse_date("2024-01-01"), cc.parse_date("2024-01-31")
+for st in ["Settled", "CLEARED", "completed ", "Posted", "  posted", "", None]:
+    check("status counted %r" % (st,), cc.classify_transactions([status_tx(st)], S, E), ([(cc.parse_date("2024-01-16"), 60)], 0))
+check("status absent counted", cc.classify_transactions([status_tx(None, absent=True)], S, E),
+      ([(cc.parse_date("2024-01-16"), 60)], 0))
+for st in ["reversed", "declined", "on hold", "ON  HOLD", "unrecognised", "returned", "pending", "cancelled", "Canceled", "void", "VOIDED"]:
+    check("status ignored %r" % st, cc.classify_transactions([status_tx(st)], S, E), ([], 1))
+check("unrecognised-status credit ignored once", cc.classify_transactions([status_tx("reversed", "credit")], S, E), ([], 1))
+check("mixed statuses tally", cc.classify_transactions(
+      [status_tx(x) for x in ["settled", "reversed", "on hold", "cleared"]], S, E)[1], 2)
+
 # 5. CLI: multiple files -> mapping id -> result
 import subprocess
 out = subprocess.run([sys.executable, "-I", os.path.join(os.path.dirname(HERE), "crosscheck.py"),

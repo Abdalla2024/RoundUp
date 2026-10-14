@@ -147,7 +147,7 @@ describe("Results screen", () => {
     const { container } = renderWith(<ResultsView />, { run: RUN });
     const tech = container.querySelector("details.tech")?.textContent?.replace(/\s+/g, " ") ?? "";
     expect(tech).toContain("scenario seed");
-    expect(tech).toContain("sample number 42, up to 2 purchases a day");
+    expect(tech).toContain("purchase list number 42, up to 2 purchases a day");
     expect(tech).toContain("Jan 2, 2015 to Dec 31, 2024");
     expect(tech).toContain(COPY.strategy[simulate.request.strategy]);
     expect(tech).not.toContain("anyone reproduce");

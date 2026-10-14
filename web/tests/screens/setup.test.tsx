@@ -49,10 +49,10 @@ describe("Setup screen", () => {
     fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
     await waitFor(() => expect(screen.getByRole("alert").textContent).toContain("wait 12 seconds"));
   });
-  test("bad sample number is caught before calling the API", async () => {
+  test("bad purchase list number is caught before calling the API", async () => {
     renderWith(<SetupForm />);
     await waitFor(() => screen.getByRole("radio", { name: /Crash and recovery/ }));
-    fireEvent.change(screen.getByLabelText(/Sample number/), { target: { value: "4.2" } });
+    fireEvent.change(screen.getByLabelText(/Made-up purchase list number/), { target: { value: "4.2" } });
     fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
     expect(screen.getByRole("alert").textContent).toContain("whole number");
     expect(sim).not.toHaveBeenCalled();
@@ -101,34 +101,34 @@ describe("Setup screen", () => {
     }
     renderWith(<Toggle />);
     await ready();
-    fireEvent.change(screen.getByLabelText(/Sample number/), { target: { value: "7" } });
+    fireEvent.change(screen.getByLabelText(/Made-up purchase list number/), { target: { value: "7" } });
     fireEvent.click(screen.getByRole("radio", { name: /Sideways/ }));
     fireEvent.click(screen.getByRole("radio", { name: /Once a week/ }));
     fireEvent.click(screen.getByRole("button", { name: "toggle" }));
-    expect(screen.queryByLabelText(/Sample number/)).toBeNull();
+    expect(screen.queryByLabelText(/Made-up purchase list number/)).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "toggle" }));
     await ready();
-    expect((screen.getByLabelText(/Sample number/) as HTMLInputElement).value).toBe("7");
+    expect((screen.getByLabelText(/Made-up purchase list number/) as HTMLInputElement).value).toBe("7");
     expect((screen.getByRole("radio", { name: /Sideways/ }) as HTMLInputElement).checked).toBe(true);
     expect((screen.getByRole("radio", { name: /Once a week/ }) as HTMLInputElement).checked).toBe(true);
   });
 
-  test("M3: sample number range in the hint and the check; only the wrong field is marked", async () => {
+  test("M3: purchase list number range in the hint and the check; only the wrong field is marked", async () => {
     renderWith(<SetupForm />);
     await ready();
     expect(screen.getByText(COPY.seedHint)).toBeTruthy();
     for (const bad of ["2147483648", "-1", "99999999999"]) {
-      fireEvent.change(screen.getByLabelText(/Sample number/), { target: { value: bad } });
+      fireEvent.change(screen.getByLabelText(/Made-up purchase list number/), { target: { value: bad } });
       fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
       expect(screen.getByRole("alert").textContent).toContain(COPY.seedError);
-      expect(screen.getByLabelText(/Sample number/).getAttribute("aria-invalid")).toBe("true");
-      expect(screen.getByLabelText(/Purchases per day/).getAttribute("aria-invalid")).toBe("false");
+      expect(screen.getByLabelText(/Made-up purchase list number/).getAttribute("aria-invalid")).toBe("true");
+      expect(screen.getByLabelText(/Most purchases in one day/).getAttribute("aria-invalid")).toBe("false");
     }
-    fireEvent.change(screen.getByLabelText(/Sample number/), { target: { value: "2147483647" } });
-    fireEvent.change(screen.getByLabelText(/Purchases per day/), { target: { value: "4" } });
+    fireEvent.change(screen.getByLabelText(/Made-up purchase list number/), { target: { value: "2147483647" } });
+    fireEvent.change(screen.getByLabelText(/Most purchases in one day/), { target: { value: "4" } });
     fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
     expect(screen.getByRole("alert").textContent).toContain(COPY.perDayError);
-    expect(screen.getByLabelText(/Sample number/).getAttribute("aria-invalid")).toBe("false");
+    expect(screen.getByLabelText(/Made-up purchase list number/).getAttribute("aria-invalid")).toBe("false");
     expect(sim).not.toHaveBeenCalled();
   });
 
@@ -367,5 +367,63 @@ describe("Setup screen", () => {
     fireEvent.change(signing(), { target: { value: "debits_positive" } });
     expect(screen.queryByRole("alert")).toBeNull();
     expect(signing().getAttribute("aria-invalid")).toBe("false");
+  });
+
+  test("the made-up purchase fields explain themselves in plain language (owner-approved wording)", async () => {
+    const { container } = renderWith(<SetupForm />);
+    await ready();
+    const text = container.textContent ?? "";
+    expect(text).toContain("RoundUp makes up a list of everyday purchases for you. The number below picks which list.");
+    expect(screen.getByLabelText("Made-up purchase list number")).toBeTruthy();
+    expect(document.getElementById("seed-help")!.textContent).toBe(
+      "Pick any whole number from 0 to 2,147,483,647. The same number always gives the same purchases and the same results. A different number gives a different list.");
+    expect(screen.getByLabelText("Most purchases in one day")).toBeTruthy();
+    expect(document.getElementById("perday-help")!.textContent).toBe(
+      "Choose 1, 2 or 3. Each day gets anywhere from none up to this many made-up purchases.");
+    expect(text).not.toContain("Sample number");
+    expect(text).not.toContain("Purchases per day");
+  });
+
+  // ---- R-1.4a (owner decision OQ-12): only clearly posted statuses count; the rest is flagged until the user decides ----
+  async function checkedWithUnrecognised(n: number) {
+    const res = JSON.parse(JSON.stringify(parseFx.response));
+    res.transactions[1].status = "unrecognised"; res.transactions[2].status = "unrecognised";
+    res.summary = { ...res.summary, unrecognised_status: n };
+    parse.mockResolvedValue(res); sim.mockResolvedValue(simulate.response);
+    renderWith(<SetupForm />);
+    await ready();
+    await upload(parseFx.csv);
+    await waitFor(() => screen.getByLabelText("Date column"));
+    fireEvent.change(signing(), { target: { value: "debits_positive" } });
+    fireEvent.click(screen.getByRole("button", { name: "Check this file" }));
+    return (await screen.findByRole("status")).textContent ?? "";
+  }
+
+  test("unrecognised statuses are flagged in the check step and left out until the user decides", async () => {
+    const t = await checkedWithUnrecognised(2);
+    expect(t).toContain(COPY.checkUnrecognised("2"));
+    const box = screen.getByRole("checkbox", { name: COPY.countUnrecognised }) as HTMLInputElement;
+    expect(box.checked).toBe(false);                                   // default: not counted
+    fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
+    await waitFor(() => expect(sim).toHaveBeenCalled());
+    const sent = sim.mock.calls[0][0].transactions as { status: string }[];
+    expect(sent.filter((x) => x.status === "unrecognised")).toHaveLength(2);   // sent as they are, and the API ignores them
+    expect(sent.filter((x) => x.status === "posted").length).toBeGreaterThan(0);
+  });
+
+  test("ticking the box sends those rows as posted", async () => {
+    await checkedWithUnrecognised(2);
+    fireEvent.click(screen.getByRole("checkbox", { name: COPY.countUnrecognised }));
+    expect(screen.getByText(COPY.willCountUnrecognised("2"))).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
+    await waitFor(() => expect(sim).toHaveBeenCalled());
+    const sent = sim.mock.calls[0][0].transactions as { status: string }[];
+    expect(sent.filter((x) => x.status === "unrecognised")).toHaveLength(0);
+  });
+
+  test("no unrecognised statuses: no notice and no checkbox", async () => {
+    const t = await checked({ unrecognised_status: 0 });
+    expect(t).not.toContain("a status we don");
+    expect(screen.queryByRole("checkbox", { name: COPY.countUnrecognised })).toBeNull();
   });
 });

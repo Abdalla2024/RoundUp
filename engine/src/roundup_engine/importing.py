@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 
 from .money import InvalidAmount, parse_amount_cents
-from .transactions import normalize_description
+from .transactions import POSTED_WORDS, normalize_description
 
 CONVENTIONS = ("separate_columns", "type_column", "debits_positive", "debits_negative")
 
@@ -80,13 +80,18 @@ def _parse_date(text: str) -> date | None:
     return None
 
 
-def _status(text: str) -> str:
+def _status(text: str, mapped: bool = True) -> str:
+    """R-1.4a (owner decision OQ-12, the cautious rule). With no Status column every row is posted. With one, only the
+    clearly posted words count; pending and cancelled keep their meaning; anything else, including a blank cell, is
+    "unrecognised": left out of the count and flagged until the owner decides."""
+    if not mapped:
+        return "posted"
     t = normalize_description(text)
     if t == "pending":
         return "pending"
     if t in ("cancelled", "canceled", "void", "voided"):
         return "cancelled"
-    return "posted"
+    return "posted" if t in POSTED_WORDS else "unrecognised"
 
 
 def infer_sign_convention(cmap: ColumnMap, rows) -> str | None:
@@ -136,7 +141,7 @@ def normalize_file(rows: list[dict], cmap: ColumnMap, sign_convention: str | Non
             problem = "invalid_date"
         if problem is None and cents == 0:
             problem = "zero_amount"                                              # R-1.5
-        out.append(NormalizedRow(day, cents, direction, _status(_get(r, cmap.status)),
+        out.append(NormalizedRow(day, cents, direction, _status(_get(r, cmap.status), mapped=bool(cmap.status)),
                                  "" if convention == "type_column" else _get(r, cmap.type),
                                  _get(r, cmap.description), _get(r, cmap.external_id), _get(r, cmap.account),
                                  problem))

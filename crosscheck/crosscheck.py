@@ -134,6 +134,11 @@ def month_end(d):
 
 # ---------------------------------------------------------------- the run
 
+# R-1.4a: the only status words that count as posted; "" is an empty or absent status (posted).
+# Everything else (pending, cancelled, void, reversed, unrecognised, ...) is ignored and counted.
+POSTED_STATUSES = frozenset(["posted", "settled", "cleared", "completed", ""])
+
+
 def classify_transactions(txs, start, end):
     used = []      # list of (date, cents)
     ignored = 0
@@ -148,7 +153,7 @@ def classify_transactions(txs, start, end):
             and cents > 0                                       # R-1.5
             and dt is not None
             and start <= dt <= end                              # R-1.6
-            and normalize(tx.get("status")) == "posted"         # R-1.4, R-3.2
+            and normalize(tx.get("status")) in POSTED_STATUSES  # R-1.4, R-1.4a, R-3.2
             and normalize(tx.get("direction")) == "debit"       # R-1.4, R-1.8
             and not is_non_purchase(tx)                         # R-1.4
         )

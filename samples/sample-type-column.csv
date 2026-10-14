@@ -53,6 +53,7 @@ Date,Description,Amount,Type,Status
 2024-02-19,Cinema,15.73,debit,posted
 2024-02-19,Grocery,1.03,debit,posted
 2024-02-20,Bookstore,3.36,debit,posted
+2024-02-22,Gym membership,29.99,debit,reversed
 2024-02-23,Bakery,18.21,debit,posted
 2024-02-23,Hardware,16.57,debit,posted
 2024-02-25,Pharmacy,26.69,debit,posted
