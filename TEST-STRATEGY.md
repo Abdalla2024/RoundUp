@@ -65,6 +65,9 @@ All counts below are from runs on 2026-10-13, after the last change.
 - **Upload flow tests** (`web/e2e/upload.spec.ts`, `api/tests/test_samples.py`, `samples/`): the three sample exports (one signed column, money out and money in columns, a debit/credit column) go through the real page and API with expected numbers worked out by construction (92 rows, 86 purchases used, 6 ignored, $38.70), including the rows the app must ignore (refunds, transfer, card payment, pending, cancelled) and the whole-dollar purchase. `OWNER_SAMPLE_CSV=~/Desktop/sample-transactions.csv` runs the owner's own export (139 rows, 136 used, 3 ignored, $70.90).
 - **A real bug found by that flow:** the old page never mapped a Status column, so the owner's pending row was counted (71.50 instead of 70.90). Status is now found and sent.
 
+- **Independent review of the fixed layouts and upload flow (separate agent, black-box on the preview).** No layout problems at 320–2000 px in light and dark, at 150–200% zoom or enlarged text; all three samples and the owner's file matched the expected numbers. Its findings about awkward files led to fixes (purchases count and a zero-purchases warning, a warning for rows with extra values such as an unquoted `6,16`, blank lines before the header, tab files, accepted date formats, an empty-file message, the sign-box error clearing). Two findings need an owner decision (OPEN-QUESTIONS OQ-12, OQ-13).
+- **Counts after stage 6 (2026-10-14):** engine 446, API 112, independent API 514, Supabase local 9, web unit 71, local end-to-end 42 (layout 15, upload 4, flows and the rest 23), deployed preview 24 (smoke, bundle, axe in 3 modes, page weight, upload 4, layout 14 = 84 measurements, 0 problems).
+
 ### 0.2 Screen-reader pass (for the owner's VoiceOver check)
 
 Automated checks cannot judge these; please cover each with VoiceOver on macOS (Safari) and, if possible, iOS:

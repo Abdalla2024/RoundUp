@@ -1,4 +1,28 @@
 {
+ "setup/light": {
+  "violations": [],
+  "passes": 41
+ },
+ "results/light": {
+  "violations": [],
+  "passes": 44
+ },
+ "compare/light": {
+  "violations": [],
+  "passes": 51
+ },
+ "saved-signed-out/light": {
+  "violations": [],
+  "passes": 42
+ },
+ "how/light": {
+  "violations": [],
+  "passes": 40
+ },
+ "privacy/light": {
+  "violations": [],
+  "passes": 37
+ },
  "setup/dark": {
   "violations": [],
   "passes": 41
@@ -22,5 +46,88 @@
  "privacy/dark": {
   "violations": [],
   "passes": 37
+ },
+ "setup/mobile": {
+  "violations": [],
+  "passes": 41
+ },
+ "results/mobile": {
+  "violations": [],
+  "passes": 44
+ },
+ "compare/mobile": {
+  "violations": [],
+  "passes": 51
+ },
+ "saved-signed-out/mobile": {
+  "violations": [],
+  "passes": 42
+ },
+ "how/mobile": {
+  "violations": [],
+  "passes": 40
+ },
+ "privacy/mobile": {
+  "violations": [],
+  "passes": 37
+ },
+ "perf": {
+  "setup_first_load": {
+   "ms": 796,
+   "total_bytes": 865572,
+   "transferred_bytes": 245369,
+   "by_type": {
+    "document": 12415,
+    "stylesheet": 15403,
+    "script": 767203,
+    "font": 48432,
+    "fetch": 21881,
+    "other": 238
+   }
+  },
+  "api_simulate_full_range_buys_none": {
+   "bytes": 59313,
+   "ms_each_of_5": [
+    330,
+    263,
+    235,
+    252,
+    244
+   ],
+   "series_points": 770
+  },
+  "api_simulate_full_range_buys_all": {
+   "bytes": 553448,
+   "ms_each_of_5": [
+    407,
+    288,
+    317,
+    391,
+    400
+   ],
+   "series_points": 770
+  },
+  "api_compare_full_range": {
+   "bytes": 118384,
+   "ms_each_of_5": [
+    484,
+    528,
+    434,
+    484,
+    417
+   ]
+  },
+  "run_full_range_to_results": {
+   "ms": 1138,
+   "total_bytes": 1267953,
+   "transferred_bytes": 120015,
+   "by_type": {
+    "stylesheet": 15403,
+    "script": 1146228,
+    "document": 12415,
+    "other": 476,
+    "fetch": 93431
+   }
+  }
  }
 }
