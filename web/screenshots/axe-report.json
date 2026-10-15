@@ -9,7 +9,7 @@
  },
  "compare/light": {
   "violations": [],
-  "passes": 51
+  "passes": 50
  },
  "saved-signed-out/light": {
   "violations": [],
@@ -41,7 +41,7 @@
  },
  "compare/dark": {
   "violations": [],
-  "passes": 51
+  "passes": 50
  },
  "saved-signed-out/dark": {
   "violations": [],
@@ -73,7 +73,7 @@
  },
  "compare/mobile": {
   "violations": [],
-  "passes": 51
+  "passes": 50
  },
  "saved-signed-out/mobile": {
   "violations": [],

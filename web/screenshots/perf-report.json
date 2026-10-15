@@ -1,41 +1,41 @@
 {
  "setup_first_load": {
-  "ms": 591,
-  "total_bytes": 622326,
-  "transferred_bytes": 165309,
+  "ms": 596,
+  "total_bytes": 622872,
+  "transferred_bytes": 145420,
   "by_type": {
    "document": 12525,
-   "stylesheet": 15485,
+   "stylesheet": 15974,
    "font": 48432,
-   "script": 524085,
-   "fetch": 21561,
-   "other": 238
+   "script": 524142,
+   "other": 238,
+   "fetch": 21561
   }
  },
  "api_simulate_full_range_buys_none": {
   "status": 200,
   "bytes": 59313,
-  "ms": 142,
+  "ms": 140,
   "series_points": 770
  },
  "api_simulate_full_range_buys_all": {
   "status": 200,
   "bytes": 553448,
-  "ms": 140,
+  "ms": 162,
   "series_points": 770
  },
  "api_compare_full_range": {
   "status": 200,
   "bytes": 118384,
-  "ms": 246
+  "ms": 249
  },
  "run_full_range_to_results": {
-  "ms": 702,
-  "total_bytes": 1024548,
-  "transferred_bytes": 171809,
+  "ms": 709,
+  "total_bytes": 1025094,
+  "transferred_bytes": 173510,
   "by_type": {
-   "stylesheet": 15485,
-   "script": 903091,
+   "stylesheet": 15974,
+   "script": 903148,
    "document": 12525,
    "fetch": 92971,
    "other": 476
