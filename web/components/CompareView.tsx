@@ -17,10 +17,15 @@ const STRATS: Strategy[] = ["threshold", "next_session", "weekly", "monthly"];
 function SidePicker({ side, value, onChange }: { side: "A" | "B"; value: { strategy: Strategy; reinvest: boolean };
   onChange: (v: { strategy: Strategy; reinvest: boolean }) => void }) {
   return (
-    <fieldset className="card" style={{ marginBottom: 0 }}><legend style={{ fontSize: 18 }}>{side}</legend>
-      <div className="field"><label htmlFor={`strat-${side}`}>How round-ups are invested</label>
-        <select id={`strat-${side}`} value={value.strategy} onChange={(e) => onChange({ ...value, strategy: e.target.value as Strategy })}>
-          {STRATS.map((s) => <option key={s} value={s}>{COPY.strategy[s]}</option>)}</select></div>
+    <fieldset className="card" style={{ marginBottom: 0 }}>
+      <legend style={{ fontSize: 18 }}>{side} <span className="small muted">How round-ups are invested</span></legend>
+      {/* Radio rows, not a dropdown: a dropdown cannot wrap, so its label was clipped whenever the platform's fonts ran a
+          few pixels wider (279 px on macOS, 284 px under Linux in CI). Text in a row wraps, so it can never be cut off. */}
+      <div className="radio-list">
+        {STRATS.map((s) => (
+          <label className="radio-row" key={s}><input type="radio" name={`strategy-${side}`} value={s} checked={value.strategy === s}
+            onChange={() => onChange({ ...value, strategy: s })} /><span>{COPY.strategy[s]}</span></label>))}
+      </div>
       <label className="switch"><input type="checkbox" checked={value.reinvest}
         onChange={(e) => onChange({ ...value, reinvest: e.target.checked })} /><span>Reinvest dividends</span></label>
     </fieldset>
@@ -72,7 +77,7 @@ export function CompareView() {
         {" "}{run.request.style === "broad" ? "broad-market style" : "dividend style"}, {dateRange(run.request.start, run.request.end)}).
         Only the settings below differ. {COPY.datesNote}</p>
       <form onSubmit={go}>
-        <div className="compare-grid"><SidePicker side="A" value={a} onChange={setA} /><SidePicker side="B" value={b} onChange={setB} /></div>
+        <div className="pickers"><SidePicker side="A" value={a} onChange={setA} /><SidePicker side="B" value={b} onChange={setB} /></div>
         <button className="btn btn-primary" type="submit" disabled={busy || coolingDown}>{busy ? "Comparing…" : "Compare"}</button>
       </form>
       {error && <ErrorNotice message={error.message} requestId={error.requestId} />}

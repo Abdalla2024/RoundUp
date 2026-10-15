@@ -12,9 +12,11 @@ export interface Issue { kind: string; detail: string }
  *  - edge:     anything drawn outside the left or right edge of the window, or the page scrolling sideways
  * Intentionally scrollable regions (.table-scroll) are skipped.
  */
+const SELECT_SAFETY_PX = 12;
+
 export async function geometryIssues(page: Page, opts: { selectValues?: boolean } = {}): Promise<Issue[]> {
   const selectValues = opts.selectValues !== false;
-  return page.evaluate((selectValues) => {
+  return page.evaluate(([selectValues, SELECT_SAFETY_PX]) => {
     const issues: { kind: string; detail: string }[] = [];
     const vw = document.documentElement.clientWidth;
     const name = (e: Element) => {
@@ -99,7 +101,9 @@ export async function geometryIssues(page: Page, opts: { selectValues?: boolean 
       measure.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
       const room = s.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 24;     // 24 px: the arrow
       const need = measure.measureText(sel.textContent ?? "").width;
-      if (need > room + 1) issues.push({ kind: "clipped", detail: `select ${name(s.closest(".field") ?? s)}: “${(sel.textContent ?? "").trim().slice(0, 40)}” needs ${Math.round(need)} px, has ${Math.round(room)}` });
+      // SAFETY: the same text measured 279 px on macOS and 284 px under Linux (GitHub CI), so a select that fits with no
+      // spare room on one platform clips on the other. Require 12 px (about 4%) to spare.
+      if (need + SELECT_SAFETY_PX > room + 1) issues.push({ kind: "clipped", detail: `select ${name(s.closest(".field") ?? s)}: “${(sel.textContent ?? "").trim().slice(0, 40)}” needs ${Math.round(need)} px (+${SELECT_SAFETY_PX} px safety for other platforms' fonts), has ${Math.round(room)}` });
     }
 
     // 3. window edges
@@ -109,5 +113,5 @@ export async function geometryIssues(page: Page, opts: { selectValues?: boolean 
     }
     if (document.documentElement.scrollWidth > vw + 1) issues.push({ kind: "edge", detail: `the page scrolls sideways (${document.documentElement.scrollWidth} > ${vw})` });
     return issues;
-  }, selectValues);
+  }, [selectValues, SELECT_SAFETY_PX] as const);
 }

@@ -11,7 +11,9 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   reporter: [["list"]],
-  use: { baseURL: WEB, trace: "off", ...(channel ? { channel } : {}) },
+  // PW_CHROMIUM_ARGS: extra Chromium flags, used to imitate another platform's text rendering (see TEST-STRATEGY.md 0.1d)
+  use: { baseURL: WEB, trace: "off", ...(channel ? { channel } : {}),
+         launchOptions: { args: (process.env.PW_CHROMIUM_ARGS ?? "").split(" ").filter(Boolean) } },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 900 }, ...(channel ? { channel } : {}) } },
   ],

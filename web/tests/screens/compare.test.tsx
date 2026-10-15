@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
 import { CompareView } from "@/components/CompareView";
 import { COPY } from "@/lib/copy";
@@ -19,7 +19,7 @@ describe("Compare screen", () => {
   test("runs the comparison with the same purchases and scenario", async () => {
     compare.mockResolvedValue(compareFx.response);
     renderWith(<CompareView />, { run: RUN });
-    fireEvent.change(screen.getByLabelText("How round-ups are invested", { selector: "#strat-B" }), { target: { value: "weekly" } });
+    fireEvent.click(within(screen.getByRole("group", { name: /^B/ })).getByRole("radio", { name: COPY.strategy.weekly }));
     fireEvent.click(screen.getByRole("button", { name: "Compare" }));
     await waitFor(() => expect(compare).toHaveBeenCalled());
     const req = compare.mock.calls[0][0];
@@ -62,5 +62,23 @@ describe("Compare screen", () => {
     await waitFor(() => expect(screen.getByRole("rowheader", { name: "Growth on round-ups" })).toBeTruthy());
     expect(screen.getAllByText(COPY.sameForBoth)).toHaveLength(1);
     expect(screen.getAllByText(COPY.seeAB)).toHaveLength(2);
+  });
+
+  test("the two pickers are radio lists, not dropdowns: every label can wrap, so none can be clipped on any platform's fonts", () => {
+    const { container } = renderWith(<CompareView />, { run: RUN });
+    expect(container.querySelectorAll("select")).toHaveLength(0);
+    for (const side of ["A", "B"]) {
+      const group = screen.getByRole("group", { name: new RegExp(`^${side}`) });
+      const radios = within(group).getAllByRole("radio");
+      expect(radios.map((r) => r.closest("label")?.textContent)).toEqual(
+        ["threshold", "next_session", "weekly", "monthly"].map((k) => COPY.strategy[k]));
+      expect(within(group).getByRole("checkbox", { name: "Reinvest dividends" })).toBeTruthy();
+    }
+    const checked = (side: string) => within(screen.getByRole("group", { name: new RegExp(`^${side}`) }))
+      .getAllByRole("radio").filter((r) => (r as HTMLInputElement).checked).map((r) => r.closest("label")?.textContent);
+    expect(checked("A")).toEqual([COPY.strategy.threshold]);          // the same starting settings as before
+    expect(checked("B")).toEqual([COPY.strategy.monthly]);
+    expect((within(screen.getByRole("group", { name: /^A/ })).getByRole("checkbox") as HTMLInputElement).checked).toBe(true);
+    expect((within(screen.getByRole("group", { name: /^B/ })).getByRole("checkbox") as HTMLInputElement).checked).toBe(false);
   });
 });

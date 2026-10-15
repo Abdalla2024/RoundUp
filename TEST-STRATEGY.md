@@ -77,6 +77,16 @@ All counts below are from runs on 2026-10-13, after the last change.
 - **What can still go wrong.** Only a Vercel build proves that Vercel accepts `requirements.txt`; the guard checks the form that built on 2026-10-13 and uv, not Vercel's own converter (an emulation with `uv add -r` accepted even the bare form that failed on Vercel, so it is not used as proof). The runner's pip version is assumed to be the one bundled with Python 3.13.2 (24.3.1); the guard prints the version it ran under.
 - **Rule from now on.** After any change to how the project is installed, run the exact command from `.github/workflows/ci.yml` in a clean checkout and read the whole output (exit code and `pip list`), and after every push the owner reports, read the CI run with `gh run view` and `gh run view --log-failed` before calling anything done.
 
+### 0.1d Layout checks must run under CI's fonts (2026-10-15)
+
+- **What happened.** After the CSV fix, GitHub CI failed `e2e/layout.spec.ts` at 768, 1280, 1600 and 2000 px in light and dark (run 38766874914): `[clipped] select … “Invest each time round-ups reach $5” needs 284 px, has 280`. The same text measured **279 px on macOS**, so it fit here with 1 px to spare and clipped on the runner.
+- **Why macOS alone is insufficient.** The same web font gives different text widths on different platforms, because macOS and Linux place and round glyph advances differently (here +1.8%, 5 px over 35 characters). A control whose room is within a few pixels of its text passes on one platform and clips on the other. Chromium flags on macOS (`--disable-font-subpixel-positioning`, `--font-render-hinting=full`) did not change the measured width, so macOS cannot imitate Linux.
+- **How it was reproduced.** Playwright's official image `mcr.microsoft.com/playwright:v1.64.0-noble` (Ubuntu 24.04, the pinned Chromium) in a Colima Linux VM, from the pushed commit bc374de: 8 failed and 7 passed, the same counts and the same message as GitHub (`tools/run-e2e-linux.sh`).
+- **Cause.** The two compare pickers were dropdowns side by side. A dropdown cannot wrap, and at those widths its usable width (280 px) was almost exactly its longest label. At 1024 px the pickers happened to stack, which is why that width passed. No padding change can make a dropdown fit that label at phone widths (about 262 px available at 360 px).
+- **Fix.** The pickers are radio lists: the text wraps, so it cannot be clipped on any platform, and every option is visible. They sit side by side only where a wrapped label has room. The other dropdowns (the sign box, the column pickers) have more than 30% spare room on both platforms.
+- **Guards.** (1) The checker now requires 12 px (about 4%) of spare room in every select, so a near-clip fails on macOS too. This is a stricter test, not a looser one. (2) `tools/run-e2e-linux.sh` runs the end-to-end suite under Linux fonts from any machine with a container runtime. (3) A unit test asserts the compare page has no dropdowns.
+- **Rule.** Layout changes are checked under Linux fonts before they are pushed, and CI is read after every push before anything is called fixed.
+
 ### 0.2 Screen-reader pass (for the owner's VoiceOver check)
 
 Automated checks cannot judge these; please cover each with VoiceOver on macOS (Safari) and, if possible, iOS:
