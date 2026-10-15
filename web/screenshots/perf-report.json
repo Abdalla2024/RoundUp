@@ -1,43 +1,43 @@
 {
  "setup_first_load": {
-  "ms": 596,
-  "total_bytes": 622872,
-  "transferred_bytes": 145420,
+  "ms": 608,
+  "total_bytes": 634823,
+  "transferred_bytes": 182338,
   "by_type": {
-   "document": 12525,
-   "stylesheet": 15974,
-   "font": 48432,
-   "script": 524142,
-   "other": 238,
-   "fetch": 21561
+   "document": 24172,
+   "stylesheet": 24249,
+   "font": 24576,
+   "script": 536658,
+   "fetch": 24930,
+   "other": 238
   }
  },
  "api_simulate_full_range_buys_none": {
   "status": 200,
-  "bytes": 59313,
-  "ms": 140,
+  "bytes": 59915,
+  "ms": 189,
   "series_points": 770
  },
  "api_simulate_full_range_buys_all": {
   "status": 200,
-  "bytes": 553448,
-  "ms": 162,
+  "bytes": 723182,
+  "ms": 170,
   "series_points": 770
  },
  "api_compare_full_range": {
   "status": 200,
-  "bytes": 118384,
-  "ms": 249
+  "bytes": 119593,
+  "ms": 248
  },
  "run_full_range_to_results": {
-  "ms": 709,
-  "total_bytes": 1025094,
-  "transferred_bytes": 173510,
+  "ms": 758,
+  "total_bytes": 1078103,
+  "transferred_bytes": 70292,
   "by_type": {
-   "stylesheet": 15974,
-   "script": 903148,
-   "document": 12525,
-   "fetch": 92971,
+   "stylesheet": 24249,
+   "script": 931874,
+   "document": 24172,
+   "fetch": 97332,
    "other": 476
   }
  }

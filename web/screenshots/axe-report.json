@@ -1,11 +1,11 @@
 {
  "setup/light": {
   "violations": [],
-  "passes": 41
+  "passes": 45
  },
  "results/light": {
   "violations": [],
-  "passes": 44
+  "passes": 45
  },
  "compare/light": {
   "violations": [],
@@ -13,11 +13,11 @@
  },
  "saved-signed-out/light": {
   "violations": [],
-  "passes": 42
+  "passes": 43
  },
  "saved-empty/light": {
   "violations": [],
-  "passes": 38
+  "passes": 39
  },
  "saved-list/light": {
   "violations": [],
@@ -25,19 +25,19 @@
  },
  "how/light": {
   "violations": [],
-  "passes": 40
+  "passes": 42
  },
  "privacy/light": {
   "violations": [],
-  "passes": 37
+  "passes": 40
  },
  "setup/dark": {
   "violations": [],
-  "passes": 41
+  "passes": 45
  },
  "results/dark": {
   "violations": [],
-  "passes": 44
+  "passes": 45
  },
  "compare/dark": {
   "violations": [],
@@ -45,11 +45,11 @@
  },
  "saved-signed-out/dark": {
   "violations": [],
-  "passes": 42
+  "passes": 43
  },
  "saved-empty/dark": {
   "violations": [],
-  "passes": 38
+  "passes": 39
  },
  "saved-list/dark": {
   "violations": [],
@@ -57,19 +57,19 @@
  },
  "how/dark": {
   "violations": [],
-  "passes": 40
+  "passes": 42
  },
  "privacy/dark": {
   "violations": [],
-  "passes": 37
+  "passes": 40
  },
  "setup/mobile": {
   "violations": [],
-  "passes": 41
+  "passes": 45
  },
  "results/mobile": {
   "violations": [],
-  "passes": 44
+  "passes": 45
  },
  "compare/mobile": {
   "violations": [],
@@ -77,11 +77,11 @@
  },
  "saved-signed-out/mobile": {
   "violations": [],
-  "passes": 42
+  "passes": 43
  },
  "saved-empty/mobile": {
   "violations": [],
-  "passes": 38
+  "passes": 39
  },
  "saved-list/mobile": {
   "violations": [],
@@ -89,10 +89,10 @@
  },
  "how/mobile": {
   "violations": [],
-  "passes": 40
+  "passes": 42
  },
  "privacy/mobile": {
   "violations": [],
-  "passes": 37
+  "passes": 40
  }
 }
