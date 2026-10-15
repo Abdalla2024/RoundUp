@@ -172,7 +172,7 @@ export function SetupForm() {
       {error && <div ref={errorRef} tabIndex={-1} id="form-error"><ErrorNotice message={error.message} requestId={error.requestId} /></div>}
 
       <fieldset className="step-card" id="step-1" data-step="1"><legend><span className="step-icon"><Icon name="wallet" /></span><span className="step-title"><span className="step">Step 1 of 4</span>Your purchases</span></legend>
-        <p className="muted small">Round-ups come from purchases. Use sample spending, or upload a CSV export from your bank.
+        <p className="muted small">Round-ups come from purchases. Choose typical spending, or upload a CSV export from your bank.
           Uploaded files are read in your session and not stored.</p>
         <div className="options">
           <label className="option choice"><input type="radio" name="source" value="typical" checked={f.source === "typical"}

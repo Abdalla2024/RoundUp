@@ -17,23 +17,6 @@
   - 'button "Colour theme: the system setting. Change to light."'
   - paragraph: Synthetic scenario. Not a real fund, not real prices, and not a forecast.
 - main:
-  - complementary:
-    - region "Key points":
-      - heading "Key points" [level=2]
-      - list:
-        - listitem:
-          - strong: Made-up prices.
-          - text: The scenario is invented. It is not a real fund or a real market.
-        - listitem:
-          - strong: Not a forecast.
-          - text: It says nothing about what any market will do.
-        - listitem:
-          - strong: No fees included.
-          - text: Real round-up apps may charge fees that matter a lot for small balances.
-        - listitem:
-          - strong: Not advice.
-          - text: Nothing here suggests what you should do with your money.
-      - group: All assumptions (12)
   - heading "Your sample round-ups in a made-up market" [level=1]
   - list "Simulation settings":
     - listitem: 5,217 sample purchases
@@ -74,7 +57,7 @@
   - definition: +$1,686.87 compared with the round-ups added
   - figure "What the end value is made of":
     - strong: What the end value is made of
-    - 'img "What the end value is made of: Invested in shares $4,291.87, Round-ups waiting to be invested $3.50."'
+    - 'img "What the end value is made of: Invested in shares $4,291.87, Round-ups waiting to be invested $3.50, Dividends kept as cash $0.00, Dividends not yet paid $0.00."'
     - list:
       - listitem:
         - text: Invested in shares
@@ -82,6 +65,12 @@
       - listitem:
         - text: Round-ups waiting to be invested
         - strong: $3.50
+      - listitem:
+        - text: Dividends kept as cash
+        - strong: $0.00
+      - listitem:
+        - text: Dividends not yet paid
+        - strong: $0.00
   - figure "Value over time":
     - heading "Value over time" [level=2]
     - group "Value over time. To read values with the keyboard, select the chart, then use the arrow keys, Home, End, Page Up and Page Down.":
@@ -103,6 +92,23 @@
   - link "Compare with another way of investing":
     - /url: /compare
   - group: Technical details
+  - complementary:
+    - region "Key points":
+      - heading "Key points" [level=2]
+      - list:
+        - listitem:
+          - strong: Made-up prices.
+          - text: The scenario is invented. It is not a real fund or a real market.
+        - listitem:
+          - strong: Not a forecast.
+          - text: It says nothing about what any market will do.
+        - listitem:
+          - strong: No fees included.
+          - text: Real round-up apps may charge fees that matter a lot for small balances.
+        - listitem:
+          - strong: Not advice.
+          - text: Nothing here suggests what you should do with your money.
+      - group: All assumptions (12)
 - contentinfo:
   - text: RoundUp is an educational demo. No money moves and nothing here is advice or a forecast.
   - link "Privacy":

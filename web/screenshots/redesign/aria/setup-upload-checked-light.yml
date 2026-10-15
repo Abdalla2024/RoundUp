@@ -41,7 +41,7 @@
           - /url: "#step-4"
   - group "Step 1 of 4 Your purchases":
     - text: Step 1 of 4 Your purchases
-    - paragraph: Round-ups come from purchases. Use sample spending, or upload a CSV export from your bank. Uploaded files are read in your session and not stored.
+    - paragraph: Round-ups come from purchases. Choose typical spending, or upload a CSV export from your bank. Uploaded files are read in your session and not stored.
     - 'radio "Typical spending An estimate from averages: you tell us how many purchases you make in a typical week."'
     - text: "Typical spending An estimate from averages: you tell us how many purchases you make in a typical week."
     - radio "Upload a CSV You choose which columns hold the date and amount. Merchant names are never stored." [checked]

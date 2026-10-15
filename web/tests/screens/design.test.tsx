@@ -47,9 +47,9 @@ describe("Composition strip (R-13.4)", () => {
     expect(container.querySelector(".strip-legend")!.textContent).toContain(`$${comp[0].amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`);
     expect(screen.getByRole("img", { name: /What the end value is made of: Invested in shares/ })).toBeTruthy();
   });
-  test("parts of $0.00 are left out, and an empty result draws nothing", () => {
+  test("every part is listed, a $0.00 part says so, and an empty result draws nothing", () => {
     const { container } = render(<CompositionStrip result={result} />);
-    expect(container.textContent).not.toContain("Dividends kept as cash");
+    expect(container.querySelector(".strip-legend")!.textContent).toMatch(/Dividends kept as cash\s*\$0\.00/);
     const none = { ...result, summary: { ...result.summary, composition: result.summary.composition!.map((p) => ({ ...p, amount: "0.00", share_bp: 0 })) } };
     const empty = render(<CompositionStrip result={none} />);
     expect(empty.container.querySelector(".strip")).toBeNull();
@@ -134,5 +134,12 @@ describe("Stylesheet rules", () => {
   });
   test("no remote font or image is requested by the stylesheet", () => {
     expect(css).not.toMatch(/url\(|@import|https?:\/\//);
+  });
+});
+
+describe("reading order", () => {
+  test("setup step 1 uses the same name as the option (Typical spending), not the old 'sample spending'", async () => {
+    const { SetupForm } = await import("@/components/SetupForm");
+    expect(SetupForm.toString()).not.toContain("Use sample spending");
   });
 });

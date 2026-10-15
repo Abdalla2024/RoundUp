@@ -57,7 +57,6 @@ export function ResultsView() {
 
   return (
     <div className="layout">
-    <aside className="assumptions-rail-wrap"><KeyPoints /></aside>
     <div className="layout-main">
       <h1>{sample ? "Your sample round-ups in a made-up market" : "Your round-ups in a made-up market"}</h1>
       {run.savedName && <p className="success">Saved scenario: <bdi>{run.savedName}</bdi></p>}
@@ -118,6 +117,8 @@ export function ResultsView() {
           Settings: {purchasesSetting(request, run.savedName)}; {dateRange(request.start, request.end).replace(" – ", " to ")};
           {" "}{COPY.strategy[request.strategy]}; {COPY.dividends(request.reinvest).toLowerCase()}. The same settings and
           purchases give exactly these numbers again.</p></details>
-    </div></div>
+    </div>
+    <aside className="assumptions-rail-wrap"><KeyPoints /></aside>
+    </div>
   );
 }

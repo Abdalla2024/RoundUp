@@ -22,6 +22,13 @@ describe("Results screen", () => {
     expect(screen.getByRole("link", { name: "Set up a simulation" }).getAttribute("href")).toBe("/");
   });
 
+  test("reading order: the page title comes before the key points (screen readers hear the result first)", () => {
+    renderWith(<ResultsView />, { run: RUN });
+    const h1 = screen.getByRole("heading", { level: 1 });
+    const key = screen.getByRole("heading", { name: "Key points" });
+    expect(h1.compareDocumentPosition(key) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   test("full result: exact COPY.md wording and engine figures", async () => {
     const { container } = renderWith(<ResultsView />, { run: RUN });
     const text = container.textContent ?? "";

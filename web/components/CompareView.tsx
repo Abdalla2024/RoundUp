@@ -71,7 +71,6 @@ export function CompareView() {
 
   return (
     <div className="layout">
-    <aside className="assumptions-rail-wrap"><KeyPoints headingId="cmp-key-points" /></aside>
     <div className="layout-main">
       <h1>Compare two ways of investing</h1>
       <p className="muted">Same {run.sample ? "sample " : ""}purchases, same synthetic scenario ({run.response.meta.scenario_id.replace(/-/g, " ")},
@@ -107,6 +106,8 @@ export function CompareView() {
         <DipSentence dip={C.b.summary.deepest_dip} who="B" />
         <p className="small muted">Both charts use the same scale. The dashed line is the round-ups added so far.</p>
       </>)}
-    </div></div>
+    </div>
+    <aside className="assumptions-rail-wrap"><KeyPoints headingId="cmp-key-points" /></aside>
+    </div>
   );
 }

@@ -56,8 +56,7 @@ const PART_LABEL: Record<string, string> = {
 export function CompositionStrip({ result }: { result: Result }) {
   const parts = result.summary.composition;
   if (!parts || parts.every((p) => p.share_bp === 0)) return null;
-  const shown = parts.filter((p) => p.amount !== "0.00");
-  const summary = shown.map((p) => `${PART_LABEL[p.key]} ${money(p.amount)}`).join(", ");
+  const summary = parts.map((p) => `${PART_LABEL[p.key]} ${money(p.amount)}`).join(", ");
   return (
     <figure className="strip" data-testid="composition">
       <figcaption><strong>What the end value is made of</strong></figcaption>
@@ -65,7 +64,7 @@ export function CompositionStrip({ result }: { result: Result }) {
         {parts.filter((p) => p.share_bp > 0).map((p) => <span key={p.key} className={`seg seg-${p.key}`} style={{ flexGrow: p.share_bp }} />)}
       </div>
       <ul className="strip-legend">
-        {shown.map((p) => <li key={p.key}><span className={`swatch seg-${p.key}`} aria-hidden="true" />{PART_LABEL[p.key]} <strong>{money(p.amount)}</strong></li>)}
+        {parts.map((p) => <li key={p.key}><span className={`swatch seg-${p.key}`} aria-hidden="true" />{PART_LABEL[p.key]} <strong>{money(p.amount)}</strong></li>)}
       </ul>
     </figure>
   );
