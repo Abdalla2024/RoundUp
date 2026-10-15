@@ -24,6 +24,7 @@ Each file in `fixtures/scenarios/` is one JSON scenario, a single-fund run (FINA
 }
 ```
 
+- `typical` (optional, instead of `transactions`; give one or the other, never both): `{"per_week": "5", "average_roundup": "0.50"}`. The runner generates the purchases from this by rule R-1.9 (calendar weeks, Monday first; purchase *k* of *n* on Monday + ⌊7k/n⌋ days; each a posted debit purchase of 1200 + (100 − a) cents; only dates inside `config.start` to `config.end` count). `per_week` is a whole number from 1 to 60 and `average_roundup` is `0.01` to `0.99` (two decimals); anything else is an input error.
 - `calendar`: every **calendar-open day** (R-5.6) in the data. Days not listed are closed.
 - `closes`: raw closing price per day. A calendar-open day with no entry is a **data gap** (R-6.2).
 - `dividends[].pay_date` may be `null` (tests R-8.8).

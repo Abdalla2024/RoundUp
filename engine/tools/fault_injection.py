@@ -33,6 +33,18 @@ BUY_BLOCK = (
 
 S = "src/roundup_engine/"
 MUTATIONS = [
+    ("typical: spread rounds up instead of down", "R-1.9", S + "typical.py",
+     [("days=(7 * k) // per_week", "days=(7 * k + per_week - 1) // per_week")]),
+    ("typical: amount makes the round-up the wrong way round", "R-1.9", S + "typical.py",
+     [("BASE_CENTS + (100 - average_cents)", "BASE_CENTS + average_cents")]),
+    ("typical: weeks counted from the start date, not the calendar", "R-1.9", S + "typical.py",
+     [("monday = first - timedelta(days=first.weekday())", "monday = first")]),
+    ("typical: purchases outside the window kept", "R-1.6", S + "typical.py",
+     [("if first <= day <= last:", "if True:")]),
+    ("typical: the last week is skipped when the window ends on a Monday", "R-1.9", S + "typical.py",
+     [("while monday <= last:", "while monday < last:")]),
+    ("typical: per_week limit removed", "R-1.9", S + "typical.py",
+     [("not 1 <= per_week <= 60", "not 1 <= per_week <= 600")]),
     ("unrecognised status counted as a purchase", "R-1.4a", S + "transactions.py",
      [("elif status not in POSTED_WORDS:", "elif False:")]),
     ("only 'posted' counts (settled/cleared/completed dropped)", "R-1.4a", S + "transactions.py",

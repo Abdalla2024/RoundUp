@@ -256,6 +256,40 @@ def make_batches(strategy, roundups):
     return [b for b in batches if b[1] > 0]
 
 
+def typical_purchases(per_week, average_cents, start_iso, end_iso):
+    """R-1.9: [(YYYY-MM-DD, cents)] for every counted typical-spending purchase, by date then k."""
+    for name, v, lo, hi in (("per_week", per_week, 1, 60), ("average_cents", average_cents, 1, 99)):
+        if type(v) is not int or not lo <= v <= hi:
+            raise ValueError("typical %s must be a whole number from %d to %d, got %r" % (name, lo, hi, v))
+    start, end = parse_date(start_iso), parse_date(end_iso)
+    amount = 1200 + (100 - average_cents)
+    out = []
+    monday = start - timedelta(days=start.weekday())      # calendar weeks, Monday first
+    while monday <= end:
+        for k in range(per_week):
+            d = monday + timedelta(days=(7 * k) // per_week)
+            if start <= d <= end:                         # R-1.6
+                out.append((d.isoformat(), amount))
+        monday += timedelta(days=7)
+    return out
+
+
+TYPICAL_AVG_RE = re.compile(r"^0\.(0[1-9]|[1-9][0-9])$")
+TYPICAL_WEEK_RE = re.compile(r"^[0-9]+$")
+
+
+def typical_from_input(typ):
+    """Validate the scenario's `typical` object; return (per_week, average_cents)."""
+    if not isinstance(typ, dict):
+        raise ValueError("typical must be an object with per_week and average_roundup")
+    pw, av = typ.get("per_week"), typ.get("average_roundup")
+    if not isinstance(pw, str) or not TYPICAL_WEEK_RE.match(pw) or not 1 <= int(pw) <= 60:
+        raise ValueError("typical.per_week must be a whole number from 1 to 60, got %r" % (pw,))
+    if not isinstance(av, str) or not TYPICAL_AVG_RE.match(av):
+        raise ValueError("typical.average_roundup must be 0.01 to 0.99 with exactly two decimals, got %r" % (av,))
+    return int(pw), int(av[2:])
+
+
 def run(sc):
     m = sc["market"]
     cfg = sc["config"]
@@ -278,7 +312,14 @@ def run(sc):
                      "pay": parse_date(pay) if pay else None,
                      "amount": Fraction(dv["amount_raw"]), "idx": i})
 
-    used, ignored = classify_transactions(sc.get("transactions", []), start, end)
+    if "typical" in sc:
+        if "transactions" in sc:
+            raise ValueError("a scenario may carry typical or transactions, not both")
+        n, a = typical_from_input(sc["typical"])
+        # Generated purchases are valid posted debit purchases dated inside the window.
+        used, ignored = [(parse_date(d), c) for d, c in typical_purchases(n, a, cfg["start"], cfg["end"])], 0
+    else:
+        used, ignored = classify_transactions(sc.get("transactions", []), start, end)
 
     try:
         validate(calendar, closes, splits, divs, start, end)

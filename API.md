@@ -70,7 +70,8 @@ The limits are kept in memory per server instance (see OPERATIONS.md).
  "transactions": [ ... ]}
 ```
 - Optional `"buys": "all"` (default) or `"none"`. With `"none"` the engine leaves out the per-buy list: `buys` is `[]` and `"buys_included": false`. The summary counts are unchanged. Over a full 2012–2026 range the buy list is most of the response, and the screens show only counts.
-- Give either `transactions` (1–20,000 items) **or** `"generate": {"seed": 0..2147483647, "max_per_day": 1..3}`. Exactly one is required; both or neither → 422 `INVALID_INPUT`.
+- Give exactly one of `transactions` (1–20,000 items), `"typical": {"per_week": 1..60, "average_roundup": "0.01".."0.99"}` or `"generate": {"seed": 0..2147483647, "max_per_day": 1..3}`; none, or more than one, gives 422 `INVALID_INPUT`.
+- **`typical` (stage 6, rule R-1.9) is the mode the website uses.** `per_week` is a whole number (a JSON integer) of purchases in a typical week; `average_roundup` is text with exactly two decimals. The engine generates the purchases by a fixed rule with no randomness: calendar weeks, Monday first; purchase *k* of *n* on Monday + ⌊7k/n⌋ days; each a posted debit purchase of $12.(100 − average) so its round-up is exactly the average; only dates inside `start`–`end` count. 5 a week for 8 whole weeks at "0.50" contributes "20.00"; 20 a week for 52 weeks contributes "520.00". `transactions_used` counts the generated purchases. The result is an estimate from averages, not real spending, and must be labelled so. `generate` (seeded) stays for tests and the cross-check. Saving a typical run stores `config.typical` and never a purchase list (`save_transactions` has no effect).
 - Generated transactions are seeded synthetic purchases (R-1.7) between `start` and `end`.
 
 **Meta** (in every simulation-type response):

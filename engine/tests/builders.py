@@ -57,6 +57,15 @@ def scenario(sid, calendar, closes_, txs, strategy, start, end, reinvest=True,
     }
 
 
+def typical_scenario(sid, calendar, closes_, per_week, average_roundup, strategy, start, end, reinvest=True,
+                     dividends=(), splits=(), description="", covers=()):
+    """Like scenario(), but the purchases come from rule R-1.9 (`typical`) instead of an explicit list."""
+    s = scenario(sid, calendar, closes_, [], strategy, start, end, reinvest, dividends, splits, description, covers)
+    del s["transactions"]
+    s["typical"] = {"per_week": str(per_week), "average_roundup": average_roundup}
+    return s
+
+
 def div(ex, pay, amount):
     return {"ex_date": ex, "pay_date": pay, "amount_raw": amount}
 

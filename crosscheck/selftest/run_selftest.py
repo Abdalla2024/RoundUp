@@ -180,6 +180,104 @@ check("unrecognised-status credit ignored once", cc.classify_transactions([statu
 check("mixed statuses tally", cc.classify_transactions(
       [status_tx(x) for x in ["settled", "reversed", "on hold", "cleared"]], S, E)[1], 2)
 
+# 4d. R-1.9 typical spending: hand-worked purchase lists, totals, input errors, full run.
+def days(*iso):
+    return list(iso)
+def tp(n, a, s, e):
+    return cc.typical_purchases(n, a, s, e)
+def dates_of(lst):
+    return [d for d, _ in lst]
+W2 = ("2024-01-01", "2024-01-14")   # Monday .. Sunday of the following week
+check("n=5 a=50 two weeks", tp(5, 50, *W2),
+      [(d, 1250) for d in ("2024-01-01", "2024-01-02", "2024-01-03", "2024-01-05", "2024-01-06",
+                           "2024-01-08", "2024-01-09", "2024-01-10", "2024-01-12", "2024-01-13")])
+check("n=7 one per day", dates_of(tp(7, 50, *W2)), ["2024-01-%02d" % d for d in range(1, 15)])
+check("n=1 Mondays only", tp(1, 50, *W2), [("2024-01-01", 1250), ("2024-01-08", 1250)])
+check("n=60 counts per weekday", [len([1 for d, _ in tp(60, 50, "2024-01-01", "2024-01-07") if d == "2024-01-0%d" % i])
+                                  for i in range(1, 8)], [9, 9, 8, 9, 8, 9, 8])
+check("n=60 total", len(tp(60, 50, *W2)), 120)
+check("n=2 Mon and Thu", dates_of(tp(2, 50, "2024-01-01", "2024-01-07")), ["2024-01-01", "2024-01-04"])
+check("n=3 Mon Wed Fri-ish", dates_of(tp(3, 50, "2024-01-01", "2024-01-07")), ["2024-01-01", "2024-01-03", "2024-01-05"])
+# start on a Wednesday: Monday and Tuesday purchases drop, the others do not shift
+check("Wednesday start", tp(5, 50, "2024-01-03", "2024-01-07"),
+      [("2024-01-03", 1250), ("2024-01-05", 1250), ("2024-01-06", 1250)])
+check("Wednesday start, 2 weeks", dates_of(tp(5, 50, "2024-01-03", "2024-01-14")),
+      ["2024-01-03", "2024-01-05", "2024-01-06", "2024-01-08", "2024-01-09", "2024-01-10", "2024-01-12", "2024-01-13"])
+check("end on a Tuesday", dates_of(tp(5, 50, "2024-01-01", "2024-01-09")),
+      ["2024-01-01", "2024-01-02", "2024-01-03", "2024-01-05", "2024-01-06", "2024-01-08", "2024-01-09"])
+check("single day window", tp(7, 50, "2024-01-04", "2024-01-04"), [("2024-01-04", 1250)])
+check("window with no purchase day", tp(1, 50, "2024-01-02", "2024-01-07"), [])
+check("end before start", tp(5, 50, "2024-01-10", "2024-01-01"), [])
+check("a=1 amount", set(c for _, c in tp(5, 1, *W2)), {1299})
+check("a=99 amount", set(c for _, c in tp(5, 99, *W2)), {1201})
+check("amount round-up is a", [(100 - c % 100) % 100 for c in (1299, 1250, 1201)], [1, 50, 99])
+check("year boundary / leap day", dates_of(tp(1, 50, "2024-02-26", "2024-03-05")), ["2024-02-26", "2024-03-04"])
+check("order is by date then k", tp(7, 50, "2024-01-01", "2024-01-03"),
+      [("2024-01-01", 1250), ("2024-01-02", 1250), ("2024-01-03", 1250)])
+# totals: n*w*a cents of round-up
+def total_roundup(lst):
+    return sum((100 - c % 100) % 100 for _, c in lst)
+check("5 a week, 8 weeks, 50c = 2000", total_roundup(tp(5, 50, "2024-01-01", "2024-02-25")), 2000)
+check("8 weeks purchase count", len(tp(5, 50, "2024-01-01", "2024-02-25")), 40)
+check("20 a week, 52 weeks, 50c = 52000", total_roundup(tp(20, 50, "2024-01-01", "2024-12-29")), 52000)
+check("60 a week, 3 weeks, 99c", total_roundup(tp(60, 99, "2024-01-01", "2024-01-21")), 60 * 3 * 99)
+
+def tp_err(**typ):
+    sc = {"id": "t", "market": {"symbol": "T", "calendar": ["2024-01-02"], "closes": {"2024-01-02": "1"},
+          "dividends": [], "splits": []}, "typical": typ,
+          "config": {"strategy": "next_session", "start": "2024-01-01", "end": "2024-01-07", "reinvest": "true"}}
+    return sc
+def raises(fn):
+    try:
+        fn()
+    except ValueError:
+        return True
+    except Exception as e:
+        return "wrong exception %r" % e
+    return False
+for label, typ in [("per_week 0", dict(per_week="0", average_roundup="0.50")),
+                   ("per_week 61", dict(per_week="61", average_roundup="0.50")),
+                   ("per_week 2.5", dict(per_week="2.5", average_roundup="0.50")),
+                   ("per_week text", dict(per_week="five", average_roundup="0.50")),
+                   ("per_week negative", dict(per_week="-1", average_roundup="0.50")),
+                   ("per_week empty", dict(per_week="", average_roundup="0.50")),
+                   ("per_week missing", dict(average_roundup="0.50")),
+                   ("average 0.00", dict(per_week="5", average_roundup="0.00")),
+                   ("average 1.00", dict(per_week="5", average_roundup="1.00")),
+                   ("average 0.5 (one decimal)", dict(per_week="5", average_roundup="0.5")),
+                   ("average 0.505", dict(per_week="5", average_roundup="0.505")),
+                   ("average 1", dict(per_week="5", average_roundup="1")),
+                   ("average text", dict(per_week="5", average_roundup="abc")),
+                   ("average missing", dict(per_week="5"))]:
+    check("typical error: " + label, raises(lambda typ=typ: cc.run(tp_err(**typ))), True)
+both = tp_err(per_week="5", average_roundup="0.50")
+both["transactions"] = []
+check("typical error: both typical and transactions", raises(lambda: cc.run(both)), True)
+for label, args in [("per_week 0", (0, 50)), ("per_week 61", (61, 50)), ("a 0", (5, 0)), ("a 100", (5, 100)),
+                    ("per_week str", ("5", 50)), ("a bool", (5, True))]:
+    check("typical_purchases error: " + label, raises(lambda args=args: cc.typical_purchases(*args, *W2)), True)
+check("typical boundaries ok", [len(tp(1, 1, *W2)), len(tp(60, 99, *W2))], [2, 120])
+
+# full run with typical == the same scenario written out with explicit transactions
+cal = ["2024-01-%02d" % i for i in (1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 16, 17, 18, 19)]   # 15th is a holiday
+closes = dict(zip(cal, ["10.00", "10.50", "10.25", "11.00", "11.20", "11.00", "10.80", "10.90", "11.30",
+                        "11.40", "11.10", "11.50", "11.60", "11.80"]))
+mk = {"symbol": "T", "calendar": cal, "closes": closes, "dividends": [], "splits": []}
+cfg = {"strategy": "threshold", "start": "2024-01-01", "end": "2024-01-19", "reinvest": "true"}
+hand = [("2024-01-01", ), ("2024-01-02", ), ("2024-01-03", ), ("2024-01-05", ), ("2024-01-06", ),
+        ("2024-01-08", ), ("2024-01-09", ), ("2024-01-10", ), ("2024-01-12", ), ("2024-01-13", ),
+        ("2024-01-15", ), ("2024-01-16", ), ("2024-01-17", ), ("2024-01-19", )]
+explicit = [{"posted_date": d[0], "amount": "12.50", "direction": "debit", "status": "posted", "type": "",
+             "description": "typical"} for d in hand]
+for strat in ["threshold", "next_session", "weekly", "monthly"]:
+    c2 = dict(cfg, strategy=strat)
+    a = cc.run({"id": "x", "market": mk, "typical": {"per_week": "5", "average_roundup": "0.50"}, "config": c2})
+    b = cc.run({"id": "x", "market": mk, "transactions": explicit, "config": c2})
+    check("typical run == explicit run (%s)" % strat, a, b)
+ra = cc.run({"id": "x", "market": mk, "typical": {"per_week": "5", "average_roundup": "0.50"}, "config": cfg})
+check("typical run counts", [ra["status"], ra["transactions_used"], ra["transactions_ignored"], ra["summary"]["contributed"]],
+      ["ok", "14", "0", "7.00"])
+
 # 5. CLI: multiple files -> mapping id -> result
 import subprocess
 out = subprocess.run([sys.executable, "-I", os.path.join(os.path.dirname(HERE), "crosscheck.py"),

@@ -36,6 +36,9 @@ def engine_input(req, strategy: str = "threshold", reinvest: bool = True) -> tup
         txs = [{"posted_date": t.posted_date, "amount": t.amount, "direction": t.direction, "status": t.status,
                 "type": "", "description": t.description or "", **({"category": t.category} if t.category else {})}
                for t in req.transactions]
+    elif req.typical is not None:
+        # An impossible window is refused by the engine (R-12.1); do not generate weeks of purchases for it first.
+        txs = None
     elif meta["start"] <= req.start <= req.end <= meta["end"]:
         txs = generate_transactions(seed=req.generate.seed, start=req.start, end=req.end,
                                     max_per_day=req.generate.max_per_day)
@@ -44,9 +47,15 @@ def engine_input(req, strategy: str = "threshold", reinvest: bool = True) -> tup
         # Do not step through every day of an impossible window first: end=9999-12-31 took 8-10 s and then crashed
         # on a date overflow (found by the stage-6 attack test on the deployed preview).
         txs = []
-    scenario = {"id": "api", "market": market, "transactions": txs,
+    scenario = {"id": "api", "market": market,
                 "config": {"strategy": strategy, "start": req.start, "end": req.end,
                            "reinvest": "true" if reinvest else "false"}}
+    if txs is not None:
+        scenario["transactions"] = txs
+    elif meta["start"] <= req.start <= req.end <= meta["end"]:      # typical spending: the engine generates the purchases (R-1.9)
+        scenario["typical"] = {"per_week": str(req.typical.per_week), "average_roundup": req.typical.average_roundup}
+    else:
+        scenario["transactions"] = []
     return scenario, meta
 
 

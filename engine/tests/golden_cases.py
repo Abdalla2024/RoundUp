@@ -8,7 +8,7 @@ Conventions in the January 2024 fixtures: calendar = weekdays 2024-01-02..2024-0
 closed 2024-01-15 and 2024-02-19 (holidays).
 """
 
-from builders import closes, div, repeat, scenario, split, tx, weekdays
+from builders import closes, div, repeat, scenario, split, tx, typical_scenario, weekdays
 
 JAN = weekdays("2024-01-02", "2024-02-29", closed=("2024-01-15", "2024-02-19"))
 FLAT50 = closes(JAN, [("2024-01-02", "50.00")])
@@ -377,3 +377,48 @@ case(scenario("G-48-unrecognised-status", JAN, FLAT50,
               "next_session", "2024-01-16", "2024-01-16",
               description="Any status that is not clearly posted, pending or cancelled is ignored, never counted", covers=["R-1.4", "R-1.4a"]),
      summary={"as_of": "2024-01-16", "uninvested_cash": "1.53", "roundup_buys": "0"}, transactions_used="2", transactions_ignored="4")
+
+
+# ---------------------------------------------------------------- typical spending, R-1.9 (stage 6)
+# A synthetic calendar that starts on a Monday (2024-01-01) and runs to 2024-12-31. Closed (synthetic holidays): 01-15, 02-19, 05-27,
+# 07-04, 09-02, 11-28, 12-25. Flat price 50.00. Purchase k of n in a week is on Monday + floor(7k/n) days; each is 1200 + (100 - a)
+# cents, so its round-up is exactly a. Everything below was worked out by hand.
+TYP_CAL = weekdays("2024-01-01", "2024-12-31", closed=("2024-01-15", "2024-02-19", "2024-05-27", "2024-07-04", "2024-09-02",
+                                                       "2024-11-28", "2024-12-25"))
+TYP_FLAT = closes(TYP_CAL, [("2024-01-01", "50.00")])
+
+# G-50: 5 a week for 8 whole weeks (Mon 2024-01-01 .. Sun 2024-02-25) at $0.50. n = 5 puts purchases on days floor(7k/5) = 0,1,2,4,5
+# (Mon, Tue, Wed, Fri, Sat). 8 weeks x 5 = 40 purchases x $0.50 = $20.00. Threshold $5.00: every 10th purchase completes $5.00. The 10th
+# is Sat 01-13 (bought Tue 01-16, Mon 01-15 is closed), the 20th Sat 01-27 (Mon 01-29), the 30th Sat 02-10 (Mon 02-12), the 40th Sat
+# 02-24 (Mon 02-26, after the window ends). So 3 round-up buys and $5.00 still waiting.
+case(typical_scenario("G-50-typical-5x8", TYP_CAL, TYP_FLAT, 5, "0.50", "threshold", "2024-01-01", "2024-02-25",
+                      description="5 a week for 8 whole weeks at $0.50 contributes $20.00", covers=["R-1.9", "R-5.3"]),
+     summary={"contributed": "20.00", "roundup_buys": "3", "roundups_waiting": "5.00"}, transactions_used="40", transactions_ignored="0")
+# G-51: 20 a week for 52 whole weeks (Mon 2024-01-01 .. Sun 2024-12-29): 1040 purchases x $0.50 = $520.00.
+case(typical_scenario("G-51-typical-20x52", TYP_CAL, TYP_FLAT, 20, "0.50", "threshold", "2024-01-01", "2024-12-29",
+                      description="20 a week for 52 whole weeks at $0.50 contributes $520.00", covers=["R-1.9"]),
+     summary={"contributed": "520.00"}, transactions_used="1040", transactions_ignored="0")
+# G-52: the window starts mid-week (Wed 2024-01-03) and ends Sun 01-14, n = 5. Week 1 keeps Wed 01-03, Fri 01-05, Sat 01-06 (the Mon and
+# Tue purchases are before the start and do not exist), week 2 keeps all five (Mon 08, Tue 09, Wed 10, Fri 12, Sat 13). 8 x $0.50 = $4.00.
+case(typical_scenario("G-52-typical-mid-week-start", TYP_CAL, TYP_FLAT, 5, "0.50", "next_session", "2024-01-03", "2024-01-14",
+                      description="A start date in mid-week drops the earlier purchases of that week and shifts none", covers=["R-1.9", "R-1.6"]),
+     summary={"contributed": "4.00"}, transactions_used="8", transactions_ignored="0")
+# G-53: a week with a market holiday (Mon 2024-01-15 is closed), n = 7 (one purchase every day, Mon 15 .. Sun 21), next_session.
+# Mon 15 (holiday) is bought Tue 16, Tue 16 -> Wed 17, Wed 17 -> Thu 18, Thu 18 -> Fri 19: 4 buys. Fri 19, Sat 20 and Sun 21 would be bought
+# Mon 22, after the window: $1.50 waiting. Contributed 7 x $0.50 = $3.50.
+case(typical_scenario("G-53-typical-holiday-week", TYP_CAL, TYP_FLAT, 7, "0.50", "next_session", "2024-01-15", "2024-01-21",
+                      description="A purchase on a market holiday is invested the next session; the weekend waits", covers=["R-1.9", "R-5.1"]),
+     summary={"contributed": "3.50", "roundup_buys": "4", "roundups_waiting": "1.50"}, transactions_used="7", transactions_ignored="0")
+# G-54: the minimum inputs, n = 1 and a = $0.01. Purchases are $12.99 each, on Mondays only: 01-01, 01-08, 01-15, 01-22 = 4 x $0.01 = $0.04.
+case(typical_scenario("G-54-typical-minimum", TYP_CAL, TYP_FLAT, 1, "0.01", "threshold", "2024-01-01", "2024-01-28",
+                      description="Minimum inputs: one purchase a week, one cent each", covers=["R-1.9"]),
+     summary={"contributed": "0.04"}, transactions_used="4", transactions_ignored="0")
+# G-55: the maximum inputs, n = 60 and a = $0.99 for one whole week: 60 purchases of $12.01 = 60 x $0.99 = $59.40.
+# (Days floor(7k/60) hold 9, 9, 8, 9, 8, 9, 8 purchases on Mon..Sun.)
+case(typical_scenario("G-55-typical-maximum", TYP_CAL, TYP_FLAT, 60, "0.99", "threshold", "2024-01-01", "2024-01-07",
+                      description="Maximum inputs: 60 purchases a week, 99 cents each", covers=["R-1.9"]),
+     summary={"contributed": "59.40"}, transactions_used="60", transactions_ignored="0")
+# G-56: a non-default average, n = 10 and a = $0.25 for 4 whole weeks (Mon 2024-01-01 .. Sun 01-28): 40 purchases of $12.75 -> $10.00.
+case(typical_scenario("G-56-typical-quarter", TYP_CAL, TYP_FLAT, 10, "0.25", "threshold", "2024-01-01", "2024-01-28",
+                      description="A 25-cent average: 10 a week for 4 weeks contributes $10.00", covers=["R-1.9"]),
+     summary={"contributed": "10.00"}, transactions_used="40", transactions_ignored="0")

@@ -35,6 +35,12 @@ class GenerateIn(Strict):
     max_per_day: int = Field(ge=1, le=3)
 
 
+class TypicalIn(Strict):
+    """Typical spending (R-1.9): purchases a week, and the average round-up as text with two decimals, $0.01 to $0.99."""
+    per_week: int = Field(ge=1, le=60)
+    average_roundup: str = Field(pattern=r"^0\.(0[1-9]|[1-9][0-9])$")
+
+
 class RunOptions(Strict):
     scenario_id: str = Field(max_length=64)
     style: str = Field(max_length=32)
@@ -42,14 +48,15 @@ class RunOptions(Strict):
     end: str = Field(pattern=DATE)
     transactions: Optional[list[TransactionIn]] = Field(default=None, min_length=1, max_length=MAX_TRANSACTIONS)
     generate: Optional[GenerateIn] = None
+    typical: Optional[TypicalIn] = None
     buys: Literal["all", "none"] = "all"           # "none": leave the buy list out (counts stay in the summary)
 
     _s = field_validator("start", "end")(_real_date)
 
     @model_validator(mode="after")
     def _one_source(self):
-        if (self.transactions is None) == (self.generate is None):
-            raise ValueError("give either transactions or generate, not both or neither")
+        if sum(x is not None for x in (self.transactions, self.generate, self.typical)) != 1:
+            raise ValueError("give exactly one of transactions, generate or typical")
         return self
 
 

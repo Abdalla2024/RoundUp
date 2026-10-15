@@ -138,7 +138,7 @@ def create_app(supabase_url: str | None = None, publishable_key: str | None = No
         req = validate(SaveIn, await read_json(request))
         out = service.simulate(req)
         txs = None
-        if req.save_transactions:
+        if req.save_transactions and req.typical is None:          # typical spending has no purchase list to keep: its inputs are the record
             txs = [{"posted_date": t["posted_date"], "amount": t["amount"], "direction": t["direction"],
                     "status": t["status"], **({"category": t["category"]} if "category" in t else {})}
                    for t in service.engine_input(req, req.strategy, req.reinvest)[0]["transactions"]]
@@ -146,7 +146,8 @@ def create_app(supabase_url: str | None = None, publishable_key: str | None = No
         params = {"p_name": req.name, "p_transactions": txs,             # owner = auth.uid() inside the function
                   "p_config": {"scenario_id": req.scenario_id, "style": req.style, "start": req.start,
                                "end": req.end, "strategy": req.strategy, "reinvest": req.reinvest,
-                               "generate": req.generate.model_dump() if req.generate else None},
+                               "generate": req.generate.model_dump() if req.generate else None,
+                               "typical": req.typical.model_dump() if req.typical else None},
                   "p_market_scenario": m["scenario_id"], "p_style": m["style"], "p_strategy": req.strategy,
                   "p_reinvest": req.reinvest, "p_result": out["result"], "p_engine_version": m["engine_version"],
                   "p_model_version": m["model_version"], "p_scenario_seed": m["scenario_seed"],
