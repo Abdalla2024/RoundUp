@@ -87,6 +87,15 @@ All counts below are from runs on 2026-10-13, after the last change.
 - **Guards.** (1) The checker now requires 12 px (about 4%) of spare room in every select, so a near-clip fails on macOS too. This is a stricter test, not a looser one. (2) `tools/run-e2e-linux.sh` runs the end-to-end suite under Linux fonts from any machine with a container runtime. (3) A unit test asserts the compare page has no dropdowns.
 - **Rule.** Layout changes are checked under Linux fonts before they are pushed, and CI is read after every push before anything is called fixed.
 
+### 0.1e Typical spending and the redesign (2026-10-15)
+Results from a clean `git clone` run with CI's exact commands (pip install from requirements-ci.txt, `npm ci`):
+- Engine, scenario generator and cross-check agreement: 563 passed. Cross-check self-tests: 0 failures. API tests: 152 passed; independent API tests: 514 passed. Fault injection: 52 mutations, 52 caught, 0 survived (typical.py and the status rule are covered).
+- Web: typecheck clean; Vitest 145 passed (11 files, including contrast, the no-money-arithmetic scan and 14 design tests); Playwright 51 passed, 1 skipped (the owner's own CSV, which needs `OWNER_SAMPLE_CSV`): axe 9 of 9 pages and states, keyboard, geometry at 8 widths in light and dark, performance, upload flows.
+- Part A (R-1.9) was written test-first: hand-worked golden cases G-44..48, G-50..56, G-60..64, property tests, and a blind cross-check written from the rule text alone (AMB-23..26); 0 differences across the generated scenarios.
+- Contrast: 48 colour pairs measured in `web/tests/contrast.test.ts` (ratios in DESIGN.md §10); the build fails if any pair falls below its minimum.
+- Screenshots: `web/e2e/redesign-shots.spec.ts` (run with `REDESIGN_SHOTS_RUN=1`; skipped otherwise) captures 21 screens and states in light, dark and mobile.
+- **Not done here:** the Linux-font run (`tools/run-e2e-linux.sh`). No container runtime is installed on this machine now, and I do not install software without asking. It needs a runtime that can mount the home folder, for example `brew install colima docker` then `colima start`, and about 2 GB for the Playwright image. Until it runs, the geometry results for the redesign are macOS-only; CI's Ubuntu run will be the first Linux measurement.
+
 ### 0.2 Screen-reader pass (for the owner's VoiceOver check)
 
 Automated checks cannot judge these; please cover each with VoiceOver on macOS (Safari) and, if possible, iOS:

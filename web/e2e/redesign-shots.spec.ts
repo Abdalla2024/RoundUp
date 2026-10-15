@@ -16,6 +16,7 @@ const MODES = {
 
 for (const [mode, opts] of Object.entries(MODES)) {
   test.describe(mode, () => {
+    test.skip(!process.env.REDESIGN_SHOTS_RUN, "screenshot capture only: REDESIGN_SHOTS_RUN=1 npx playwright test e2e/redesign-shots.spec.ts");
     test.use(opts);
     test(`every screen and state (${mode})`, async ({ page }) => {
       test.setTimeout(180_000);
