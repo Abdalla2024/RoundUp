@@ -49,6 +49,7 @@
       - strong: Hypothetical simulation on a synthetic market.
       - text: These results show how sample round-ups behave in a made-up market scenario. No money was invested, the prices are not real, and this is not a forecast. It is not investment, tax or financial advice.
   - paragraph: In this one made-up scenario, B ends $91.91 lower than A on the last day.
+  - paragraph: Both use the same round-ups, so “B minus A” is the same for value at end and for growth on round-ups. Cash waiting and dividends kept as cash are part of the value at end. These differences come from this one made-up scenario and say nothing about which choice works better in general.
   - heading "A" [level=2]
   - paragraph: Invest each time round-ups reach $5. Dividends reinvested.
   - heading "B" [level=2]
@@ -103,7 +104,6 @@
           - cell "40"
           - cell "0"
           - cell "−40"
-  - paragraph: Both use the same round-ups, so “B minus A” is the same for value at end and for growth on round-ups. Cash waiting and dividends kept as cash are part of the value at end. These differences come from this one made-up scenario and say nothing about which choice works better in general.
   - heading "Value over time" [level=2]
   - 'figure "A: invest each time round-ups reach $5"':
     - 'heading "A: invest each time round-ups reach $5" [level=3]'

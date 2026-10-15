@@ -187,9 +187,12 @@ export function SetupForm() {
           <div className="typical">
             <div className="field"><label htmlFor="perweek" id="perweek-l">{COPY.perWeekLabel}</label>
               <div className="slider-row">
-                <input type="range" min={1} max={60} step={1} aria-labelledby="perweek-l" aria-describedby="perweek-help"
-                  value={weeklyCount(f.perWeek) ? f.perWeek : lastGood}
-                  onChange={(e) => { setLastGood(e.target.value); set({ perWeek: e.target.value }); }} />
+                <div className="slider-wrap">
+                  <input type="range" min={1} max={60} step={1} aria-labelledby="perweek-l" aria-describedby="perweek-help"
+                    value={weeklyCount(f.perWeek) ? f.perWeek : lastGood}
+                    onChange={(e) => { setLastGood(e.target.value); set({ perWeek: e.target.value }); }} />
+                  <div className="slider-ends small muted" aria-hidden="true"><span>1</span><span>60</span></div>
+                </div>
                 <input id="perweek" className="number-box" inputMode="numeric" value={f.perWeek}
                   onChange={(e) => { set({ perWeek: e.target.value }); if (weeklyCount(e.target.value)) setLastGood(e.target.value); }}
                   aria-invalid={invalid("typical.per_week")} aria-describedby="perweek-help" />
@@ -267,7 +270,7 @@ export function SetupForm() {
           different kinds of made-up markets. <strong>{COPY.label}</strong></p>
         <div className="options">
           {!scen && !error && [0, 1, 2, 3].map((i) => (
-            <div className="option choice scenario skeleton-card" key={i} role="presentation"><Skeleton height={20} width="55%" /><Skeleton height={36} /><Skeleton height={14} /><Skeleton height={14} width="80%" /></div>))}
+            <div className="option choice scenario skeleton-card" key={i} role="presentation"><Skeleton height={20} width="55%" /><Skeleton height={96} /><Skeleton height={14} /><Skeleton height={14} width="80%" /></div>))}
           {(scen?.scenarios ?? []).map((s) => {
             const shape = s.styles.find((x) => x.style === f.style)?.shape;
             return (

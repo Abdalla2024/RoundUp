@@ -37,6 +37,7 @@ for (const [mode, opts] of Object.entries(MODES)) {
       await page.locator(".scenario .spark").first().waitFor();
       await page.unroute("**/v1/scenarios");
       await shot("setup");
+      if (mode === "mobile") { await page.getByRole("button", { name: "Menu" }).click(); await shot("menu-open"); await page.getByRole("button", { name: "Menu" }).click(); }
       await page.getByText("Adjust the average round-up").click();
       await shot("setup-adjust-open");
       // upload

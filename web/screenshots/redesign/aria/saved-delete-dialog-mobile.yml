@@ -3,16 +3,7 @@
 - banner:
   - link "RoundUp":
     - /url: /
-  - navigation "Main":
-    - link "New simulation":
-      - /url: /
-    - link "Compare":
-      - /url: /compare
-    - link "Saved scenarios":
-      - /url: /saved
-    - link "How this works":
-      - /url: /how
-    - button "Sign out"
+  - button "Menu"
   - 'button "Colour theme: the system setting. Change to light."'
   - paragraph: Synthetic scenario. Not a real fund, not real prices, and not a forecast.
 - main:

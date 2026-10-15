@@ -1,0 +1,104 @@
+- link "Skip to main content":
+  - /url: "#main"
+- banner:
+  - link "RoundUp":
+    - /url: /
+  - button "Menu" [expanded]
+  - navigation "Main":
+    - link "New simulation":
+      - /url: /
+    - link "Compare":
+      - /url: /compare
+    - link "Saved scenarios":
+      - /url: /saved
+    - link "How this works":
+      - /url: /how
+    - link "Sign in":
+      - /url: /saved
+  - 'button "Colour theme: the system setting. Change to light."'
+  - paragraph: Synthetic scenario. Not a real fund, not real prices, and not a forecast.
+- main:
+  - region "See how spare change behaves in a made-up market":
+    - paragraph: An educational demo
+    - heading "See how spare change behaves in a made-up market" [level=1]
+    - paragraph: "Say how many purchases you make in a typical week, pick a made-up market, and watch the round-ups add up. Everything here is an estimate on made-up prices: no real money, no real funds, no advice."
+    - link "Start a simulation":
+      - /url: "#step-1"
+    - link "How this works":
+      - /url: /how
+  - navigation "Progress":
+    - list:
+      - listitem:
+        - 'link "1 Step 1 of 4: Your purchases"':
+          - /url: "#step-1"
+      - listitem:
+        - link "2":
+          - /url: "#step-2"
+      - listitem:
+        - link "3":
+          - /url: "#step-3"
+      - listitem:
+        - link "4":
+          - /url: "#step-4"
+  - group "Step 1 of 4 Your purchases":
+    - text: Step 1 of 4 Your purchases
+    - paragraph: Round-ups come from purchases. Choose typical spending, or upload a CSV export from your bank. Uploaded files are read in your session and not stored.
+    - 'radio "Typical spending An estimate from averages: you tell us how many purchases you make in a typical week." [checked]'
+    - text: "Typical spending An estimate from averages: you tell us how many purchases you make in a typical week."
+    - radio "Upload a CSV You choose which columns hold the date and amount. Merchant names are never stored."
+    - text: Upload a CSV You choose which columns hold the date and amount. Merchant names are never stored.
+    - paragraph: This is an estimate based on averages. Real spending varies.
+    - text: How many purchases do you make in a typical week?
+    - slider "How many purchases do you make in a typical week?": "10"
+    - textbox "How many purchases do you make in a typical week?": "10"
+    - text: A whole number from 1 to 60. The purchases are spread evenly across the week, weekends included.
+    - group: Adjust the average round-up
+  - group "Step 2 of 4 Market scenario":
+    - text: Step 2 of 4 Market scenario
+    - paragraph:
+      - text: Every scenario is made up by a published model, so you can see how round-ups behave in different kinds of made-up markets.
+      - strong: Synthetic scenario. Not a real fund, not real prices, and not a forecast.
+    - radio "Steady growth Gradual rise A synthetic market that rises gradually, with small day-to-day moves."
+    - text: Steady growth Gradual rise A synthetic market that rises gradually, with small day-to-day moves.
+    - radio "Crash and recovery Dip and back A synthetic market that grows, falls sharply over a few months, then recovers." [checked]
+    - text: Crash and recovery Dip and back A synthetic market that grows, falls sharply over a few months, then recovers.
+    - 'radio "Sideways Wanders about A synthetic market with no overall trend: prices wander up and down."'
+    - text: "Sideways Wanders about A synthetic market with no overall trend: prices wander up and down."
+    - radio "High volatility Big swings A synthetic market with large daily swings in both directions."
+    - text: High volatility Big swings A synthetic market with large daily swings in both directions.
+    - paragraph: Style
+    - radiogroup "Style":
+      - 'radio "Broad-market style In this model: smaller dividends, slightly higher price drift." [checked]'
+      - text: "Broad-market style In this model: smaller dividends, slightly higher price drift."
+      - 'radio "Dividend style In this model: larger dividends, slightly lower price drift."'
+      - text: "Dividend style In this model: larger dividends, slightly lower price drift."
+  - group "Step 3 of 4 How round-ups are invested":
+    - text: Step 3 of 4 How round-ups are invested
+    - paragraph: All four are equally valid to explore. Comparing them is the point.
+    - radio "When they reach $5 Starting setting Saved-up round-ups are invested once they add up to $5." [checked]
+    - text: When they reach $5 Starting setting Saved-up round-ups are invested once they add up to $5.
+    - radio "After every purchase day Each day’s round-ups are invested on the next trading day."
+    - text: After every purchase day Each day’s round-ups are invested on the next trading day.
+    - radio "Once a week The week’s round-ups are invested after Sunday."
+    - text: Once a week The week’s round-ups are invested after Sunday.
+    - radio "Once a month The month’s round-ups are invested after the month ends."
+    - text: Once a month The month’s round-ups are invested after the month ends.
+    - checkbox "Reinvest dividends Use dividend cash to buy more of the same scenario’s shares on the day it is paid. Turn off to keep it as cash." [checked]
+    - text: Reinvest dividends Use dividend cash to buy more of the same scenario’s shares on the day it is paid. Turn off to keep it as cash.
+  - group "Step 4 of 4 Dates":
+    - text: Step 4 of 4 Dates
+    - paragraph: This scenario runs from Jan 3, 2012 to Sep 30, 2026. Scenario dates follow a real calendar, but the prices are made up.
+    - text: Start date
+    - textbox "Start date": 2015-01-02
+    - text: End date
+    - textbox "End date": 2024-12-31
+  - button "Run simulation"
+  - text: Nothing is saved unless you sign in and choose Save.
+- contentinfo:
+  - text: RoundUp is an educational demo. No money moves and nothing here is advice or a forecast.
+  - link "Privacy":
+    - /url: /privacy
+  - text: ·
+  - link "How this works":
+    - /url: /how
+- alert

@@ -63,6 +63,21 @@ describe("Sparkline and icons are decoration", () => {
     expect(svg.getAttribute("aria-hidden")).toBe("true");
     expect(svg.querySelector("polyline")!.getAttribute("points")!.split(" ")).toHaveLength(4);
   });
+  test("a sparkline has room to show a dip (at least 96 px tall) and a dashed line at the starting level", () => {
+    const { container } = render(<Sparkline shape={[34, 20, 50]} />);
+    const svg = container.querySelector("svg")!;
+    expect(Number(svg.getAttribute("height"))).toBeGreaterThanOrEqual(64);
+    const base = svg.querySelector("line.spark-base")!;
+    expect(base).toBeTruthy();
+    // the starting level is the first number, drawn at the same height as the first point of the line
+    const firstY = svg.querySelector("polyline")!.getAttribute("points")!.split(" ")[0].split(",")[1];
+    expect(base.getAttribute("y1")).toBe(firstY);
+  });
+  test("two shapes of the same size are drawn on the same vertical scale (the same number is the same height)", () => {
+    const a = render(<Sparkline shape={[34, 60]} />).container.querySelector("polyline")!.getAttribute("points")!.split(" ")[1];
+    const b = render(<Sparkline shape={[10, 60]} />).container.querySelector("polyline")!.getAttribute("points")!.split(" ")[1];
+    expect(a).toBe(b);
+  });
   test("icons are aria-hidden and not focusable", () => {
     const { container } = render(<Icon name="coins" />);
     expect(container.querySelector("svg")!.getAttribute("aria-hidden")).toBe("true");

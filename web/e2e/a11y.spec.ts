@@ -19,13 +19,20 @@ async function check(page: Page, name: string, mode: string) {
   const v = res.violations.map((x) => ({ id: x.id, impact: x.impact, nodes: x.nodes.length, help: x.help,
     targets: x.nodes.slice(0, 3).map((n) => n.target.join(" ")) }));
   report[`${name}/${mode}`] = { violations: v, passes: res.passes.length };
-  await page.screenshot({ path: `screenshots/${name}-${mode}.png`, fullPage: true });
+  await page.screenshot({ path: `screenshots/a11y/${name}-${mode}.png`, fullPage: true });   // git-ignored: the committed screenshots are in screenshots/redesign/after
   expect(v, `${name}/${mode}`).toEqual([]);
 }
 
 for (const [mode, opts] of Object.entries(MODES)) {
   test.describe(mode, () => {
     test.use(opts);
+    test(`header menu open on a phone (${mode})`, async ({ page }) => {
+      test.skip(mode !== "mobile", "the Menu button exists only on narrow screens");
+      await page.goto("/");
+      await page.getByRole("button", { name: "Menu" }).click();
+      await page.getByRole("link", { name: "How this works", exact: true }).first().waitFor();
+      await check(page, "menu-open", mode);
+    });
     test(`setup, results, compare (${mode})`, async ({ page }) => {
       await page.goto("/");
       await check(page, "setup", mode);

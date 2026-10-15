@@ -84,7 +84,8 @@ export function CompareView() {
       {C && req && (<>
         <div style={{ marginTop: 24 }}><Disclaimer sample={compare!.sample} /></div>
         <div className="diff-summary" data-testid="diff-summary"><Icon name="info" size={24} />
-          <p>{C.difference.ending_value === "0.00" ? COPY.diffSame : COPY.diffSummary(!isNegative(C.difference.ending_value), unsignedMoney(C.difference.ending_value))}</p></div>
+          <div><p>{C.difference.ending_value === "0.00" ? COPY.diffSame : COPY.diffSummary(!isNegative(C.difference.ending_value), unsignedMoney(C.difference.ending_value))}</p>
+            <p className="diff-note small">{COPY.compareNote}</p></div></div>
         <div className="compare-grid">
           <div className="card"><h2 className="col-head"><span className="key" style={{ background: "var(--series-a)" }} aria-hidden="true" />A</h2>
             <p style={{ margin: 0 }}>{COPY.strategy[req.a.strategy]}. {COPY.dividends(req.a.reinvest)}.</p></div>
@@ -96,7 +97,6 @@ export function CompareView() {
             <thead><tr><th scope="col">Figure</th><th scope="col">A</th><th scope="col">B</th><th scope="col">B minus A</th></tr></thead>
             <tbody>{rows.map(([k, x, y, z]) => <tr key={k}><th scope="row">{k}</th><td data-label="A">{x}</td>
               <td data-label="B">{y}</td><td data-label="B minus A">{z}</td></tr>)}</tbody></table></div>
-        <p className="small muted" style={{ marginTop: 8 }}>{COPY.compareNote}</p>
         <h2 style={{ marginTop: 24 }}>Value over time</h2>
         <div className="multiples">
           <div className="card"><ValueChart result={C.a} title={`A: ${COPY.strategy[req.a.strategy].toLowerCase()}`} yTop={top} small label="A" level={3} /></div>

@@ -110,6 +110,52 @@ test("compare: a neutral difference line sits above the two coloured strategy ca
   await expect(page.getByTestId("diff-summary")).toContainText(/In this one made-up scenario, B ends \$[\d,]+\.\d{2} (higher|lower) than A on the last day\./);
 });
 
+test("compare: the two charts line up (same top, same height, same plot) when side by side", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await runSample(page);
+  await page.getByRole("link", { name: "Compare with another way of investing" }).click();
+  await page.getByRole("button", { name: "Compare" }).click();
+  const boxes = page.getByTestId("chart");
+  await expect(boxes).toHaveCount(2);
+  await boxes.first().scrollIntoViewIfNeeded();
+  const [a, b] = [await boxes.nth(0).boundingBox(), await boxes.nth(1).boundingBox()];
+  expect(Math.abs(a!.y - b!.y)).toBeLessThanOrEqual(1);
+  expect(Math.abs(a!.height - b!.height)).toBeLessThanOrEqual(1);
+});
+
+test("phone header: a compact bar with a Menu button; the links are out of the tab order until it opens; Escape closes it", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const header = page.locator("header.site-header .bar");
+  expect((await header.boundingBox())!.height).toBeLessThanOrEqual(72);        // one row, not three
+  const menu = page.getByRole("button", { name: "Menu" });
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await expect(page.getByRole("link", { name: "Compare" })).toBeHidden();
+  expect((await menu.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+  await menu.focus(); await page.keyboard.press("Enter");
+  await expect(menu).toHaveAttribute("aria-expanded", "true");
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("link", { name: "New simulation" })).toBeFocused();
+  for (const name of ["New simulation", "Compare", "Saved scenarios", "How this works"]) {
+    const box = (await page.getByRole("link", { name, exact: true }).first().boundingBox())!;
+    expect(box.height).toBeGreaterThanOrEqual(44);
+  }
+  await page.keyboard.press("Escape");
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await expect(menu).toBeFocused();
+  await expect(page.getByRole("link", { name: "Compare" })).toBeHidden();
+  await menu.click(); await page.getByRole("link", { name: "How this works", exact: true }).first().click();
+  await page.waitForURL("**/how");
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+});
+
+test("wide header: no Menu button, every link visible", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/");
+  await expect(page.getByRole("button", { name: "Menu" })).toBeHidden();
+  await expect(page.getByRole("link", { name: "Compare" })).toBeVisible();
+});
+
 test("compare: two strategies side by side", async ({ page }) => {
   await runSample(page);
   await page.getByRole("link", { name: "Compare with another way of investing" }).click();

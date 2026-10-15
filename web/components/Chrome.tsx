@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { COPY } from "@/lib/copy";
 import { useAuth } from "./AuthContext";
 import { Icon } from "./Icon";
@@ -18,14 +19,25 @@ function BrandMark() {
   );
 }
 
+/** The header. Wide screens show every link. Narrow screens show a bar (logo, theme button, "Menu" button); the links open below it.
+ *  Pattern: a disclosure (a button with aria-expanded that shows or hides a list of ordinary links), as in the W3C APG "Disclosure
+ *  Navigation Menu" example, not role=menu. Focus is not trapped; Escape closes it and returns focus to the button; picking a link,
+ *  or moving to another page, closes it. Without JavaScript the links stay visible (CSS only hides them once `data-js` is set). */
 export function SiteHeader() {
   const path = usePathname();
   const { session, mode, signOut } = useAuth();
+  const [open, setOpen] = useState(false), [js, setJs] = useState(false);
+  const toggle = useRef<HTMLButtonElement>(null);
+  useEffect(() => setJs(true), []);
+  useEffect(() => setOpen(false), [path]);
   return (
-    <header className="site-header">
+    <header className="site-header" data-js={js ? "true" : undefined}
+      onKeyDown={(e) => { if (e.key === "Escape" && open) { setOpen(false); toggle.current?.focus(); } }}>
       <div className="bar">
         <Link className="brand" href="/"><BrandMark /><span>RoundUp</span></Link>
-        <nav aria-label="Main">
+        <button ref={toggle} type="button" className="menu-toggle" aria-expanded={open} aria-controls="site-nav" onClick={() => setOpen(!open)}>
+          <Icon name={open ? "close" : "menu"} size={20} /><span>Menu</span></button>
+        <nav id="site-nav" aria-label="Main" data-open={open ? "true" : "false"} onClick={(e) => { if ((e.target as HTMLElement).closest("a, button")) setOpen(false); }}>
           {NAV.map(([href, label]) => (
             <Link key={href} href={href} aria-current={path === href ? "page" : undefined}>{label}</Link>))}
           {mode !== "off" && (session

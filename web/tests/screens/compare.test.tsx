@@ -28,6 +28,16 @@ describe("Compare screen", () => {
     expect(req).not.toHaveProperty("strategy");
   });
 
+  test("the 'same round-ups' caveat sits inside the difference box, right under the difference sentence, and appears once", () => {
+    const { container } = renderWith(<CompareView />, { run: RUN, compare: COMPARE });
+    const box = screen.getByTestId("diff-summary");
+    expect(box.textContent).toContain(COPY.compareNote);
+    expect((container.textContent ?? "").split(COPY.compareNote).length - 1).toBe(1);
+    const sentence = box.querySelector("p")!, note = box.querySelector("p.diff-note")!;
+    expect(sentence.compareDocumentPosition(note) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(note.previousElementSibling).toBe(sentence);
+  });
+
   test("table rows, plain-language labels, note and per-side dips", () => {
     const { container } = renderWith(<CompareView />, { run: RUN, compare: COMPARE });
     const text = container.textContent ?? "";

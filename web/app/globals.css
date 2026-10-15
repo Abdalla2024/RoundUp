@@ -42,10 +42,17 @@ ul, ol { padding-left: 1.25rem; }
 .label-strip { background: var(--indigo-tint); border-top: 1px solid var(--line); }
 .label-strip p { max-width: 1180px; margin: 0 auto; padding: 8px 16px; font-size: 0.875rem; color: var(--ink2); display: flex; align-items: center; gap: 8px; }
 .label-strip .icon { color: var(--primary); }
+.menu-toggle { display: none; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; }
+.menu-toggle:hover { background: var(--indigo-tint); }
 @media (max-width: 760px) {
-  .bar { flex-wrap: wrap; gap: 4px 12px; }
-  .site-header nav { order: 3; width: 100%; margin-left: 0; }
-  .theme-toggle { margin-left: auto; }
+  /* a compact bar: logo on the left, theme and menu buttons on the right; the links open below as a list */
+  .bar { flex-wrap: wrap; gap: 4px 8px; }
+  .brand { margin-right: auto; }
+  .menu-toggle { display: inline-flex; order: 2; }
+  .theme-toggle { order: 1; margin-left: 0; }
+  .site-header nav { order: 3; width: 100%; margin-left: 0; flex-direction: column; flex-wrap: nowrap; gap: 2px; padding: 4px 0 8px; border-top: 1px solid var(--line); }
+  .site-header nav a, .site-header nav .linklike { min-height: 48px; width: 100%; }
+  .site-header[data-js="true"] nav[data-open="false"] { display: none; }
 }
 footer { border-top: 1px solid var(--line); background: var(--surface); }
 footer > div { max-width: 1180px; margin: 0 auto; padding: 16px; font-size: 0.875rem; color: var(--ink2); display: flex; gap: 10px; align-items: flex-start; }
@@ -147,9 +154,11 @@ legend + * { clear: both; }
 .option::after { content: ""; position: absolute; right: 14px; top: 14px; width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--control); background: var(--surface); }
 .option:has(input:checked)::after { border-color: var(--primary); background: radial-gradient(circle, var(--primary) 0 45%, var(--surface) 50%); }
 .choice-icon { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--teal-tint); color: var(--accent); }
-.scenario .spark { margin: 4px 0; }
+.scenario .title { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding-right: 28px; }
+.scenario .spark { margin: 6px 0; }
 .spark-line { stroke: var(--series-a); }
 .spark-fill { fill: var(--series-a); opacity: 0.14; }
+.spark-base { stroke: var(--ink2); opacity: 0.55; }
 .skeleton-card { cursor: default; pointer-events: none; }
 .switch { display: flex; gap: 12px; align-items: flex-start; margin-top: 16px; cursor: pointer; }
 .switch input { width: 22px; height: 22px; margin-top: 2px; accent-color: var(--primary); }
@@ -158,6 +167,10 @@ legend + * { clear: both; }
 .typical { margin-top: 16px; display: grid; gap: 16px; max-width: 720px; }
 .slider-row { display: grid; grid-template-columns: minmax(0, 1fr) 96px; gap: 16px; align-items: center; }
 .slider-row input[type="range"] { height: 32px; padding: 0; border: 0; accent-color: var(--primary); width: 100%; }
+.slider-wrap { min-width: 0; }
+.slider-ends { display: flex; justify-content: space-between; padding: 0 2px; margin-top: -4px; font-variant-numeric: tabular-nums; }
+.slider-row { align-items: start; }
+.slider-row .number-box { margin-top: 0; }
 .number-box { text-align: center; font-weight: 800; font-size: 1.125rem; }
 .adjust { border: 1px dashed var(--control); border-radius: 14px; padding: 4px 16px; }
 .adjust summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
@@ -260,7 +273,10 @@ thead th { position: sticky; top: 0; background: var(--indigo-tint); }
 .diff-summary { display: flex; gap: 14px; align-items: center; background: var(--teal-tint); border: 1px solid var(--accent); border-radius: 20px; padding: 16px 20px; margin: 0 0 20px; }
 .diff-summary .icon { color: var(--accent); flex: none; }
 .diff-summary p { margin: 0; font-size: 1.05rem; }
+.diff-summary .diff-note { margin-top: 6px; font-size: 0.875rem; color: var(--ink2); }
 .cmp-table td, .cmp-table th { padding: 10px 12px; }
+.multiples h3 { min-height: 2.6em; }
+@media (max-width: 760px) { .multiples h3 { min-height: 0; } }
 .multiples { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 16px; }
 @media (max-width: 600px) {
   .cmp-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

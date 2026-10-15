@@ -29,7 +29,7 @@
  },
  "privacy/light": {
   "violations": [],
-  "passes": 40
+  "passes": 41
  },
  "setup/dark": {
   "violations": [],
@@ -61,7 +61,7 @@
  },
  "privacy/dark": {
   "violations": [],
-  "passes": 40
+  "passes": 41
  },
  "setup/mobile": {
   "violations": [],
@@ -93,6 +93,10 @@
  },
  "privacy/mobile": {
   "violations": [],
-  "passes": 40
+  "passes": 41
+ },
+ "menu-open/mobile": {
+  "violations": [],
+  "passes": 45
  }
 }

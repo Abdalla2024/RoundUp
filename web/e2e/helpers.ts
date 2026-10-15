@@ -13,9 +13,16 @@ export async function runSample(page: Page, opts: { start?: string; end?: string
   await page.getByText("In this made-up scenario").waitFor();
 }
 
+/** On a phone the header links sit behind the Menu button: open it if it is showing. */
+export async function openMenuIfCompact(page: Page) {
+  const menu = page.getByRole("button", { name: "Menu" });
+  if (await menu.isVisible() && (await menu.getAttribute("aria-expanded")) === "false") await menu.click();
+}
+
 export async function signIn(page: Page, email = "tester@example.test") {
+  await openMenuIfCompact(page);
   await page.getByRole("link", { name: "Sign in", exact: true }).click();
   await page.getByLabel("Email").fill(email);
   await page.getByRole("button", { name: "Email me a sign-in link" }).click();
-  await page.getByRole("button", { name: "Sign out" }).waitFor();
+  await page.getByRole("button", { name: "Sign out", includeHidden: true }).waitFor({ state: "attached" });   // behind the Menu button on a phone
 }

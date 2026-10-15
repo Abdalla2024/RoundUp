@@ -462,3 +462,15 @@ describe("Setup screen", () => {
     expect(sim.mock.calls[0][0].typical.average_roundup).toBe("0.99");
   });
 });
+
+describe("weekly slider end labels", () => {
+  test("the numbers 1 and 60 are shown at the ends of the slider and hidden from screen readers (the slider announces its own limits)", async () => {
+    const { container } = renderWith(<SetupForm />);
+    await waitFor(() => expect(container.querySelector(".slider-ends")).toBeTruthy());
+    const ends = container.querySelector(".slider-ends")!;
+    expect(ends.getAttribute("aria-hidden")).toBe("true");
+    expect([...ends.querySelectorAll("span")].map((x) => x.textContent)).toEqual(["1", "60"]);
+    const range = container.querySelector('input[type="range"]')!;
+    expect([range.getAttribute("min"), range.getAttribute("max")]).toEqual(["1", "60"]);
+  });
+});
