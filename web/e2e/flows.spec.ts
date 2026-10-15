@@ -8,7 +8,7 @@ test("simulate: sample spending → results that match the API exactly", async (
   await runSample(page);
   const api = await (await request.post(`${API}/v1/simulate`, { data: {
     scenario_id: "crash-and-recovery", style: "broad", start: "2015-01-02", end: "2024-12-31",
-    generate: { seed: 42, max_per_day: 2 }, strategy: "threshold", reinvest: true, buys: "none" } })).json();
+    typical: { per_week: 10, average_roundup: "0.50" }, strategy: "threshold", reinvest: true, buys: "none" } })).json();
   const s = api.result.summary;
   await expect(page.locator("#headline")).toContainText(`$${Number(s.contributed).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
   await expect(page.getByRole("note").getByText("Hypothetical simulation on a synthetic market.")).toBeVisible();
@@ -16,6 +16,41 @@ test("simulate: sample spending → results that match the API exactly", async (
   await expect(page.getByText("Made-up prices.")).toBeVisible();
   await expect(page.getByText(api.result.series_rule)).toBeVisible();
   await expect(page.getByText("Coming later:")).toBeVisible();
+});
+
+test("typical spending: slider, number box and the adjust box drive a result that equals the API's for the same inputs", async ({ page, request }) => {
+  await page.goto("/");
+  const slider = page.getByRole("slider", { name: "How many purchases do you make in a typical week?" });
+  const box = page.locator("#perweek");
+  await expect(box).toHaveValue("10");
+  await slider.focus();
+  await page.keyboard.press("ArrowRight");                    // the keyboard moves the slider one step
+  await expect(box).toHaveValue("11");
+  await page.keyboard.press("End");
+  await expect(box).toHaveValue("60");
+  await box.fill("20");
+  await expect(slider).toHaveValue("20");
+  await expect(page.locator("#avg")).toBeHidden();            // the average is tucked away until asked for
+  await page.getByText("Adjust the average round-up").click();
+  await page.locator("#avg").fill("0.25");
+  await page.getByLabel("Start date").fill("2024-01-01");
+  await page.getByLabel("End date").fill("2024-12-29");
+  await page.getByRole("button", { name: "Run simulation" }).click();
+  await page.waitForURL("**/results");
+  const api = await (await request.post(`${API}/v1/simulate`, { data: { scenario_id: "crash-and-recovery", style: "broad", start: "2024-01-01",
+    end: "2024-12-29", typical: { per_week: 20, average_roundup: "0.25" }, strategy: "threshold", reinvest: true, buys: "none" } })).json();
+  expect(api.result.summary.contributed).toBe("260.00");      // 1,040 purchases x $0.25, worked out by hand
+  await expect(page.locator("#headline")).toContainText("$260.00");
+  await expect(page.getByTestId("typical-note")).toContainText("Estimate: 20 purchases a week, each with a round-up of $0.25. Real spending varies.");
+  await expect(page.locator(".chips")).toContainText("1,040 sample purchases");
+});
+
+test("typical spending: a weekly count outside 1 to 60 is explained and focuses the box", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#perweek").fill("61");
+  await page.getByRole("button", { name: "Run simulation" }).click();
+  await expect(page.locator(".form-error")).toContainText("Enter a whole number of purchases from 1 to 60.");
+  await expect(page).toHaveURL(/\/$/);
 });
 
 test("compare: two strategies side by side", async ({ page }) => {

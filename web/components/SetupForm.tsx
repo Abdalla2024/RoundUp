@@ -11,7 +11,6 @@ import { useRun, type SetupDraft } from "./RunContext";
 import { useRateLimitWait } from "./useRateLimitWait";
 
 const MAX_CSV_CHARS = 2_000_000;
-const MAX_SEED = "2147483647";                   // the API's limit; compared as text, never computed
 const STRATEGIES: [Strategy, string, string][] = [
   ["threshold", "When they reach $5", "Saved-up round-ups are invested once they add up to $5."],
   ["next_session", "After every purchase day", "Each day’s round-ups are invested on the next trading day."],
@@ -27,7 +26,7 @@ const COL_LABEL: Record<Col, string> = { date: "Date column", amount: "Amount co
   credit: "Money in column", type: "Debit or credit column", status: "Status column (optional)", description: "Description column (optional)" };
 const SLASH_DATE = /(^|[,"\s])\d{1,2}\/\d{1,2}\/\d{4}([,"\s]|$)/m;
 
-const DEFAULTS: SetupDraft = { source: "generate", seed: "42", perDay: "2", scenarioId: "crash-and-recovery",
+const DEFAULTS: SetupDraft = { source: "typical", perWeek: "10", avgRoundup: "0.50", scenarioId: "crash-and-recovery",
   style: "broad", strategy: "threshold", reinvest: true, start: "2015-01-02", end: "2024-12-31", csv: null,
   columns: [], mapping: {}, convention: "", convNote: "", countUnrecognised: false, parsed: null, slashDates: false };
 
@@ -38,7 +37,13 @@ function visibleColumns(convention: string, mapping: Mapping): Col[] {
   if (convention) return ["date", "amount", "status", "description"];
   return ["date", "amount", ...(["debit", "credit", "type"] as Col[]).filter((k) => mapping[k]), "status", "description"];
 }
-const validSeed = (s: string) => /^\d{1,10}$/.test(s) && (s.length < 10 || s <= MAX_SEED);
+
+/** A weekly count: 1 to 60, written as whole-number text. Returns the number, or 0 when the text is not valid. */
+const weeklyCount = (t: string): number => {
+  if (!/^[0-9]{1,2}$/.test(t)) return 0;
+  const n = Number.parseInt(t, 10);
+  return n >= 1 && n <= 60 ? n : 0;
+};
 
 export function SetupForm() {
   const router = useRouter();
@@ -49,6 +54,8 @@ export function SetupForm() {
   const [scen, setScen] = useState<ScenariosResponse | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
   const [busy, setBusy] = useState(false);
+  const [adjustOpen, setAdjustOpen] = useState(false);
+  const [lastGood, setLastGood] = useState(weeklyCount(draft?.perWeek ?? "") ? draft!.perWeek : "10");
   const [coolingDown, noteRateLimit] = useRateLimitWait();     // reviewer L2
   const errorRef = useRef<HTMLDivElement>(null);
 
@@ -130,10 +137,14 @@ export function SetupForm() {
     setError(null);
     let req: SimulateRequest = { scenario_id: f.scenarioId, style: f.style, start: f.start, end: f.end,
       strategy: f.strategy, reinvest: f.reinvest };
-    if (f.source === "generate") {
-      if (!validSeed(f.seed)) { setError(new ApiError(422, "INVALID_INPUT", COPY.seedError, ["generate.seed"])); return; }
-      if (!/^[123]$/.test(f.perDay)) { setError(new ApiError(422, "INVALID_INPUT", COPY.perDayError, ["generate.max_per_day"])); return; }
-      req = { ...req, generate: { seed: Number.parseInt(f.seed, 10), max_per_day: Number.parseInt(f.perDay, 10) } };
+    if (f.source === "typical") {
+      const n = weeklyCount(f.perWeek);                                                    // whole numbers only; "1e1" and "5.5" fail the pattern
+      if (n === 0) { setError(new ApiError(422, "INVALID_INPUT", COPY.perWeekError, ["typical.per_week"])); return; }
+      if (!/^0\.(0[1-9]|[1-9][0-9])$/.test(f.avgRoundup)) {                                // text such as 0.50; sent exactly as typed
+        setAdjustOpen(true);
+        setError(new ApiError(422, "INVALID_INPUT", COPY.averageError, ["typical.average_roundup"])); return;
+      }
+      req = { ...req, typical: { per_week: n, average_roundup: f.avgRoundup } };
     } else {
       if (!f.parsed) { setError(new ApiError(422, "INVALID_INPUT", "Upload a CSV file and check it first.")); return; }
       const txs: TransactionIn[] = f.parsed.transactions.filter((t) => t.problem === null && t.posted_date && t.amount)
@@ -145,7 +156,7 @@ export function SetupForm() {
     setBusy(true);
     try {
       const response = await api.simulate(req);
-      setRun({ request: req, response, sample: f.source === "generate" });
+      setRun({ request: req, response, sample: f.source === "typical" });
       router.push("/results");
     } catch (e) { noteRateLimit(e as ApiError); setError(e as ApiError); } finally { setBusy(false); }
   }
@@ -158,24 +169,34 @@ export function SetupForm() {
         <p className="muted small">Round-ups come from purchases. Use sample spending, or upload a CSV export from your bank.
           Uploaded files are read in your session and not stored.</p>
         <div className="options">
-          <label className="option"><input type="radio" name="source" value="generate" checked={f.source === "generate"}
-            onChange={() => set({ source: "generate" })} /><span className="title">Generate sample spending</span>
-            <span className="desc">Made-up everyday purchases, the same every time for the same number.</span></label>
+          <label className="option"><input type="radio" name="source" value="typical" checked={f.source === "typical"}
+            onChange={() => set({ source: "typical" })} /><span className="title">{COPY.typicalTitle}</span>
+            <span className="desc">{COPY.typicalDesc}</span></label>
           <label className="option"><input type="radio" name="source" value="upload" checked={f.source === "upload"}
             onChange={() => set({ source: "upload" })} /><span className="title">Upload a CSV</span>
             <span className="desc">You choose which columns hold the date and amount. Merchant names are never stored.</span></label>
         </div>
-        {f.source === "generate" ? (<>
-          <p className="muted small" style={{ marginTop: 12, marginBottom: 0 }}>{COPY.purchaseListIntro}</p>
-          <div className="fields wide">
-            <div className="field"><label htmlFor="seed">Made-up purchase list number</label>
-              <input id="seed" inputMode="numeric" value={f.seed} onChange={(e) => set({ seed: e.target.value })}
-                aria-invalid={invalid("generate.seed")} aria-describedby="seed-help" />
-              <span id="seed-help" className="small muted">{COPY.seedHint}</span></div>
-            <div className="field"><label htmlFor="perday">Most purchases in one day</label>
-              <input id="perday" inputMode="numeric" value={f.perDay} onChange={(e) => set({ perDay: e.target.value })}
-                aria-invalid={invalid("generate.max_per_day")} aria-describedby="perday-help" />
-              <span id="perday-help" className="small muted">{COPY.perDayHint}</span></div>
+        {f.source === "typical" ? (<>
+          <p className="muted small" style={{ marginTop: 12, marginBottom: 0 }}>{COPY.typicalEstimate}</p>
+          <div className="typical">
+            <div className="field"><label htmlFor="perweek" id="perweek-l">{COPY.perWeekLabel}</label>
+              <div className="slider-row">
+                <input type="range" min={1} max={60} step={1} aria-labelledby="perweek-l" aria-describedby="perweek-help"
+                  value={weeklyCount(f.perWeek) ? f.perWeek : lastGood}
+                  onChange={(e) => { setLastGood(e.target.value); set({ perWeek: e.target.value }); }} />
+                <input id="perweek" className="number-box" inputMode="numeric" value={f.perWeek}
+                  onChange={(e) => { set({ perWeek: e.target.value }); if (weeklyCount(e.target.value)) setLastGood(e.target.value); }}
+                  aria-invalid={invalid("typical.per_week")} aria-describedby="perweek-help" />
+              </div>
+              <span id="perweek-help" className="small muted">{COPY.perWeekHint}</span></div>
+            <details className="adjust" open={adjustOpen} onToggle={(e) => setAdjustOpen((e.currentTarget as HTMLDetailsElement).open)}>
+              <summary>{COPY.adjustAverage}</summary>
+              <p className="small muted">{COPY.adjustAverageBody}</p>
+              <div className="field"><label htmlFor="avg">{COPY.averageLabel}</label>
+                <input id="avg" inputMode="decimal" value={f.avgRoundup} onChange={(e) => set({ avgRoundup: e.target.value })}
+                  aria-invalid={invalid("typical.average_roundup")} aria-describedby="avg-help" />
+                <span id="avg-help" className="small muted">{COPY.averageHint}</span></div>
+            </details>
           </div></>
         ) : (
           <div>

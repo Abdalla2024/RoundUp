@@ -8,7 +8,7 @@ export interface TransactionIn {
 }
 export interface RunOptions {
   scenario_id: string; style: Style; start: string; end: string;
-  transactions?: TransactionIn[]; generate?: { seed: number; max_per_day: number }; buys?: "all" | "none";
+  transactions?: TransactionIn[]; generate?: { seed: number; max_per_day: number }; typical?: { per_week: number; average_roundup: string }; buys?: "all" | "none";
 }
 export interface SimulateRequest extends RunOptions { strategy: Strategy; reinvest: boolean }
 export interface CompareRequest extends RunOptions { a: { strategy: Strategy; reinvest: boolean }; b: { strategy: Strategy; reinvest: boolean } }

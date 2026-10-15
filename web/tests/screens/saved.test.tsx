@@ -41,7 +41,7 @@ describe("Saved scenarios screen", () => {
     await waitFor(() => expect(screen.getByRole("heading", { name: "Crash test" })).toBeTruthy());
     const text = container.textContent ?? "";
     expect(text).toContain("Synthetic scenario: crash and recovery");
-    expect(text).toContain("value at end $2,949.37 on Dec 31, 2024");
+    expect(text).toContain("value at end $4,295.37 on Dec 31, 2024");
     expect(text).toContain(COPY.savedIntro);
   });
   test("delete asks first, then deletes and reloads", async () => {

@@ -86,7 +86,7 @@ for (const width of WIDTHS) {
       // text is in the list. Overlap, edge and every other check still run there.
       const SELECT_TEXT = { selectValues: width >= 360 };
       await page.goto("/");
-      await snap(page, "setup-generate", width, mode, true);
+      await snap(page, "setup-typical", width, mode, true);
       await page.getByRole("radio", { name: /Upload a CSV/ }).check();
       await snap(page, "setup-upload-before-file", width, mode, true);
       // stress: very long column names (overlap and window-edge checks still apply)

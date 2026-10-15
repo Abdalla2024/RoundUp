@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { COPY } from "@/lib/copy";
-import { count, counted, dateRange } from "@/lib/format";
+import { count, counted, dateRange, money } from "@/lib/format";
 import type { SimulateRequest } from "@/lib/types";
 import { useAuth } from "./AuthContext";
 import { Disclaimer, ErrorNotice } from "./Chrome";
@@ -14,6 +14,7 @@ import { SignInForm } from "./SignIn";
 import { ValueChart } from "./ValueChart";
 
 function purchasesSetting(req: SimulateRequest, savedName?: string): string {
+  if (req.typical) return `typical spending, ${req.typical.per_week} purchases a week, average round-up ${money(req.typical.average_roundup)}`;
   if (req.generate) return `purchase list number ${req.generate.seed}, up to ${req.generate.max_per_day} purchases a day`;
   return savedName ? "purchases as saved" : "purchases from your file";
 }
@@ -65,6 +66,7 @@ export function ResultsView() {
         <li>{dateRange(request.start, request.end)}</li>
         <li className="chip-link"><Link href="/">Edit settings</Link></li>
       </ul>
+      {request.typical && <p className="muted small" data-testid="typical-note">{COPY.typicalNote(String(request.typical.per_week), money(request.typical.average_roundup))}</p>}
       <Disclaimer sample={sample} />
       {r.summary.contributed === "0.00"
         ? <p className="headline">{r.transactions_used === "0" ? COPY.noneInWindow : COPY.wholeDollar}</p>

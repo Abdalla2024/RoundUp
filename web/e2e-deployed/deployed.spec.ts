@@ -106,7 +106,7 @@ test("page weight and response sizes on Vercel", async ({ page, request }) => {
   await page.goto("/", { waitUntil: "networkidle" });
   out.setup_first_load = { ms: Date.now() - t0, total_bytes: total, transferred_bytes: wire, by_type: { ...bytes } };
   const full = { scenario_id: "crash-and-recovery", style: "broad", start: "2012-01-03", end: "2026-09-30",
-    generate: { seed: 42, max_per_day: 3 }, strategy: "next_session", reinvest: true };
+    typical: { per_week: 20, average_roundup: "0.50" }, strategy: "next_session", reinvest: true };
   for (const buys of ["none", "all"] as const) {
     const runs: number[] = []; let size = 0, points = 0;
     for (let i = 0; i < 5; i++) {

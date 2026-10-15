@@ -13,7 +13,7 @@ from roundup_api.main import create_app
 OUT = pathlib.Path(__file__).resolve().parent
 c = TestClient(create_app(rate_limits={"simulate": 999, "compare": 999, "parse": 999}))
 BASE = {"scenario_id": "crash-and-recovery", "style": "broad", "start": "2015-01-02", "end": "2024-12-31",
-        "generate": {"seed": 42, "max_per_day": 2}, "buys": "none"}
+        "typical": {"per_week": 10, "average_roundup": "0.50"}, "buys": "none"}
 
 
 def save(name, data):
@@ -28,7 +28,7 @@ save("simulate_short", {"request": dict(BASE, scenario_id="steady-growth", start
                                         strategy="next_session", reinvest=True),
                         "response": c.post("/v1/simulate", json=dict(BASE, scenario_id="steady-growth", start="2012-01-03",
                                            end="2012-12-31", strategy="next_session", reinvest=True)).json()})
-whole = {k: v for k, v in BASE.items() if k != "generate"}
+whole = {k: v for k, v in BASE.items() if k != "typical"}
 whole["transactions"] = [{"posted_date": "2015-01-05", "amount": "4.00", "direction": "debit"}]
 save("simulate_whole_dollar", {"request": dict(whole, strategy="threshold", reinvest=True),
                                "response": c.post("/v1/simulate", json=dict(whole, strategy="threshold", reinvest=True)).json()})

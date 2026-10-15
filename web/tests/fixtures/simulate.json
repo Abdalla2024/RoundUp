@@ -4,9 +4,9 @@
   "style": "broad",
   "start": "2015-01-02",
   "end": "2024-12-31",
-  "generate": {
-   "seed": 42,
-   "max_per_day": 2
+  "typical": {
+   "per_week": 10,
+   "average_roundup": "0.50"
   },
   "buys": "none",
   "strategy": "threshold",
@@ -17,3172 +17,3172 @@
    "status": "ok",
    "error_code": null,
    "summary": {
-    "contributed": "1789.92",
-    "roundup_buys": "325",
+    "contributed": "2608.50",
+    "roundup_buys": "521",
     "dividend_buys": "40",
-    "dividends_earned": "185.46",
-    "dividends_paid": "185.46",
-    "shares": "8.413960",
-    "holdings_value": "2948.42",
-    "uninvested_cash": "0.95",
-    "roundups_waiting": "0.95",
+    "dividends_earned": "270.54",
+    "dividends_paid": "270.54",
+    "shares": "12.247800",
+    "holdings_value": "4291.87",
+    "uninvested_cash": "3.50",
+    "roundups_waiting": "3.50",
     "dividends_as_cash": "0.00",
     "receivables": "0.00",
-    "ending_value": "2949.37",
-    "gain": "1159.45",
-    "gain_pct": "64.78",
+    "ending_value": "4295.37",
+    "gain": "1686.87",
+    "gain_pct": "64.67",
     "as_of": "2024-12-31",
     "deepest_dip": {
      "date": "2017-11-06",
-     "value": "344.52",
-     "added": "509.50",
-     "below_by": "164.98"
+     "value": "500.83",
+     "added": "743.00",
+     "below_by": "242.17"
     }
    },
    "buys": [],
    "series": [
     {
      "date": "2015-01-02",
-     "value": "1.35",
+     "value": "1.00",
      "carried": "false",
-     "added": "1.35"
+     "added": "1.00"
     },
     {
      "date": "2015-01-09",
-     "value": "2.59",
+     "value": "6.00",
      "carried": "false",
-     "added": "2.59"
+     "added": "6.00"
     },
     {
      "date": "2015-01-16",
-     "value": "5.13",
+     "value": "11.03",
      "carried": "false",
-     "added": "5.13"
+     "added": "11.00"
     },
     {
      "date": "2015-01-23",
-     "value": "8.88",
+     "value": "15.91",
      "carried": "false",
-     "added": "8.90"
+     "added": "16.00"
     },
     {
      "date": "2015-01-30",
-     "value": "11.12",
+     "value": "21.17",
      "carried": "false",
-     "added": "11.05"
+     "added": "21.00"
     },
     {
      "date": "2015-02-06",
-     "value": "13.04",
+     "value": "26.27",
      "carried": "false",
-     "added": "12.93"
+     "added": "26.00"
     },
     {
      "date": "2015-02-13",
-     "value": "15.06",
+     "value": "30.71",
      "carried": "false",
-     "added": "15.20"
+     "added": "31.00"
     },
     {
      "date": "2015-02-20",
-     "value": "19.89",
+     "value": "35.96",
      "carried": "false",
-     "added": "19.86"
+     "added": "36.00"
     },
     {
      "date": "2015-02-27",
-     "value": "23.46",
+     "value": "41.36",
      "carried": "false",
-     "added": "23.23"
+     "added": "41.00"
     },
     {
      "date": "2015-03-06",
-     "value": "27.10",
+     "value": "46.16",
      "carried": "false",
-     "added": "26.98"
+     "added": "46.00"
     },
     {
      "date": "2015-03-13",
-     "value": "28.69",
+     "value": "51.43",
      "carried": "false",
-     "added": "28.41"
+     "added": "51.00"
     },
     {
      "date": "2015-03-20",
-     "value": "30.50",
+     "value": "55.86",
      "carried": "false",
-     "added": "30.53"
+     "added": "56.00"
     },
     {
      "date": "2015-03-27",
-     "value": "32.60",
+     "value": "62.14",
      "carried": "false",
-     "added": "32.00"
+     "added": "61.00"
     },
     {
      "date": "2015-04-02",
-     "value": "34.48",
+     "value": "65.62",
      "carried": "false",
-     "added": "34.11"
+     "added": "65.00"
     },
     {
      "date": "2015-04-10",
-     "value": "37.23",
+     "value": "72.22",
      "carried": "false",
-     "added": "36.57"
+     "added": "71.00"
     },
     {
      "date": "2015-04-17",
-     "value": "40.71",
+     "value": "76.62",
      "carried": "false",
-     "added": "40.31"
+     "added": "76.00"
     },
     {
      "date": "2015-04-24",
-     "value": "45.20",
+     "value": "82.80",
      "carried": "false",
-     "added": "44.20"
+     "added": "81.00"
     },
     {
      "date": "2015-05-01",
-     "value": "48.15",
+     "value": "87.53",
      "carried": "false",
-     "added": "47.29"
+     "added": "86.00"
     },
     {
      "date": "2015-05-08",
-     "value": "55.41",
+     "value": "94.53",
      "carried": "false",
-     "added": "53.41"
+     "added": "91.00"
     },
     {
      "date": "2015-05-15",
-     "value": "59.06",
+     "value": "100.49",
      "carried": "false",
-     "added": "56.52"
+     "added": "96.00"
     },
     {
      "date": "2015-05-22",
-     "value": "65.13",
+     "value": "105.53",
      "carried": "false",
-     "added": "62.49"
+     "added": "101.00"
     },
     {
      "date": "2015-05-29",
-     "value": "65.85",
+     "value": "110.63",
      "carried": "false",
-     "added": "63.14"
+     "added": "106.00"
     },
     {
      "date": "2015-06-05",
-     "value": "65.68",
+     "value": "111.64",
      "carried": "false",
-     "added": "65.30"
+     "added": "111.00"
     },
     {
      "date": "2015-06-12",
-     "value": "67.47",
+     "value": "111.64",
      "carried": "false",
-     "added": "70.01"
+     "added": "116.00"
     },
     {
      "date": "2015-06-19",
-     "value": "71.40",
+     "value": "115.06",
      "carried": "false",
-     "added": "74.93"
+     "added": "121.00"
     },
     {
      "date": "2015-06-26",
-     "value": "74.75",
+     "value": "122.13",
      "carried": "false",
-     "added": "76.98"
+     "added": "126.00"
     },
     {
      "date": "2015-07-02",
-     "value": "77.02",
+     "value": "125.85",
      "carried": "false",
-     "added": "79.42"
+     "added": "130.00"
     },
     {
      "date": "2015-07-10",
-     "value": "84.45",
+     "value": "135.85",
      "carried": "false",
-     "added": "84.37"
+     "added": "136.00"
     },
     {
      "date": "2015-07-17",
-     "value": "87.37",
+     "value": "141.49",
      "carried": "false",
-     "added": "86.97"
+     "added": "141.00"
     },
     {
      "date": "2015-07-24",
-     "value": "91.55",
+     "value": "146.04",
      "carried": "false",
-     "added": "91.42"
+     "added": "146.00"
     },
     {
      "date": "2015-07-31",
-     "value": "94.35",
+     "value": "150.66",
      "carried": "false",
-     "added": "94.51"
+     "added": "151.00"
     },
     {
      "date": "2015-08-07",
-     "value": "98.07",
+     "value": "157.07",
      "carried": "false",
-     "added": "97.36"
+     "added": "156.00"
     },
     {
      "date": "2015-08-14",
-     "value": "102.67",
+     "value": "163.34",
      "carried": "false",
-     "added": "101.18"
+     "added": "161.00"
     },
     {
      "date": "2015-08-21",
-     "value": "105.96",
+     "value": "166.58",
      "carried": "false",
-     "added": "105.55"
+     "added": "166.00"
     },
     {
      "date": "2015-08-28",
-     "value": "110.21",
+     "value": "170.20",
      "carried": "false",
-     "added": "110.77"
+     "added": "171.00"
     },
     {
      "date": "2015-09-04",
-     "value": "115.45",
+     "value": "178.29",
      "carried": "false",
-     "added": "114.02"
+     "added": "176.00"
     },
     {
      "date": "2015-09-11",
-     "value": "121.22",
+     "value": "185.47",
      "carried": "false",
-     "added": "118.40"
+     "added": "181.00"
     },
     {
      "date": "2015-09-18",
-     "value": "124.80",
+     "value": "191.81",
      "carried": "false",
-     "added": "121.13"
+     "added": "186.00"
     },
     {
      "date": "2015-09-25",
-     "value": "128.83",
+     "value": "199.37",
      "carried": "false",
-     "added": "123.49"
+     "added": "191.00"
     },
     {
      "date": "2015-10-02",
-     "value": "137.09",
+     "value": "208.73",
      "carried": "false",
-     "added": "128.87"
+     "added": "196.00"
     },
     {
      "date": "2015-10-09",
-     "value": "140.74",
+     "value": "212.02",
      "carried": "false",
-     "added": "133.62"
+     "added": "201.00"
     },
     {
      "date": "2015-10-16",
-     "value": "143.45",
+     "value": "212.91",
      "carried": "false",
-     "added": "139.08"
+     "added": "206.00"
     },
     {
      "date": "2015-10-23",
-     "value": "151.87",
+     "value": "225.07",
      "carried": "false",
-     "added": "142.70"
+     "added": "211.00"
     },
     {
      "date": "2015-10-30",
-     "value": "159.29",
+     "value": "236.98",
      "carried": "false",
-     "added": "145.53"
+     "added": "216.00"
     },
     {
      "date": "2015-11-06",
-     "value": "168.18",
+     "value": "247.21",
      "carried": "false",
-     "added": "150.92"
+     "added": "221.00"
     },
     {
      "date": "2015-11-13",
-     "value": "171.80",
+     "value": "252.75",
      "carried": "false",
-     "added": "154.17"
+     "added": "226.00"
     },
     {
      "date": "2015-11-20",
-     "value": "170.26",
+     "value": "251.51",
      "carried": "false",
-     "added": "156.89"
+     "added": "231.00"
     },
     {
      "date": "2015-11-27",
-     "value": "173.05",
+     "value": "256.67",
      "carried": "false",
-     "added": "159.57"
+     "added": "236.00"
     },
     {
      "date": "2015-12-04",
-     "value": "180.01",
+     "value": "264.36",
      "carried": "false",
-     "added": "164.75"
+     "added": "241.00"
     },
     {
      "date": "2015-12-11",
-     "value": "181.15",
+     "value": "265.86",
      "carried": "false",
-     "added": "168.30"
+     "added": "246.00"
     },
     {
      "date": "2015-12-18",
-     "value": "184.80",
+     "value": "271.69",
      "carried": "false",
-     "added": "171.40"
+     "added": "251.00"
     },
     {
      "date": "2015-12-24",
-     "value": "185.12",
+     "value": "274.63",
      "carried": "false",
-     "added": "172.44"
+     "added": "255.00"
     },
     {
      "date": "2015-12-31",
-     "value": "185.01",
+     "value": "276.08",
      "carried": "false",
-     "added": "174.72"
+     "added": "260.00"
     },
     {
      "date": "2016-01-08",
-     "value": "185.68",
+     "value": "278.40",
      "carried": "false",
-     "added": "177.90"
+     "added": "266.00"
     },
     {
      "date": "2016-01-15",
-     "value": "192.26",
+     "value": "286.35",
      "carried": "false",
-     "added": "182.51"
+     "added": "271.00"
     },
     {
      "date": "2016-01-22",
-     "value": "195.49",
+     "value": "291.26",
      "carried": "false",
-     "added": "185.80"
+     "added": "276.00"
     },
     {
      "date": "2016-01-29",
-     "value": "204.04",
+     "value": "300.56",
      "carried": "false",
-     "added": "191.48"
+     "added": "281.00"
     },
     {
      "date": "2016-02-05",
-     "value": "206.55",
+     "value": "300.63",
      "carried": "false",
-     "added": "197.28"
+     "added": "286.00"
     },
     {
      "date": "2016-02-12",
-     "value": "214.34",
+     "value": "312.74",
      "carried": "false",
-     "added": "200.24"
+     "added": "291.00"
     },
     {
      "date": "2016-02-19",
-     "value": "224.83",
+     "value": "327.98",
      "carried": "false",
-     "added": "203.77"
+     "added": "296.00"
     },
     {
      "date": "2016-02-26",
-     "value": "228.81",
+     "value": "335.09",
      "carried": "false",
-     "added": "206.31"
+     "added": "301.00"
     },
     {
      "date": "2016-03-04",
-     "value": "230.07",
+     "value": "337.65",
      "carried": "false",
-     "added": "209.25"
+     "added": "306.00"
     },
     {
      "date": "2016-03-11",
-     "value": "233.38",
+     "value": "343.16",
      "carried": "false",
-     "added": "212.21"
+     "added": "311.00"
     },
     {
      "date": "2016-03-18",
-     "value": "230.19",
+     "value": "340.75",
      "carried": "false",
-     "added": "214.04"
+     "added": "316.00"
     },
     {
      "date": "2016-03-24",
-     "value": "233.25",
+     "value": "347.02",
      "carried": "false",
-     "added": "215.57"
+     "added": "320.00"
     },
     {
      "date": "2016-04-01",
-     "value": "231.94",
+     "value": "347.17",
      "carried": "false",
-     "added": "218.16"
+     "added": "326.00"
     },
     {
      "date": "2016-04-08",
-     "value": "238.92",
+     "value": "359.84",
      "carried": "false",
-     "added": "220.03"
+     "added": "331.00"
     },
     {
      "date": "2016-04-15",
-     "value": "251.57",
+     "value": "376.63",
      "carried": "false",
-     "added": "224.89"
+     "added": "336.00"
     },
     {
      "date": "2016-04-22",
-     "value": "251.17",
+     "value": "375.03",
      "carried": "false",
-     "added": "228.91"
+     "added": "341.00"
     },
     {
      "date": "2016-04-29",
-     "value": "253.22",
+     "value": "380.50",
      "carried": "false",
-     "added": "230.64"
+     "added": "346.00"
     },
     {
      "date": "2016-05-06",
-     "value": "259.89",
+     "value": "388.87",
      "carried": "false",
-     "added": "235.05"
+     "added": "351.00"
     },
     {
      "date": "2016-05-13",
-     "value": "260.29",
+     "value": "389.70",
      "carried": "false",
-     "added": "238.23"
+     "added": "356.00"
     },
     {
      "date": "2016-05-20",
-     "value": "268.06",
+     "value": "397.85",
      "carried": "false",
-     "added": "243.83"
+     "added": "361.00"
     },
     {
      "date": "2016-05-27",
-     "value": "274.79",
+     "value": "409.25",
      "carried": "false",
-     "added": "246.22"
+     "added": "366.00"
     },
     {
      "date": "2016-06-03",
-     "value": "273.29",
+     "value": "408.04",
      "carried": "false",
-     "added": "248.88"
+     "added": "371.00"
     },
     {
      "date": "2016-06-10",
-     "value": "264.25",
+     "value": "395.95",
      "carried": "false",
-     "added": "251.32"
+     "added": "376.00"
     },
     {
      "date": "2016-06-17",
-     "value": "278.50",
+     "value": "419.02",
      "carried": "false",
-     "added": "253.54"
+     "added": "381.00"
     },
     {
      "date": "2016-06-24",
-     "value": "278.47",
+     "value": "420.80",
      "carried": "false",
-     "added": "255.63"
+     "added": "386.00"
     },
     {
      "date": "2016-07-01",
-     "value": "248.03",
+     "value": "369.62",
      "carried": "false",
-     "added": "262.39"
+     "added": "391.00"
     },
     {
      "date": "2016-07-08",
-     "value": "260.30",
+     "value": "387.47",
      "carried": "false",
-     "added": "266.06"
+     "added": "396.00"
     },
     {
      "date": "2016-07-15",
-     "value": "246.54",
+     "value": "368.06",
      "carried": "false",
-     "added": "268.60"
+     "added": "401.00"
     },
     {
      "date": "2016-07-22",
-     "value": "248.54",
+     "value": "371.39",
      "carried": "false",
-     "added": "271.78"
+     "added": "406.00"
     },
     {
      "date": "2016-07-29",
-     "value": "218.70",
+     "value": "325.26",
      "carried": "false",
-     "added": "276.24"
+     "added": "411.00"
     },
     {
      "date": "2016-08-05",
-     "value": "206.71",
+     "value": "309.51",
      "carried": "false",
-     "added": "278.29"
+     "added": "416.00"
     },
     {
      "date": "2016-08-12",
-     "value": "220.12",
+     "value": "329.78",
      "carried": "false",
-     "added": "281.51"
+     "added": "421.00"
     },
     {
      "date": "2016-08-19",
-     "value": "202.76",
+     "value": "303.48",
      "carried": "false",
-     "added": "285.19"
+     "added": "426.00"
     },
     {
      "date": "2016-08-26",
-     "value": "203.25",
+     "value": "304.16",
      "carried": "false",
-     "added": "288.56"
+     "added": "431.00"
     },
     {
      "date": "2016-09-02",
-     "value": "215.90",
+     "value": "323.47",
      "carried": "false",
-     "added": "291.66"
+     "added": "436.00"
     },
     {
      "date": "2016-09-09",
-     "value": "221.49",
+     "value": "331.04",
      "carried": "false",
-     "added": "295.26"
+     "added": "441.00"
     },
     {
      "date": "2016-09-16",
-     "value": "230.14",
+     "value": "342.55",
      "carried": "false",
-     "added": "299.73"
+     "added": "446.00"
     },
     {
      "date": "2016-09-23",
-     "value": "236.48",
+     "value": "354.10",
      "carried": "false",
-     "added": "301.67"
+     "added": "451.00"
     },
     {
      "date": "2016-09-30",
-     "value": "241.90",
+     "value": "358.62",
      "carried": "false",
-     "added": "307.15"
+     "added": "456.00"
     },
     {
      "date": "2016-10-07",
-     "value": "245.90",
+     "value": "362.28",
      "carried": "false",
-     "added": "312.35"
+     "added": "461.00"
     },
     {
      "date": "2016-10-14",
-     "value": "228.81",
+     "value": "329.74",
      "carried": "false",
-     "added": "321.04"
+     "added": "466.00"
     },
     {
      "date": "2016-10-21",
-     "value": "241.30",
+     "value": "344.80",
      "carried": "false",
-     "added": "326.39"
+     "added": "471.00"
     },
     {
      "date": "2016-10-28",
-     "value": "236.82",
+     "value": "342.41",
      "carried": "false",
-     "added": "327.10"
+     "added": "476.00"
     },
     {
      "date": "2016-11-04",
-     "value": "233.31",
+     "value": "339.07",
      "carried": "false",
-     "added": "329.35"
+     "added": "481.00"
     },
     {
      "date": "2016-11-11",
-     "value": "242.41",
+     "value": "355.00",
      "carried": "false",
-     "added": "331.01"
+     "added": "486.00"
     },
     {
      "date": "2016-11-18",
-     "value": "259.62",
+     "value": "382.10",
      "carried": "false",
-     "added": "333.30"
+     "added": "491.00"
     },
     {
      "date": "2016-11-25",
-     "value": "267.06",
+     "value": "390.19",
      "carried": "false",
-     "added": "338.65"
+     "added": "496.00"
     },
     {
      "date": "2016-12-02",
-     "value": "250.33",
+     "value": "365.13",
      "carried": "false",
-     "added": "342.48"
+     "added": "501.00"
     },
     {
      "date": "2016-12-09",
-     "value": "240.18",
+     "value": "353.05",
      "carried": "false",
-     "added": "343.89"
+     "added": "506.00"
     },
     {
      "date": "2016-12-16",
-     "value": "240.71",
+     "value": "351.81",
      "carried": "false",
-     "added": "348.72"
+     "added": "511.00"
     },
     {
      "date": "2016-12-23",
-     "value": "236.17",
+     "value": "344.10",
      "carried": "false",
-     "added": "352.90"
+     "added": "516.00"
     },
     {
      "date": "2016-12-30",
-     "value": "235.38",
+     "value": "341.00",
      "carried": "false",
-     "added": "357.65"
+     "added": "521.00"
     },
     {
      "date": "2017-01-06",
-     "value": "243.93",
+     "value": "348.55",
      "carried": "false",
-     "added": "364.51"
+     "added": "526.00"
     },
     {
      "date": "2017-01-13",
-     "value": "249.59",
+     "value": "357.01",
      "carried": "false",
-     "added": "367.78"
+     "added": "531.00"
     },
     {
      "date": "2017-01-20",
-     "value": "252.29",
+     "value": "360.00",
      "carried": "false",
-     "added": "371.82"
+     "added": "536.00"
     },
     {
      "date": "2017-01-27",
-     "value": "250.40",
+     "value": "359.38",
      "carried": "false",
-     "added": "373.87"
+     "added": "541.00"
     },
     {
      "date": "2017-02-03",
-     "value": "258.50",
+     "value": "369.99",
      "carried": "false",
-     "added": "378.06"
+     "added": "546.00"
     },
     {
      "date": "2017-02-10",
-     "value": "252.34",
+     "value": "362.73",
      "carried": "false",
-     "added": "380.46"
+     "added": "551.00"
     },
     {
      "date": "2017-02-17",
-     "value": "250.48",
+     "value": "360.60",
      "carried": "false",
-     "added": "383.64"
+     "added": "556.00"
     },
     {
      "date": "2017-02-24",
-     "value": "257.52",
+     "value": "369.32",
      "carried": "false",
-     "added": "388.10"
+     "added": "561.00"
     },
     {
      "date": "2017-03-03",
-     "value": "260.69",
+     "value": "373.75",
      "carried": "false",
-     "added": "391.71"
+     "added": "566.00"
     },
     {
      "date": "2017-03-10",
-     "value": "257.27",
+     "value": "371.44",
      "carried": "false",
-     "added": "393.41"
+     "added": "571.00"
     },
     {
      "date": "2017-03-17",
-     "value": "272.20",
+     "value": "393.15",
      "carried": "false",
-     "added": "396.75"
+     "added": "576.00"
     },
     {
      "date": "2017-03-24",
-     "value": "271.43",
+     "value": "391.47",
      "carried": "false",
-     "added": "400.70"
+     "added": "581.00"
     },
     {
      "date": "2017-03-31",
-     "value": "272.11",
+     "value": "395.48",
      "carried": "false",
-     "added": "402.07"
+     "added": "586.00"
     },
     {
      "date": "2017-04-07",
-     "value": "265.10",
+     "value": "387.80",
      "carried": "false",
-     "added": "403.73"
+     "added": "591.00"
     },
     {
      "date": "2017-04-13",
-     "value": "265.01",
+     "value": "387.39",
      "carried": "false",
-     "added": "406.62"
+     "added": "595.00"
     },
     {
      "date": "2017-04-21",
-     "value": "274.94",
+     "value": "398.62",
      "carried": "false",
-     "added": "412.75"
+     "added": "601.00"
     },
     {
      "date": "2017-04-28",
-     "value": "278.16",
+     "value": "403.43",
      "carried": "false",
-     "added": "416.11"
+     "added": "606.00"
     },
     {
      "date": "2017-05-05",
-     "value": "288.18",
+     "value": "419.54",
      "carried": "false",
-     "added": "418.48"
+     "added": "611.00"
     },
     {
      "date": "2017-05-12",
-     "value": "297.01",
+     "value": "434.64",
      "carried": "false",
-     "added": "420.42"
+     "added": "616.00"
     },
     {
      "date": "2017-05-19",
-     "value": "300.84",
+     "value": "438.09",
      "carried": "false",
-     "added": "425.41"
+     "added": "621.00"
     },
     {
      "date": "2017-05-26",
-     "value": "316.05",
+     "value": "461.82",
      "carried": "false",
-     "added": "427.87"
+     "added": "626.00"
     },
     {
      "date": "2017-06-02",
-     "value": "315.64",
+     "value": "462.28",
      "carried": "false",
-     "added": "430.68"
+     "added": "631.00"
     },
     {
      "date": "2017-06-09",
-     "value": "342.60",
+     "value": "500.82",
      "carried": "false",
-     "added": "434.76"
+     "added": "636.00"
     },
     {
      "date": "2017-06-16",
-     "value": "342.04",
+     "value": "502.90",
      "carried": "false",
-     "added": "436.20"
+     "added": "641.00"
     },
     {
      "date": "2017-06-23",
-     "value": "337.96",
+     "value": "500.14",
      "carried": "false",
-     "added": "437.37"
+     "added": "646.00"
     },
     {
      "date": "2017-06-30",
-     "value": "325.99",
+     "value": "484.32",
      "carried": "false",
-     "added": "439.56"
+     "added": "651.00"
     },
     {
      "date": "2017-07-07",
-     "value": "342.41",
+     "value": "508.46",
      "carried": "false",
-     "added": "443.09"
+     "added": "656.00"
     },
     {
      "date": "2017-07-14",
-     "value": "338.33",
+     "value": "498.69",
      "carried": "false",
-     "added": "448.96"
+     "added": "661.00"
     },
     {
      "date": "2017-07-21",
-     "value": "331.05",
+     "value": "486.44",
      "carried": "false",
-     "added": "453.47"
+     "added": "666.00"
     },
     {
      "date": "2017-07-28",
-     "value": "352.95",
+     "value": "518.77",
      "carried": "false",
-     "added": "456.69"
+     "added": "671.00"
     },
     {
      "date": "2017-08-04",
-     "value": "342.47",
+     "value": "502.97",
      "carried": "false",
-     "added": "460.31"
+     "added": "676.00"
     },
     {
      "date": "2017-08-11",
-     "value": "323.88",
+     "value": "477.58",
      "carried": "false",
-     "added": "462.45"
+     "added": "681.00"
     },
     {
      "date": "2017-08-18",
-     "value": "342.27",
+     "value": "504.35",
      "carried": "false",
-     "added": "466.06"
+     "added": "686.00"
     },
     {
      "date": "2017-08-25",
-     "value": "328.70",
+     "value": "479.87",
      "carried": "false",
-     "added": "472.52"
+     "added": "691.00"
     },
     {
      "date": "2017-09-01",
-     "value": "354.84",
+     "value": "517.46",
      "carried": "false",
-     "added": "476.40"
+     "added": "696.00"
     },
     {
      "date": "2017-09-08",
-     "value": "348.24",
+     "value": "511.90",
      "carried": "false",
-     "added": "477.02"
+     "added": "701.00"
     },
     {
      "date": "2017-09-15",
-     "value": "338.05",
+     "value": "496.44",
      "carried": "false",
-     "added": "480.75"
+     "added": "706.00"
     },
     {
      "date": "2017-09-22",
-     "value": "350.32",
+     "value": "514.59",
      "carried": "false",
-     "added": "483.93"
+     "added": "711.00"
     },
     {
      "date": "2017-09-29",
-     "value": "356.27",
+     "value": "521.83",
      "carried": "false",
-     "added": "488.37"
+     "added": "716.00"
     },
     {
      "date": "2017-10-06",
-     "value": "363.21",
+     "value": "531.34",
      "carried": "false",
-     "added": "492.23"
+     "added": "721.00"
     },
     {
      "date": "2017-10-13",
-     "value": "359.22",
+     "value": "524.72",
      "carried": "false",
-     "added": "496.14"
+     "added": "726.00"
     },
     {
      "date": "2017-10-20",
-     "value": "354.71",
+     "value": "516.12",
      "carried": "false",
-     "added": "500.93"
+     "added": "731.00"
     },
     {
      "date": "2017-10-27",
-     "value": "349.43",
+     "value": "507.43",
      "carried": "false",
-     "added": "505.09"
+     "added": "736.00"
     },
     {
      "date": "2017-11-03",
-     "value": "345.46",
+     "value": "502.14",
      "carried": "false",
-     "added": "508.19"
+     "added": "741.00"
     },
     {
      "date": "2017-11-10",
-     "value": "354.12",
+     "value": "515.74",
      "carried": "false",
-     "added": "510.88"
+     "added": "746.00"
     },
     {
      "date": "2017-11-17",
-     "value": "360.88",
+     "value": "525.93",
      "carried": "false",
-     "added": "514.09"
+     "added": "751.00"
     },
     {
      "date": "2017-11-24",
-     "value": "360.89",
+     "value": "527.78",
      "carried": "false",
-     "added": "516.26"
+     "added": "756.00"
     },
     {
      "date": "2017-12-01",
-     "value": "368.94",
+     "value": "540.76",
      "carried": "false",
-     "added": "518.88"
+     "added": "761.00"
     },
     {
      "date": "2017-12-08",
-     "value": "376.10",
+     "value": "553.40",
      "carried": "false",
-     "added": "520.75"
+     "added": "766.00"
     },
     {
      "date": "2017-12-15",
-     "value": "401.94",
+     "value": "590.36",
      "carried": "false",
-     "added": "524.87"
+     "added": "771.00"
     },
     {
      "date": "2017-12-22",
-     "value": "417.79",
+     "value": "615.39",
      "carried": "false",
-     "added": "527.14"
+     "added": "776.00"
     },
     {
      "date": "2017-12-29",
-     "value": "430.02",
+     "value": "636.86",
      "carried": "false",
-     "added": "528.21"
+     "added": "781.00"
     },
     {
      "date": "2018-01-05",
-     "value": "425.25",
+     "value": "629.67",
      "carried": "false",
-     "added": "531.64"
+     "added": "786.00"
     },
     {
      "date": "2018-01-12",
-     "value": "440.20",
+     "value": "650.40",
      "carried": "false",
-     "added": "535.95"
+     "added": "791.00"
     },
     {
      "date": "2018-01-19",
-     "value": "448.29",
+     "value": "661.41",
      "carried": "false",
-     "added": "539.95"
+     "added": "796.00"
     },
     {
      "date": "2018-01-26",
-     "value": "480.28",
+     "value": "707.85",
      "carried": "false",
-     "added": "543.70"
+     "added": "801.00"
     },
     {
      "date": "2018-02-02",
-     "value": "466.12",
+     "value": "688.83",
      "carried": "false",
-     "added": "545.80"
+     "added": "806.00"
     },
     {
      "date": "2018-02-09",
-     "value": "460.25",
+     "value": "682.96",
      "carried": "false",
-     "added": "547.20"
+     "added": "811.00"
     },
     {
      "date": "2018-02-16",
-     "value": "479.77",
+     "value": "710.79",
      "carried": "false",
-     "added": "551.31"
+     "added": "816.00"
     },
     {
      "date": "2018-02-23",
-     "value": "485.22",
+     "value": "720.41",
      "carried": "false",
-     "added": "553.67"
+     "added": "821.00"
     },
     {
      "date": "2018-03-02",
-     "value": "484.60",
+     "value": "720.12",
      "carried": "false",
-     "added": "556.61"
+     "added": "826.00"
     },
     {
      "date": "2018-03-09",
-     "value": "498.30",
+     "value": "739.82",
      "carried": "false",
-     "added": "560.46"
+     "added": "831.00"
     },
     {
      "date": "2018-03-16",
-     "value": "491.04",
+     "value": "728.26",
      "carried": "false",
-     "added": "564.36"
+     "added": "836.00"
     },
     {
      "date": "2018-03-23",
-     "value": "529.43",
+     "value": "785.29",
      "carried": "false",
-     "added": "567.72"
+     "added": "841.00"
     },
     {
      "date": "2018-03-29",
-     "value": "522.90",
+     "value": "773.57",
      "carried": "false",
-     "added": "571.78"
+     "added": "845.00"
     },
     {
      "date": "2018-04-06",
-     "value": "536.48",
+     "value": "796.85",
      "carried": "false",
-     "added": "573.71"
+     "added": "851.00"
     },
     {
      "date": "2018-04-13",
-     "value": "571.39",
+     "value": "850.60",
      "carried": "false",
-     "added": "575.88"
+     "added": "856.00"
     },
     {
      "date": "2018-04-20",
-     "value": "597.95",
+     "value": "889.00",
      "carried": "false",
-     "added": "580.05"
+     "added": "861.00"
     },
     {
      "date": "2018-04-27",
-     "value": "610.07",
+     "value": "902.03",
      "carried": "false",
-     "added": "586.79"
+     "added": "866.00"
     },
     {
      "date": "2018-05-04",
-     "value": "598.88",
+     "value": "884.82",
      "carried": "false",
-     "added": "590.65"
+     "added": "871.00"
     },
     {
      "date": "2018-05-11",
-     "value": "583.47",
+     "value": "862.58",
      "carried": "false",
-     "added": "593.65"
+     "added": "876.00"
     },
     {
      "date": "2018-05-18",
-     "value": "576.98",
+     "value": "854.45",
      "carried": "false",
-     "added": "596.09"
+     "added": "881.00"
     },
     {
      "date": "2018-05-25",
-     "value": "570.53",
+     "value": "847.87",
      "carried": "false",
-     "added": "597.44"
+     "added": "886.00"
     },
     {
      "date": "2018-06-01",
-     "value": "591.77",
+     "value": "880.00",
      "carried": "false",
-     "added": "600.52"
+     "added": "891.00"
     },
     {
      "date": "2018-06-08",
-     "value": "636.39",
+     "value": "945.96",
      "carried": "false",
-     "added": "604.14"
+     "added": "896.00"
     },
     {
      "date": "2018-06-15",
-     "value": "647.74",
+     "value": "964.72",
      "carried": "false",
-     "added": "606.24"
+     "added": "901.00"
     },
     {
      "date": "2018-06-22",
-     "value": "622.90",
+     "value": "928.65",
      "carried": "false",
-     "added": "608.96"
+     "added": "906.00"
     },
     {
      "date": "2018-06-29",
-     "value": "636.95",
+     "value": "948.77",
      "carried": "false",
-     "added": "612.66"
+     "added": "911.00"
     },
     {
      "date": "2018-07-06",
-     "value": "627.35",
+     "value": "932.41",
      "carried": "false",
-     "added": "617.37"
+     "added": "916.00"
     },
     {
      "date": "2018-07-13",
-     "value": "627.28",
+     "value": "931.44",
      "carried": "false",
-     "added": "621.31"
+     "added": "921.00"
     },
     {
      "date": "2018-07-20",
-     "value": "644.04",
+     "value": "959.13",
      "carried": "false",
-     "added": "622.99"
+     "added": "926.00"
     },
     {
      "date": "2018-07-27",
-     "value": "638.18",
+     "value": "947.64",
      "carried": "false",
-     "added": "628.25"
+     "added": "931.00"
     },
     {
      "date": "2018-08-03",
-     "value": "650.63",
+     "value": "965.36",
      "carried": "false",
-     "added": "632.14"
+     "added": "936.00"
     },
     {
      "date": "2018-08-10",
-     "value": "663.24",
+     "value": "982.70",
      "carried": "false",
-     "added": "636.41"
+     "added": "941.00"
     },
     {
      "date": "2018-08-17",
-     "value": "676.62",
+     "value": "1001.96",
      "carried": "false",
-     "added": "640.16"
+     "added": "946.00"
     },
     {
      "date": "2018-08-24",
-     "value": "657.46",
+     "value": "973.27",
      "carried": "false",
-     "added": "643.72"
+     "added": "951.00"
     },
     {
      "date": "2018-08-31",
-     "value": "659.78",
+     "value": "976.90",
      "carried": "false",
-     "added": "646.87"
+     "added": "956.00"
     },
     {
      "date": "2018-09-07",
-     "value": "674.20",
+     "value": "1000.78",
      "carried": "false",
-     "added": "648.59"
+     "added": "961.00"
     },
     {
      "date": "2018-09-14",
-     "value": "724.50",
+     "value": "1072.80",
      "carried": "false",
-     "added": "653.57"
+     "added": "966.00"
     },
     {
      "date": "2018-09-21",
-     "value": "717.56",
+     "value": "1062.97",
      "carried": "false",
-     "added": "656.64"
+     "added": "971.00"
     },
     {
      "date": "2018-09-28",
-     "value": "699.22",
+     "value": "1037.29",
      "carried": "false",
-     "added": "658.97"
+     "added": "976.00"
     },
     {
      "date": "2018-10-05",
-     "value": "755.85",
+     "value": "1122.55",
      "carried": "false",
-     "added": "661.59"
+     "added": "981.00"
     },
     {
      "date": "2018-10-12",
-     "value": "768.23",
+     "value": "1139.12",
      "carried": "false",
-     "added": "666.18"
+     "added": "986.00"
     },
     {
      "date": "2018-10-19",
-     "value": "739.02",
+     "value": "1098.75",
      "carried": "false",
-     "added": "667.59"
+     "added": "991.00"
     },
     {
      "date": "2018-10-26",
-     "value": "730.71",
+     "value": "1085.09",
      "carried": "false",
-     "added": "671.82"
+     "added": "996.00"
     },
     {
      "date": "2018-11-02",
-     "value": "743.12",
+     "value": "1105.87",
      "carried": "false",
-     "added": "673.59"
+     "added": "1001.00"
     },
     {
      "date": "2018-11-09",
-     "value": "725.69",
+     "value": "1082.69",
      "carried": "false",
-     "added": "675.07"
+     "added": "1006.00"
     },
     {
      "date": "2018-11-16",
-     "value": "711.47",
+     "value": "1061.77",
      "carried": "false",
-     "added": "678.22"
+     "added": "1011.00"
     },
     {
      "date": "2018-11-23",
-     "value": "710.32",
+     "value": "1059.80",
      "carried": "false",
-     "added": "681.74"
+     "added": "1016.00"
     },
     {
      "date": "2018-11-30",
-     "value": "705.51",
+     "value": "1052.67",
      "carried": "false",
-     "added": "685.02"
+     "added": "1021.00"
     },
     {
      "date": "2018-12-07",
-     "value": "723.60",
+     "value": "1076.33",
      "carried": "false",
-     "added": "690.55"
+     "added": "1026.00"
     },
     {
      "date": "2018-12-14",
-     "value": "751.75",
+     "value": "1120.00",
      "carried": "false",
-     "added": "692.74"
+     "added": "1031.00"
     },
     {
      "date": "2018-12-21",
-     "value": "771.36",
+     "value": "1148.53",
      "carried": "false",
-     "added": "696.57"
+     "added": "1036.00"
     },
     {
      "date": "2018-12-28",
-     "value": "808.16",
+     "value": "1204.68",
      "carried": "false",
-     "added": "699.07"
+     "added": "1041.00"
     },
     {
      "date": "2019-01-04",
-     "value": "769.60",
+     "value": "1146.39",
      "carried": "false",
-     "added": "703.00"
+     "added": "1046.00"
     },
     {
      "date": "2019-01-11",
-     "value": "762.58",
+     "value": "1133.33",
      "carried": "false",
-     "added": "708.11"
+     "added": "1051.00"
     },
     {
      "date": "2019-01-18",
-     "value": "752.28",
+     "value": "1118.33",
      "carried": "false",
-     "added": "711.13"
+     "added": "1056.00"
     },
     {
      "date": "2019-01-25",
-     "value": "762.89",
+     "value": "1132.30",
      "carried": "false",
-     "added": "715.71"
+     "added": "1061.00"
     },
     {
      "date": "2019-02-01",
-     "value": "786.66",
+     "value": "1164.22",
      "carried": "false",
-     "added": "721.24"
+     "added": "1066.00"
     },
     {
      "date": "2019-02-08",
-     "value": "775.73",
+     "value": "1147.54",
      "carried": "false",
-     "added": "724.97"
+     "added": "1071.00"
     },
     {
      "date": "2019-02-15",
-     "value": "762.20",
+     "value": "1128.06",
      "carried": "false",
-     "added": "728.11"
+     "added": "1076.00"
     },
     {
      "date": "2019-02-22",
-     "value": "730.82",
+     "value": "1083.52",
      "carried": "false",
-     "added": "730.20"
+     "added": "1081.00"
     },
     {
      "date": "2019-03-01",
-     "value": "735.83",
+     "value": "1089.43",
      "carried": "false",
-     "added": "734.64"
+     "added": "1086.00"
     },
     {
      "date": "2019-03-08",
-     "value": "754.10",
+     "value": "1114.12",
      "carried": "false",
-     "added": "739.61"
+     "added": "1091.00"
     },
     {
      "date": "2019-03-15",
-     "value": "750.79",
+     "value": "1112.00",
      "carried": "false",
-     "added": "741.12"
+     "added": "1096.00"
     },
     {
      "date": "2019-03-22",
-     "value": "764.44",
+     "value": "1129.81",
      "carried": "false",
-     "added": "746.23"
+     "added": "1101.00"
     },
     {
      "date": "2019-03-29",
-     "value": "759.58",
+     "value": "1121.36",
      "carried": "false",
-     "added": "750.46"
+     "added": "1106.00"
     },
     {
      "date": "2019-04-05",
-     "value": "762.56",
+     "value": "1124.61",
      "carried": "false",
-     "added": "754.59"
+     "added": "1111.00"
     },
     {
      "date": "2019-04-12",
-     "value": "767.54",
+     "value": "1128.46",
      "carried": "false",
-     "added": "760.23"
+     "added": "1116.00"
     },
     {
      "date": "2019-04-18",
-     "value": "803.56",
+     "value": "1182.73",
      "carried": "false",
-     "added": "762.04"
+     "added": "1120.00"
     },
     {
      "date": "2019-04-26",
-     "value": "774.80",
+     "value": "1138.92",
      "carried": "false",
-     "added": "767.06"
+     "added": "1126.00"
     },
     {
      "date": "2019-05-03",
-     "value": "761.55",
+     "value": "1119.78",
      "carried": "false",
-     "added": "770.24"
+     "added": "1131.00"
     },
     {
      "date": "2019-05-10",
-     "value": "785.33",
+     "value": "1154.36",
      "carried": "false",
-     "added": "774.01"
+     "added": "1136.00"
     },
     {
      "date": "2019-05-17",
-     "value": "778.24",
+     "value": "1144.96",
      "carried": "false",
-     "added": "776.71"
+     "added": "1141.00"
     },
     {
      "date": "2019-05-24",
-     "value": "764.36",
+     "value": "1126.47",
      "carried": "false",
-     "added": "778.72"
+     "added": "1146.00"
     },
     {
      "date": "2019-05-31",
-     "value": "763.90",
+     "value": "1125.55",
      "carried": "false",
-     "added": "782.28"
+     "added": "1151.00"
     },
     {
      "date": "2019-06-07",
-     "value": "751.46",
+     "value": "1107.44",
      "carried": "false",
-     "added": "785.62"
+     "added": "1156.00"
     },
     {
      "date": "2019-06-14",
-     "value": "767.50",
+     "value": "1133.74",
      "carried": "false",
-     "added": "787.24"
+     "added": "1161.00"
     },
     {
      "date": "2019-06-21",
-     "value": "745.57",
+     "value": "1100.61",
      "carried": "false",
-     "added": "791.17"
+     "added": "1166.00"
     },
     {
      "date": "2019-06-28",
-     "value": "727.83",
+     "value": "1074.96",
      "carried": "false",
-     "added": "794.15"
+     "added": "1171.00"
     },
     {
      "date": "2019-07-05",
-     "value": "716.78",
+     "value": "1061.12",
      "carried": "false",
-     "added": "795.88"
+     "added": "1176.00"
     },
     {
      "date": "2019-07-12",
-     "value": "762.75",
+     "value": "1124.16",
      "carried": "false",
-     "added": "802.33"
+     "added": "1181.00"
     },
     {
      "date": "2019-07-19",
-     "value": "773.90",
+     "value": "1137.35",
      "carried": "false",
-     "added": "807.99"
+     "added": "1186.00"
     },
     {
      "date": "2019-07-26",
-     "value": "775.86",
+     "value": "1138.22",
      "carried": "false",
-     "added": "812.77"
+     "added": "1191.00"
     },
     {
      "date": "2019-08-02",
-     "value": "763.26",
+     "value": "1120.27",
      "carried": "false",
-     "added": "815.78"
+     "added": "1196.00"
     },
     {
      "date": "2019-08-09",
-     "value": "791.87",
+     "value": "1161.39",
      "carried": "false",
-     "added": "819.85"
+     "added": "1201.00"
     },
     {
      "date": "2019-08-16",
-     "value": "795.78",
+     "value": "1163.87",
      "carried": "false",
-     "added": "825.33"
+     "added": "1206.00"
     },
     {
      "date": "2019-08-23",
-     "value": "833.69",
+     "value": "1216.07",
      "carried": "false",
-     "added": "830.81"
+     "added": "1211.00"
     },
     {
      "date": "2019-08-30",
-     "value": "872.79",
+     "value": "1271.99",
      "carried": "false",
-     "added": "835.01"
+     "added": "1216.00"
     },
     {
      "date": "2019-09-06",
-     "value": "862.25",
+     "value": "1256.34",
      "carried": "false",
-     "added": "838.61"
+     "added": "1221.00"
     },
     {
      "date": "2019-09-13",
-     "value": "869.94",
+     "value": "1267.47",
      "carried": "false",
-     "added": "842.09"
+     "added": "1226.00"
     },
     {
      "date": "2019-09-20",
-     "value": "944.78",
+     "value": "1378.88",
      "carried": "false",
-     "added": "843.89"
+     "added": "1231.00"
     },
     {
      "date": "2019-09-27",
-     "value": "943.19",
+     "value": "1378.48",
      "carried": "false",
-     "added": "846.00"
+     "added": "1236.00"
     },
     {
      "date": "2019-10-04",
-     "value": "973.24",
+     "value": "1420.15",
      "carried": "false",
-     "added": "850.93"
+     "added": "1241.00"
     },
     {
      "date": "2019-10-11",
-     "value": "1002.74",
+     "value": "1464.26",
      "carried": "false",
-     "added": "853.67"
+     "added": "1246.00"
     },
     {
      "date": "2019-10-18",
-     "value": "1045.58",
+     "value": "1526.49",
      "carried": "false",
-     "added": "857.30"
+     "added": "1251.00"
     },
     {
      "date": "2019-10-25",
-     "value": "986.93",
+     "value": "1440.13",
      "carried": "false",
-     "added": "861.11"
+     "added": "1256.00"
     },
     {
      "date": "2019-11-01",
-     "value": "993.99",
+     "value": "1451.27",
      "carried": "false",
-     "added": "863.96"
+     "added": "1261.00"
     },
     {
      "date": "2019-11-08",
-     "value": "994.04",
+     "value": "1448.26",
      "carried": "false",
-     "added": "869.44"
+     "added": "1266.00"
     },
     {
      "date": "2019-11-15",
-     "value": "970.50",
+     "value": "1413.03",
      "carried": "false",
-     "added": "873.49"
+     "added": "1271.00"
     },
     {
      "date": "2019-11-22",
-     "value": "929.85",
+     "value": "1354.47",
      "carried": "false",
-     "added": "876.40"
+     "added": "1276.00"
     },
     {
      "date": "2019-11-29",
-     "value": "943.08",
+     "value": "1374.04",
      "carried": "false",
-     "added": "879.49"
+     "added": "1281.00"
     },
     {
      "date": "2019-12-06",
-     "value": "956.28",
+     "value": "1388.84",
      "carried": "false",
-     "added": "886.05"
+     "added": "1286.00"
     },
     {
      "date": "2019-12-13",
-     "value": "957.12",
+     "value": "1391.16",
      "carried": "false",
-     "added": "888.64"
+     "added": "1291.00"
     },
     {
      "date": "2019-12-20",
-     "value": "914.09",
+     "value": "1330.17",
      "carried": "false",
-     "added": "890.97"
+     "added": "1296.00"
     },
     {
      "date": "2019-12-27",
-     "value": "958.37",
+     "value": "1395.37",
      "carried": "false",
-     "added": "893.81"
+     "added": "1301.00"
     },
     {
      "date": "2020-01-03",
-     "value": "978.49",
+     "value": "1427.01",
      "carried": "false",
-     "added": "895.65"
+     "added": "1306.00"
     },
     {
      "date": "2020-01-10",
-     "value": "1001.45",
+     "value": "1458.53",
      "carried": "false",
-     "added": "900.51"
+     "added": "1311.00"
     },
     {
      "date": "2020-01-17",
-     "value": "1062.36",
+     "value": "1548.14",
      "carried": "false",
-     "added": "903.42"
+     "added": "1316.00"
     },
     {
      "date": "2020-01-24",
-     "value": "1072.73",
+     "value": "1562.22",
      "carried": "false",
-     "added": "907.56"
+     "added": "1321.00"
     },
     {
      "date": "2020-01-31",
-     "value": "1121.71",
+     "value": "1631.37",
      "carried": "false",
-     "added": "912.46"
+     "added": "1326.00"
     },
     {
      "date": "2020-02-07",
-     "value": "1100.21",
+     "value": "1602.88",
      "carried": "false",
-     "added": "914.04"
+     "added": "1331.00"
     },
     {
      "date": "2020-02-14",
-     "value": "1095.72",
+     "value": "1591.86",
      "carried": "false",
-     "added": "920.55"
+     "added": "1336.00"
     },
     {
      "date": "2020-02-21",
-     "value": "1098.94",
+     "value": "1597.61",
      "carried": "false",
-     "added": "923.25"
+     "added": "1341.00"
     },
     {
      "date": "2020-02-28",
-     "value": "1081.63",
+     "value": "1570.15",
      "carried": "false",
-     "added": "928.24"
+     "added": "1346.00"
     },
     {
      "date": "2020-03-06",
-     "value": "1113.47",
+     "value": "1617.79",
      "carried": "false",
-     "added": "930.72"
+     "added": "1351.00"
     },
     {
      "date": "2020-03-13",
-     "value": "1125.13",
+     "value": "1638.30",
      "carried": "false",
-     "added": "931.71"
+     "added": "1356.00"
     },
     {
      "date": "2020-03-20",
-     "value": "1137.85",
+     "value": "1654.43",
      "carried": "false",
-     "added": "936.77"
+     "added": "1361.00"
     },
     {
      "date": "2020-03-27",
-     "value": "1147.75",
+     "value": "1665.12",
      "carried": "false",
-     "added": "942.73"
+     "added": "1366.00"
     },
     {
      "date": "2020-04-03",
-     "value": "1127.54",
+     "value": "1635.92",
      "carried": "false",
-     "added": "946.11"
+     "added": "1371.00"
     },
     {
      "date": "2020-04-09",
-     "value": "1129.84",
+     "value": "1642.83",
      "carried": "false",
-     "added": "946.40"
+     "added": "1375.00"
     },
     {
      "date": "2020-04-17",
-     "value": "1111.01",
+     "value": "1616.96",
      "carried": "false",
-     "added": "949.48"
+     "added": "1381.00"
     },
     {
      "date": "2020-04-24",
-     "value": "1105.08",
+     "value": "1608.52",
      "carried": "false",
-     "added": "952.69"
+     "added": "1386.00"
     },
     {
      "date": "2020-05-01",
-     "value": "1112.38",
+     "value": "1617.45",
      "carried": "false",
-     "added": "957.33"
+     "added": "1391.00"
     },
     {
      "date": "2020-05-08",
-     "value": "1132.65",
+     "value": "1646.23",
      "carried": "false",
-     "added": "961.25"
+     "added": "1396.00"
     },
     {
      "date": "2020-05-15",
-     "value": "1146.69",
+     "value": "1668.00",
      "carried": "false",
-     "added": "963.72"
+     "added": "1401.00"
     },
     {
      "date": "2020-05-22",
-     "value": "1126.55",
+     "value": "1639.44",
      "carried": "false",
-     "added": "966.62"
+     "added": "1406.00"
     },
     {
      "date": "2020-05-29",
-     "value": "1125.77",
+     "value": "1639.80",
      "carried": "false",
-     "added": "969.03"
+     "added": "1411.00"
     },
     {
      "date": "2020-06-05",
-     "value": "1122.18",
+     "value": "1635.17",
      "carried": "false",
-     "added": "972.04"
+     "added": "1416.00"
     },
     {
      "date": "2020-06-12",
-     "value": "1113.00",
+     "value": "1623.30",
      "carried": "false",
-     "added": "974.41"
+     "added": "1421.00"
     },
     {
      "date": "2020-06-19",
-     "value": "1126.10",
+     "value": "1639.94",
      "carried": "false",
-     "added": "979.53"
+     "added": "1426.00"
     },
     {
      "date": "2020-06-26",
-     "value": "1152.44",
+     "value": "1678.03",
      "carried": "false",
-     "added": "983.15"
+     "added": "1431.00"
     },
     {
      "date": "2020-07-02",
-     "value": "1150.04",
+     "value": "1675.10",
      "carried": "false",
-     "added": "985.50"
+     "added": "1435.00"
     },
     {
      "date": "2020-07-10",
-     "value": "1166.03",
+     "value": "1701.01",
      "carried": "false",
-     "added": "987.83"
+     "added": "1441.00"
     },
     {
      "date": "2020-07-17",
-     "value": "1154.20",
+     "value": "1683.92",
      "carried": "false",
-     "added": "991.15"
+     "added": "1446.00"
     },
     {
      "date": "2020-07-24",
-     "value": "1161.22",
+     "value": "1696.48",
      "carried": "false",
-     "added": "993.00"
+     "added": "1451.00"
     },
     {
      "date": "2020-07-31",
-     "value": "1196.14",
+     "value": "1750.40",
      "carried": "false",
-     "added": "994.42"
+     "added": "1456.00"
     },
     {
      "date": "2020-08-07",
-     "value": "1233.64",
+     "value": "1804.30",
      "carried": "false",
-     "added": "998.38"
+     "added": "1461.00"
     },
     {
      "date": "2020-08-14",
-     "value": "1305.68",
+     "value": "1908.18",
      "carried": "false",
-     "added": "1002.80"
+     "added": "1466.00"
     },
     {
      "date": "2020-08-21",
-     "value": "1297.33",
+     "value": "1894.16",
      "carried": "false",
-     "added": "1007.47"
+     "added": "1471.00"
     },
     {
      "date": "2020-08-28",
-     "value": "1307.05",
+     "value": "1904.97",
      "carried": "false",
-     "added": "1013.26"
+     "added": "1476.00"
     },
     {
      "date": "2020-09-04",
-     "value": "1317.14",
+     "value": "1919.62",
      "carried": "false",
-     "added": "1016.68"
+     "added": "1481.00"
     },
     {
      "date": "2020-09-11",
-     "value": "1313.68",
+     "value": "1914.05",
      "carried": "false",
-     "added": "1020.50"
+     "added": "1486.00"
     },
     {
      "date": "2020-09-18",
-     "value": "1305.33",
+     "value": "1899.73",
      "carried": "false",
-     "added": "1025.41"
+     "added": "1491.00"
     },
     {
      "date": "2020-09-25",
-     "value": "1287.33",
+     "value": "1875.49",
      "carried": "false",
-     "added": "1027.51"
+     "added": "1496.00"
     },
     {
      "date": "2020-10-02",
-     "value": "1285.16",
+     "value": "1871.13",
      "carried": "false",
-     "added": "1031.76"
+     "added": "1501.00"
     },
     {
      "date": "2020-10-09",
-     "value": "1305.41",
+     "value": "1901.42",
      "carried": "false",
-     "added": "1034.66"
+     "added": "1506.00"
     },
     {
      "date": "2020-10-16",
-     "value": "1324.37",
+     "value": "1928.52",
      "carried": "false",
-     "added": "1038.40"
+     "added": "1511.00"
     },
     {
      "date": "2020-10-23",
-     "value": "1343.53",
+     "value": "1953.12",
      "carried": "false",
-     "added": "1044.11"
+     "added": "1516.00"
     },
     {
      "date": "2020-10-30",
-     "value": "1361.64",
+     "value": "1978.70",
      "carried": "false",
-     "added": "1048.07"
+     "added": "1521.00"
     },
     {
      "date": "2020-11-06",
-     "value": "1371.88",
+     "value": "1989.45",
      "carried": "false",
-     "added": "1054.40"
+     "added": "1526.00"
     },
     {
      "date": "2020-11-13",
-     "value": "1408.75",
+     "value": "2042.53",
      "carried": "false",
-     "added": "1058.12"
+     "added": "1531.00"
     },
     {
      "date": "2020-11-20",
-     "value": "1406.72",
+     "value": "2041.28",
      "carried": "false",
-     "added": "1060.35"
+     "added": "1536.00"
     },
     {
      "date": "2020-11-27",
-     "value": "1407.01",
+     "value": "2043.47",
      "carried": "false",
-     "added": "1062.57"
+     "added": "1541.00"
     },
     {
      "date": "2020-12-04",
-     "value": "1380.69",
+     "value": "2002.80",
      "carried": "false",
-     "added": "1067.73"
+     "added": "1546.00"
     },
     {
      "date": "2020-12-11",
-     "value": "1357.98",
+     "value": "1968.09",
      "carried": "false",
-     "added": "1072.42"
+     "added": "1551.00"
     },
     {
      "date": "2020-12-18",
-     "value": "1369.00",
+     "value": "1982.62",
      "carried": "false",
-     "added": "1076.83"
+     "added": "1556.00"
     },
     {
      "date": "2020-12-24",
-     "value": "1381.92",
+     "value": "1996.65",
      "carried": "false",
-     "added": "1082.83"
+     "added": "1560.00"
     },
     {
      "date": "2020-12-31",
-     "value": "1380.13",
+     "value": "1995.59",
      "carried": "false",
-     "added": "1085.21"
+     "added": "1565.00"
     },
     {
      "date": "2021-01-08",
-     "value": "1411.96",
+     "value": "2042.41",
      "carried": "false",
-     "added": "1088.92"
+     "added": "1571.00"
     },
     {
      "date": "2021-01-15",
-     "value": "1419.41",
+     "value": "2053.95",
      "carried": "false",
-     "added": "1091.84"
+     "added": "1576.00"
     },
     {
      "date": "2021-01-22",
-     "value": "1408.41",
+     "value": "2040.08",
      "carried": "false",
-     "added": "1093.91"
+     "added": "1581.00"
     },
     {
      "date": "2021-01-29",
-     "value": "1381.90",
+     "value": "2001.10",
      "carried": "false",
-     "added": "1097.76"
+     "added": "1586.00"
     },
     {
      "date": "2021-02-05",
-     "value": "1395.02",
+     "value": "2022.43",
      "carried": "false",
-     "added": "1099.64"
+     "added": "1591.00"
     },
     {
      "date": "2021-02-12",
-     "value": "1396.38",
+     "value": "2019.08",
      "carried": "false",
-     "added": "1106.75"
+     "added": "1596.00"
     },
     {
      "date": "2021-02-19",
-     "value": "1388.29",
+     "value": "2008.88",
      "carried": "false",
-     "added": "1109.16"
+     "added": "1601.00"
     },
     {
      "date": "2021-02-26",
-     "value": "1420.37",
+     "value": "2051.24",
      "carried": "false",
-     "added": "1115.43"
+     "added": "1606.00"
     },
     {
      "date": "2021-03-05",
-     "value": "1410.78",
+     "value": "2039.98",
      "carried": "false",
-     "added": "1117.08"
+     "added": "1611.00"
     },
     {
      "date": "2021-03-12",
-     "value": "1465.70",
+     "value": "2123.01",
      "carried": "false",
-     "added": "1118.06"
+     "added": "1616.00"
     },
     {
      "date": "2021-03-19",
-     "value": "1425.93",
+     "value": "2066.72",
      "carried": "false",
-     "added": "1120.56"
+     "added": "1621.00"
     },
     {
      "date": "2021-03-26",
-     "value": "1384.54",
+     "value": "2004.07",
      "carried": "false",
-     "added": "1125.87"
+     "added": "1626.00"
     },
     {
      "date": "2021-04-01",
-     "value": "1418.01",
+     "value": "2050.12",
      "carried": "false",
-     "added": "1130.33"
+     "added": "1630.00"
     },
     {
      "date": "2021-04-09",
-     "value": "1485.83",
+     "value": "2144.42",
      "carried": "false",
-     "added": "1137.02"
+     "added": "1636.00"
     },
     {
      "date": "2021-04-16",
-     "value": "1510.10",
+     "value": "2178.15",
      "carried": "false",
-     "added": "1141.42"
+     "added": "1641.00"
     },
     {
      "date": "2021-04-23",
-     "value": "1535.15",
+     "value": "2213.35",
      "carried": "false",
-     "added": "1145.56"
+     "added": "1646.00"
     },
     {
      "date": "2021-04-30",
-     "value": "1531.19",
+     "value": "2208.11",
      "carried": "false",
-     "added": "1148.70"
+     "added": "1651.00"
     },
     {
      "date": "2021-05-07",
-     "value": "1520.17",
+     "value": "2194.28",
      "carried": "false",
-     "added": "1150.71"
+     "added": "1656.00"
     },
     {
      "date": "2021-05-14",
-     "value": "1540.57",
+     "value": "2225.43",
      "carried": "false",
-     "added": "1152.99"
+     "added": "1661.00"
     },
     {
      "date": "2021-05-21",
-     "value": "1533.68",
+     "value": "2215.51",
      "carried": "false",
-     "added": "1156.45"
+     "added": "1666.00"
     },
     {
      "date": "2021-05-28",
-     "value": "1555.90",
+     "value": "2246.98",
      "carried": "false",
-     "added": "1160.35"
+     "added": "1671.00"
     },
     {
      "date": "2021-06-04",
-     "value": "1596.51",
+     "value": "2304.03",
      "carried": "false",
-     "added": "1164.97"
+     "added": "1676.00"
     },
     {
      "date": "2021-06-11",
-     "value": "1566.08",
+     "value": "2262.41",
      "carried": "false",
-     "added": "1166.79"
+     "added": "1681.00"
     },
     {
      "date": "2021-06-18",
-     "value": "1551.78",
+     "value": "2240.50",
      "carried": "false",
-     "added": "1171.10"
+     "added": "1686.00"
     },
     {
      "date": "2021-06-25",
-     "value": "1567.79",
+     "value": "2266.26",
      "carried": "false",
-     "added": "1172.75"
+     "added": "1691.00"
     },
     {
      "date": "2021-07-02",
-     "value": "1561.41",
+     "value": "2257.78",
      "carried": "false",
-     "added": "1175.74"
+     "added": "1696.00"
     },
     {
      "date": "2021-07-09",
-     "value": "1563.42",
+     "value": "2262.27",
      "carried": "false",
-     "added": "1178.10"
+     "added": "1701.00"
     },
     {
      "date": "2021-07-16",
-     "value": "1527.72",
+     "value": "2210.09",
      "carried": "false",
-     "added": "1181.92"
+     "added": "1706.00"
     },
     {
      "date": "2021-07-23",
-     "value": "1495.19",
+     "value": "2161.35",
      "carried": "false",
-     "added": "1186.58"
+     "added": "1711.00"
     },
     {
      "date": "2021-07-30",
-     "value": "1506.49",
+     "value": "2177.92",
      "carried": "false",
-     "added": "1189.87"
+     "added": "1716.00"
     },
     {
      "date": "2021-08-06",
-     "value": "1515.98",
+     "value": "2193.86",
      "carried": "false",
-     "added": "1191.79"
+     "added": "1721.00"
     },
     {
      "date": "2021-08-13",
-     "value": "1542.58",
+     "value": "2233.45",
      "carried": "false",
-     "added": "1194.48"
+     "added": "1726.00"
     },
     {
      "date": "2021-08-20",
-     "value": "1576.34",
+     "value": "2284.20",
      "carried": "false",
-     "added": "1196.62"
+     "added": "1731.00"
     },
     {
      "date": "2021-08-27",
-     "value": "1567.32",
+     "value": "2270.76",
      "carried": "false",
-     "added": "1200.33"
+     "added": "1736.00"
     },
     {
      "date": "2021-09-03",
-     "value": "1553.32",
+     "value": "2249.57",
      "carried": "false",
-     "added": "1204.41"
+     "added": "1741.00"
     },
     {
      "date": "2021-09-10",
-     "value": "1561.39",
+     "value": "2259.26",
      "carried": "false",
-     "added": "1209.27"
+     "added": "1746.00"
     },
     {
      "date": "2021-09-17",
-     "value": "1552.76",
+     "value": "2246.73",
      "carried": "false",
-     "added": "1212.75"
+     "added": "1751.00"
     },
     {
      "date": "2021-09-24",
-     "value": "1540.68",
+     "value": "2229.83",
      "carried": "false",
-     "added": "1215.81"
+     "added": "1756.00"
     },
     {
      "date": "2021-10-01",
-     "value": "1535.71",
+     "value": "2222.09",
      "carried": "false",
-     "added": "1219.59"
+     "added": "1761.00"
     },
     {
      "date": "2021-10-08",
-     "value": "1521.22",
+     "value": "2201.28",
      "carried": "false",
-     "added": "1222.94"
+     "added": "1766.00"
     },
     {
      "date": "2021-10-15",
-     "value": "1538.54",
+     "value": "2229.34",
      "carried": "false",
-     "added": "1224.34"
+     "added": "1771.00"
     },
     {
      "date": "2021-10-22",
-     "value": "1559.22",
+     "value": "2258.51",
      "carried": "false",
-     "added": "1228.33"
+     "added": "1776.00"
     },
     {
      "date": "2021-10-29",
-     "value": "1534.78",
+     "value": "2224.49",
      "carried": "false",
-     "added": "1230.79"
+     "added": "1781.00"
     },
     {
      "date": "2021-11-05",
-     "value": "1538.78",
+     "value": "2230.05",
      "carried": "false",
-     "added": "1234.41"
+     "added": "1786.00"
     },
     {
      "date": "2021-11-12",
-     "value": "1528.08",
+     "value": "2214.53",
      "carried": "false",
-     "added": "1237.84"
+     "added": "1791.00"
     },
     {
      "date": "2021-11-19",
-     "value": "1542.09",
+     "value": "2235.13",
      "carried": "false",
-     "added": "1241.12"
+     "added": "1796.00"
     },
     {
      "date": "2021-11-26",
-     "value": "1561.78",
+     "value": "2265.57",
      "carried": "false",
-     "added": "1243.27"
+     "added": "1801.00"
     },
     {
      "date": "2021-12-03",
-     "value": "1633.33",
+     "value": "2371.56",
      "carried": "false",
-     "added": "1245.25"
+     "added": "1806.00"
     },
     {
      "date": "2021-12-10",
-     "value": "1619.29",
+     "value": "2351.39",
      "carried": "false",
-     "added": "1248.56"
+     "added": "1811.00"
     },
     {
      "date": "2021-12-17",
-     "value": "1647.13",
+     "value": "2393.19",
      "carried": "false",
-     "added": "1251.06"
+     "added": "1816.00"
     },
     {
      "date": "2021-12-23",
-     "value": "1624.69",
+     "value": "2361.01",
      "carried": "false",
-     "added": "1253.52"
+     "added": "1820.00"
     },
     {
      "date": "2021-12-31",
-     "value": "1682.57",
+     "value": "2446.37",
      "carried": "false",
-     "added": "1256.75"
+     "added": "1826.00"
     },
     {
      "date": "2022-01-07",
-     "value": "1703.64",
+     "value": "2478.01",
      "carried": "false",
-     "added": "1259.50"
+     "added": "1831.00"
     },
     {
      "date": "2022-01-14",
-     "value": "1707.98",
+     "value": "2483.81",
      "carried": "false",
-     "added": "1263.27"
+     "added": "1836.00"
     },
     {
      "date": "2022-01-21",
-     "value": "1728.00",
+     "value": "2511.39",
      "carried": "false",
-     "added": "1267.71"
+     "added": "1841.00"
     },
     {
      "date": "2022-01-28",
-     "value": "1714.84",
+     "value": "2493.78",
      "carried": "false",
-     "added": "1270.10"
+     "added": "1846.00"
     },
     {
      "date": "2022-02-04",
-     "value": "1711.22",
+     "value": "2491.40",
      "carried": "false",
-     "added": "1271.61"
+     "added": "1851.00"
     },
     {
      "date": "2022-02-11",
-     "value": "1683.41",
+     "value": "2451.28",
      "carried": "false",
-     "added": "1274.80"
+     "added": "1856.00"
     },
     {
      "date": "2022-02-18",
-     "value": "1732.57",
+     "value": "2524.69",
      "carried": "false",
-     "added": "1277.03"
+     "added": "1861.00"
     },
     {
      "date": "2022-02-25",
-     "value": "1749.17",
+     "value": "2548.34",
      "carried": "false",
-     "added": "1280.83"
+     "added": "1866.00"
     },
     {
      "date": "2022-03-04",
-     "value": "1758.34",
+     "value": "2561.14",
      "carried": "false",
-     "added": "1284.66"
+     "added": "1871.00"
     },
     {
      "date": "2022-03-11",
-     "value": "1789.26",
+     "value": "2605.79",
      "carried": "false",
-     "added": "1288.38"
+     "added": "1876.00"
     },
     {
      "date": "2022-03-18",
-     "value": "1848.22",
+     "value": "2691.75",
      "carried": "false",
-     "added": "1291.80"
+     "added": "1881.00"
     },
     {
      "date": "2022-03-25",
-     "value": "1842.15",
+     "value": "2682.11",
      "carried": "false",
-     "added": "1295.87"
+     "added": "1886.00"
     },
     {
      "date": "2022-04-01",
-     "value": "1846.55",
+     "value": "2689.30",
      "carried": "false",
-     "added": "1298.77"
+     "added": "1891.00"
     },
     {
      "date": "2022-04-08",
-     "value": "1846.21",
+     "value": "2687.71",
      "carried": "false",
-     "added": "1302.99"
+     "added": "1896.00"
     },
     {
      "date": "2022-04-14",
-     "value": "1893.70",
+     "value": "2758.21",
      "carried": "false",
-     "added": "1304.78"
+     "added": "1900.00"
     },
     {
      "date": "2022-04-22",
-     "value": "1978.45",
+     "value": "2882.24",
      "carried": "false",
-     "added": "1308.47"
+     "added": "1906.00"
     },
     {
      "date": "2022-04-29",
-     "value": "1986.97",
+     "value": "2895.77",
      "carried": "false",
-     "added": "1311.09"
+     "added": "1911.00"
     },
     {
      "date": "2022-05-06",
-     "value": "1978.31",
+     "value": "2880.22",
      "carried": "false",
-     "added": "1316.53"
+     "added": "1916.00"
     },
     {
      "date": "2022-05-13",
-     "value": "1981.07",
+     "value": "2886.41",
      "carried": "false",
-     "added": "1318.47"
+     "added": "1921.00"
     },
     {
      "date": "2022-05-20",
-     "value": "1954.63",
+     "value": "2847.86",
      "carried": "false",
-     "added": "1321.89"
+     "added": "1926.00"
     },
     {
      "date": "2022-05-27",
-     "value": "1876.97",
+     "value": "2737.71",
      "carried": "false",
-     "added": "1323.17"
+     "added": "1931.00"
     },
     {
      "date": "2022-06-03",
-     "value": "1952.05",
+     "value": "2848.82",
      "carried": "false",
-     "added": "1325.52"
+     "added": "1936.00"
     },
     {
      "date": "2022-06-10",
-     "value": "1919.54",
+     "value": "2803.83",
      "carried": "false",
-     "added": "1327.21"
+     "added": "1941.00"
     },
     {
      "date": "2022-06-17",
-     "value": "1929.38",
+     "value": "2816.22",
      "carried": "false",
-     "added": "1331.97"
+     "added": "1946.00"
     },
     {
      "date": "2022-06-24",
-     "value": "1972.20",
+     "value": "2876.92",
      "carried": "false",
-     "added": "1336.62"
+     "added": "1951.00"
     },
     {
      "date": "2022-07-01",
-     "value": "1970.82",
+     "value": "2875.01",
      "carried": "false",
-     "added": "1339.96"
+     "added": "1956.00"
     },
     {
      "date": "2022-07-08",
-     "value": "1962.41",
+     "value": "2861.96",
      "carried": "false",
-     "added": "1343.92"
+     "added": "1961.00"
     },
     {
      "date": "2022-07-15",
-     "value": "2083.72",
+     "value": "3036.54",
      "carried": "false",
-     "added": "1348.94"
+     "added": "1966.00"
     },
     {
      "date": "2022-07-22",
-     "value": "2103.41",
+     "value": "3067.25",
      "carried": "false",
-     "added": "1351.01"
+     "added": "1971.00"
     },
     {
      "date": "2022-07-29",
-     "value": "2115.94",
+     "value": "3082.45",
      "carried": "false",
-     "added": "1356.54"
+     "added": "1976.00"
     },
     {
      "date": "2022-08-05",
-     "value": "2128.76",
+     "value": "3099.85",
      "carried": "false",
-     "added": "1360.83"
+     "added": "1981.00"
     },
     {
      "date": "2022-08-12",
-     "value": "2123.34",
+     "value": "3088.58",
      "carried": "false",
-     "added": "1366.58"
+     "added": "1986.00"
     },
     {
      "date": "2022-08-19",
-     "value": "2102.62",
+     "value": "3059.33",
      "carried": "false",
-     "added": "1369.40"
+     "added": "1991.00"
     },
     {
      "date": "2022-08-26",
-     "value": "2077.55",
+     "value": "3024.44",
      "carried": "false",
-     "added": "1371.73"
+     "added": "1996.00"
     },
     {
      "date": "2022-09-02",
-     "value": "2114.51",
+     "value": "3077.45",
      "carried": "false",
-     "added": "1375.76"
+     "added": "2001.00"
     },
     {
      "date": "2022-09-09",
-     "value": "2147.91",
+     "value": "3124.88",
      "carried": "false",
-     "added": "1380.02"
+     "added": "2006.00"
     },
     {
      "date": "2022-09-16",
-     "value": "2228.28",
+     "value": "3243.10",
      "carried": "false",
-     "added": "1382.54"
+     "added": "2011.00"
     },
     {
      "date": "2022-09-23",
-     "value": "2215.07",
+     "value": "3223.63",
      "carried": "false",
-     "added": "1386.12"
+     "added": "2016.00"
     },
     {
      "date": "2022-09-30",
-     "value": "2233.28",
+     "value": "3248.58",
      "carried": "false",
-     "added": "1390.63"
+     "added": "2021.00"
     },
     {
      "date": "2022-10-07",
-     "value": "2271.43",
+     "value": "3305.91",
      "carried": "false",
-     "added": "1392.82"
+     "added": "2026.00"
     },
     {
      "date": "2022-10-14",
-     "value": "2273.46",
+     "value": "3310.92",
      "carried": "false",
-     "added": "1394.85"
+     "added": "2031.00"
     },
     {
      "date": "2022-10-21",
-     "value": "2271.21",
+     "value": "3307.76",
      "carried": "false",
-     "added": "1398.12"
+     "added": "2036.00"
     },
     {
      "date": "2022-10-28",
-     "value": "2237.70",
+     "value": "3261.74",
      "carried": "false",
-     "added": "1399.62"
+     "added": "2041.00"
     },
     {
      "date": "2022-11-04",
-     "value": "2222.74",
+     "value": "3238.58",
      "carried": "false",
-     "added": "1403.98"
+     "added": "2046.00"
     },
     {
      "date": "2022-11-11",
-     "value": "2236.53",
+     "value": "3260.71",
      "carried": "false",
-     "added": "1406.02"
+     "added": "2051.00"
     },
     {
      "date": "2022-11-18",
-     "value": "2222.16",
+     "value": "3239.50",
      "carried": "false",
-     "added": "1409.64"
+     "added": "2056.00"
     },
     {
      "date": "2022-11-25",
-     "value": "2192.07",
+     "value": "3190.41",
      "carried": "false",
-     "added": "1416.61"
+     "added": "2061.00"
     },
     {
      "date": "2022-12-02",
-     "value": "2196.74",
+     "value": "3196.86",
      "carried": "false",
-     "added": "1420.28"
+     "added": "2066.00"
     },
     {
      "date": "2022-12-09",
-     "value": "2201.91",
+     "value": "3202.43",
      "carried": "false",
-     "added": "1425.04"
+     "added": "2071.00"
     },
     {
      "date": "2022-12-16",
-     "value": "2202.16",
+     "value": "3200.33",
      "carried": "false",
-     "added": "1430.20"
+     "added": "2076.00"
     },
     {
      "date": "2022-12-23",
-     "value": "2225.68",
+     "value": "3234.02",
      "carried": "false",
-     "added": "1433.98"
+     "added": "2081.00"
     },
     {
      "date": "2022-12-30",
-     "value": "2215.78",
+     "value": "3220.03",
      "carried": "false",
-     "added": "1437.15"
+     "added": "2086.00"
     },
     {
      "date": "2023-01-06",
-     "value": "2242.39",
+     "value": "3261.88",
      "carried": "false",
-     "added": "1438.43"
+     "added": "2091.00"
     },
     {
      "date": "2023-01-13",
-     "value": "2225.79",
+     "value": "3237.35",
      "carried": "false",
-     "added": "1442.20"
+     "added": "2096.00"
     },
     {
      "date": "2023-01-20",
-     "value": "2279.62",
+     "value": "3313.00",
      "carried": "false",
-     "added": "1447.36"
+     "added": "2101.00"
     },
     {
      "date": "2023-01-27",
-     "value": "2284.90",
+     "value": "3324.21",
      "carried": "false",
-     "added": "1448.37"
+     "added": "2106.00"
     },
     {
      "date": "2023-02-03",
-     "value": "2276.32",
+     "value": "3311.74",
      "carried": "false",
-     "added": "1451.75"
+     "added": "2111.00"
     },
     {
      "date": "2023-02-10",
-     "value": "2260.41",
+     "value": "3289.89",
      "carried": "false",
-     "added": "1454.30"
+     "added": "2116.00"
     },
     {
      "date": "2023-02-17",
-     "value": "2274.93",
+     "value": "3310.18",
      "carried": "false",
-     "added": "1458.32"
+     "added": "2121.00"
     },
     {
      "date": "2023-02-24",
-     "value": "2297.69",
+     "value": "3344.18",
      "carried": "false",
-     "added": "1461.16"
+     "added": "2126.00"
     },
     {
      "date": "2023-03-03",
-     "value": "2267.14",
+     "value": "3297.05",
      "carried": "false",
-     "added": "1466.49"
+     "added": "2131.00"
     },
     {
      "date": "2023-03-10",
-     "value": "2258.01",
+     "value": "3281.97",
      "carried": "false",
-     "added": "1471.17"
+     "added": "2136.00"
     },
     {
      "date": "2023-03-17",
-     "value": "2285.59",
+     "value": "3323.89",
      "carried": "false",
-     "added": "1473.38"
+     "added": "2141.00"
     },
     {
      "date": "2023-03-24",
-     "value": "2270.03",
+     "value": "3303.33",
      "carried": "false",
-     "added": "1475.34"
+     "added": "2146.00"
     },
     {
      "date": "2023-03-31",
-     "value": "2231.73",
+     "value": "3249.94",
      "carried": "false",
-     "added": "1477.15"
+     "added": "2151.00"
     },
     {
      "date": "2023-04-06",
-     "value": "2299.15",
+     "value": "3347.44",
      "carried": "false",
-     "added": "1480.41"
+     "added": "2155.00"
     },
     {
      "date": "2023-04-14",
-     "value": "2322.60",
+     "value": "3382.31",
      "carried": "false",
-     "added": "1484.02"
+     "added": "2161.00"
     },
     {
      "date": "2023-04-21",
-     "value": "2333.81",
+     "value": "3397.00",
      "carried": "false",
-     "added": "1488.53"
+     "added": "2166.00"
     },
     {
      "date": "2023-04-28",
-     "value": "2308.94",
+     "value": "3358.33",
      "carried": "false",
-     "added": "1493.64"
+     "added": "2171.00"
     },
     {
      "date": "2023-05-05",
-     "value": "2378.24",
+     "value": "3458.10",
      "carried": "false",
-     "added": "1497.78"
+     "added": "2176.00"
     },
     {
      "date": "2023-05-12",
-     "value": "2401.99",
+     "value": "3496.48",
      "carried": "false",
-     "added": "1498.58"
+     "added": "2181.00"
     },
     {
      "date": "2023-05-19",
-     "value": "2393.08",
+     "value": "3485.86",
      "carried": "false",
-     "added": "1500.46"
+     "added": "2186.00"
     },
     {
      "date": "2023-05-26",
-     "value": "2351.28",
+     "value": "3424.14",
      "carried": "false",
-     "added": "1504.48"
+     "added": "2191.00"
     },
     {
      "date": "2023-06-02",
-     "value": "2330.73",
+     "value": "3392.21",
      "carried": "false",
-     "added": "1509.29"
+     "added": "2196.00"
     },
     {
      "date": "2023-06-09",
-     "value": "2358.36",
+     "value": "3430.86",
      "carried": "false",
-     "added": "1513.72"
+     "added": "2201.00"
     },
     {
      "date": "2023-06-16",
-     "value": "2390.11",
+     "value": "3475.78",
      "carried": "false",
-     "added": "1518.07"
+     "added": "2206.00"
     },
     {
      "date": "2023-06-23",
-     "value": "2412.13",
+     "value": "3502.99",
      "carried": "false",
-     "added": "1524.81"
+     "added": "2211.00"
     },
     {
      "date": "2023-06-30",
-     "value": "2445.15",
+     "value": "3552.58",
      "carried": "false",
-     "added": "1527.15"
+     "added": "2216.00"
     },
     {
      "date": "2023-07-07",
-     "value": "2451.86",
+     "value": "3565.23",
      "carried": "false",
-     "added": "1528.59"
+     "added": "2221.00"
     },
     {
      "date": "2023-07-14",
-     "value": "2463.82",
+     "value": "3583.42",
      "carried": "false",
-     "added": "1531.49"
+     "added": "2226.00"
     },
     {
      "date": "2023-07-21",
-     "value": "2464.59",
+     "value": "3587.69",
      "carried": "false",
-     "added": "1532.77"
+     "added": "2231.00"
     },
     {
      "date": "2023-07-28",
-     "value": "2412.70",
+     "value": "3513.19",
      "carried": "false",
-     "added": "1535.50"
+     "added": "2236.00"
     },
     {
      "date": "2023-08-04",
-     "value": "2417.02",
+     "value": "3515.58",
      "carried": "false",
-     "added": "1541.52"
+     "added": "2241.00"
     },
     {
      "date": "2023-08-11",
-     "value": "2410.94",
+     "value": "3506.17",
      "carried": "false",
-     "added": "1545.33"
+     "added": "2246.00"
     },
     {
      "date": "2023-08-18",
-     "value": "2454.98",
+     "value": "3570.12",
      "carried": "false",
-     "added": "1548.85"
+     "added": "2251.00"
     },
     {
      "date": "2023-08-25",
-     "value": "2475.73",
+     "value": "3598.69",
      "carried": "false",
-     "added": "1553.40"
+     "added": "2256.00"
     },
     {
      "date": "2023-09-01",
-     "value": "2477.33",
+     "value": "3596.80",
      "carried": "false",
-     "added": "1559.76"
+     "added": "2261.00"
     },
     {
      "date": "2023-09-08",
-     "value": "2461.80",
+     "value": "3578.04",
      "carried": "false",
-     "added": "1560.57"
+     "added": "2266.00"
     },
     {
      "date": "2023-09-15",
-     "value": "2463.31",
+     "value": "3579.40",
      "carried": "false",
-     "added": "1564.59"
+     "added": "2271.00"
     },
     {
      "date": "2023-09-22",
-     "value": "2453.50",
+     "value": "3562.64",
      "carried": "false",
-     "added": "1569.78"
+     "added": "2276.00"
     },
     {
      "date": "2023-09-29",
-     "value": "2509.70",
+     "value": "3640.29",
      "carried": "false",
-     "added": "1576.02"
+     "added": "2281.00"
     },
     {
      "date": "2023-10-06",
-     "value": "2478.83",
+     "value": "3596.43",
      "carried": "false",
-     "added": "1578.80"
+     "added": "2286.00"
     },
     {
      "date": "2023-10-13",
-     "value": "2473.17",
+     "value": "3591.10",
      "carried": "false",
-     "added": "1580.25"
+     "added": "2291.00"
     },
     {
      "date": "2023-10-20",
-     "value": "2484.65",
+     "value": "3608.63",
      "carried": "false",
-     "added": "1583.06"
+     "added": "2296.00"
     },
     {
      "date": "2023-10-27",
-     "value": "2505.13",
+     "value": "3641.25",
      "carried": "false",
-     "added": "1584.52"
+     "added": "2301.00"
     },
     {
      "date": "2023-11-03",
-     "value": "2622.06",
+     "value": "3808.99",
      "carried": "false",
-     "added": "1589.50"
+     "added": "2306.00"
     },
     {
      "date": "2023-11-10",
-     "value": "2634.28",
+     "value": "3827.03",
      "carried": "false",
-     "added": "1592.79"
+     "added": "2311.00"
     },
     {
      "date": "2023-11-17",
-     "value": "2628.18",
+     "value": "3820.19",
      "carried": "false",
-     "added": "1594.84"
+     "added": "2316.00"
     },
     {
      "date": "2023-11-24",
-     "value": "2652.21",
+     "value": "3851.79",
      "carried": "false",
-     "added": "1600.58"
+     "added": "2321.00"
     },
     {
      "date": "2023-12-01",
-     "value": "2636.28",
+     "value": "3827.93",
      "carried": "false",
-     "added": "1604.52"
+     "added": "2326.00"
     },
     {
      "date": "2023-12-08",
-     "value": "2699.69",
+     "value": "3920.59",
      "carried": "false",
-     "added": "1607.56"
+     "added": "2331.00"
     },
     {
      "date": "2023-12-15",
-     "value": "2747.46",
+     "value": "3989.12",
      "carried": "false",
-     "added": "1611.51"
+     "added": "2336.00"
     },
     {
      "date": "2023-12-22",
-     "value": "2756.84",
+     "value": "3998.54",
      "carried": "false",
-     "added": "1617.84"
+     "added": "2341.00"
     },
     {
      "date": "2023-12-29",
-     "value": "2827.70",
+     "value": "4104.02",
      "carried": "false",
-     "added": "1619.48"
+     "added": "2346.00"
     },
     {
      "date": "2024-01-05",
-     "value": "2824.08",
+     "value": "4100.24",
      "carried": "false",
-     "added": "1621.91"
+     "added": "2351.00"
     },
     {
      "date": "2024-01-12",
-     "value": "2756.34",
+     "value": "4003.84",
      "carried": "false",
-     "added": "1624.00"
+     "added": "2356.00"
     },
     {
      "date": "2024-01-19",
-     "value": "2668.45",
+     "value": "3878.21",
      "carried": "false",
-     "added": "1625.96"
+     "added": "2361.00"
     },
     {
      "date": "2024-01-26",
-     "value": "2633.50",
+     "value": "3828.72",
      "carried": "false",
-     "added": "1628.50"
+     "added": "2366.00"
     },
     {
      "date": "2024-02-02",
-     "value": "2580.73",
+     "value": "3751.60",
      "carried": "false",
-     "added": "1632.20"
+     "added": "2371.00"
     },
     {
      "date": "2024-02-09",
-     "value": "2530.25",
+     "value": "3678.47",
      "carried": "false",
-     "added": "1635.46"
+     "added": "2376.00"
     },
     {
      "date": "2024-02-16",
-     "value": "2532.80",
+     "value": "3681.96",
      "carried": "false",
-     "added": "1639.09"
+     "added": "2381.00"
     },
     {
      "date": "2024-02-23",
-     "value": "2517.08",
+     "value": "3657.55",
      "carried": "false",
-     "added": "1643.61"
+     "added": "2386.00"
     },
     {
      "date": "2024-03-01",
-     "value": "2577.62",
+     "value": "3742.39",
      "carried": "false",
-     "added": "1649.21"
+     "added": "2391.00"
     },
     {
      "date": "2024-03-08",
-     "value": "2643.72",
+     "value": "3838.82",
      "carried": "false",
-     "added": "1652.34"
+     "added": "2396.00"
     },
     {
      "date": "2024-03-15",
-     "value": "2756.84",
+     "value": "4001.25",
      "carried": "false",
-     "added": "1657.01"
+     "added": "2401.00"
     },
     {
      "date": "2024-03-22",
-     "value": "2817.12",
+     "value": "4087.18",
      "carried": "false",
-     "added": "1661.47"
+     "added": "2406.00"
     },
     {
      "date": "2024-03-28",
-     "value": "2813.26",
+     "value": "4081.15",
      "carried": "false",
-     "added": "1664.52"
+     "added": "2410.00"
     },
     {
      "date": "2024-04-05",
-     "value": "2788.93",
+     "value": "4046.41",
      "carried": "false",
-     "added": "1668.28"
+     "added": "2416.00"
     },
     {
      "date": "2024-04-12",
-     "value": "2767.78",
+     "value": "4016.98",
      "carried": "false",
-     "added": "1670.80"
+     "added": "2421.00"
     },
     {
      "date": "2024-04-19",
-     "value": "2814.88",
+     "value": "4086.06",
      "carried": "false",
-     "added": "1673.76"
+     "added": "2426.00"
     },
     {
      "date": "2024-04-26",
-     "value": "2805.13",
+     "value": "4074.06",
      "carried": "false",
-     "added": "1675.74"
+     "added": "2431.00"
     },
     {
      "date": "2024-05-03",
-     "value": "2882.57",
+     "value": "4188.01",
      "carried": "false",
-     "added": "1678.16"
+     "added": "2436.00"
     },
     {
      "date": "2024-05-10",
-     "value": "2933.09",
+     "value": "4262.44",
      "carried": "false",
-     "added": "1680.85"
+     "added": "2441.00"
     },
     {
      "date": "2024-05-17",
-     "value": "2968.33",
+     "value": "4313.44",
      "carried": "false",
-     "added": "1684.43"
+     "added": "2446.00"
     },
     {
      "date": "2024-05-24",
-     "value": "2939.58",
+     "value": "4272.37",
      "carried": "false",
-     "added": "1687.38"
+     "added": "2451.00"
     },
     {
      "date": "2024-05-31",
-     "value": "2919.17",
+     "value": "4244.71",
      "carried": "false",
-     "added": "1689.44"
+     "added": "2456.00"
     },
     {
      "date": "2024-06-07",
-     "value": "2925.44",
+     "value": "4251.85",
      "carried": "false",
-     "added": "1694.28"
+     "added": "2461.00"
     },
     {
      "date": "2024-06-14",
-     "value": "2967.23",
+     "value": "4313.42",
      "carried": "false",
-     "added": "1697.15"
+     "added": "2466.00"
     },
     {
      "date": "2024-06-21",
-     "value": "2939.38",
+     "value": "4271.27",
      "carried": "false",
-     "added": "1701.73"
+     "added": "2471.00"
     },
     {
      "date": "2024-06-28",
-     "value": "2892.99",
+     "value": "4201.96",
      "carried": "false",
-     "added": "1706.49"
+     "added": "2476.00"
     },
     {
      "date": "2024-07-05",
-     "value": "2851.63",
+     "value": "4142.83",
      "carried": "false",
-     "added": "1709.33"
+     "added": "2481.00"
     },
     {
      "date": "2024-07-12",
-     "value": "2836.90",
+     "value": "4124.51",
      "carried": "false",
-     "added": "1710.64"
+     "added": "2486.00"
     },
     {
      "date": "2024-07-19",
-     "value": "2896.89",
+     "value": "4212.23",
      "carried": "false",
-     "added": "1713.82"
+     "added": "2491.00"
     },
     {
      "date": "2024-07-26",
-     "value": "2886.74",
+     "value": "4195.91",
      "carried": "false",
-     "added": "1718.33"
+     "added": "2496.00"
     },
     {
      "date": "2024-08-02",
-     "value": "2799.26",
+     "value": "4071.86",
      "carried": "false",
-     "added": "1719.64"
+     "added": "2501.00"
     },
     {
      "date": "2024-08-09",
-     "value": "2829.39",
+     "value": "4116.33",
      "carried": "false",
-     "added": "1722.64"
+     "added": "2506.00"
     },
     {
      "date": "2024-08-16",
-     "value": "2891.24",
+     "value": "4206.91",
      "carried": "false",
-     "added": "1725.60"
+     "added": "2511.00"
     },
     {
      "date": "2024-08-23",
-     "value": "2878.18",
+     "value": "4188.86",
      "carried": "false",
-     "added": "1728.36"
+     "added": "2516.00"
     },
     {
      "date": "2024-08-30",
-     "value": "2957.95",
+     "value": "4308.40",
      "carried": "false",
-     "added": "1729.52"
+     "added": "2521.00"
     },
     {
      "date": "2024-09-06",
-     "value": "3036.15",
+     "value": "4424.16",
      "carried": "false",
-     "added": "1731.67"
+     "added": "2526.00"
     },
     {
      "date": "2024-09-13",
-     "value": "3081.77",
+     "value": "4490.75",
      "carried": "false",
-     "added": "1735.06"
+     "added": "2531.00"
     },
     {
      "date": "2024-09-20",
-     "value": "3040.99",
+     "value": "4427.61",
      "carried": "false",
-     "added": "1740.95"
+     "added": "2536.00"
     },
     {
      "date": "2024-09-27",
-     "value": "3067.77",
+     "value": "4465.44",
      "carried": "false",
-     "added": "1745.19"
+     "added": "2541.00"
     },
     {
      "date": "2024-10-04",
-     "value": "3038.40",
+     "value": "4423.67",
      "carried": "false",
-     "added": "1747.91"
+     "added": "2546.00"
     },
     {
      "date": "2024-10-11",
-     "value": "3005.10",
+     "value": "4373.77",
      "carried": "false",
-     "added": "1752.30"
+     "added": "2551.00"
     },
     {
      "date": "2024-10-18",
-     "value": "3020.34",
+     "value": "4398.50",
      "carried": "false",
-     "added": "1753.99"
+     "added": "2556.00"
     },
     {
      "date": "2024-10-25",
-     "value": "3007.74",
+     "value": "4378.72",
      "carried": "false",
-     "added": "1758.40"
+     "added": "2561.00"
     },
     {
      "date": "2024-11-01",
-     "value": "2971.39",
+     "value": "4326.27",
      "carried": "false",
-     "added": "1761.49"
+     "added": "2566.00"
     },
     {
      "date": "2024-11-08",
-     "value": "2930.86",
+     "value": "4267.41",
      "carried": "false",
-     "added": "1764.82"
+     "added": "2571.00"
     },
     {
      "date": "2024-11-15",
-     "value": "2991.30",
+     "value": "4354.27",
      "carried": "false",
-     "added": "1769.09"
+     "added": "2576.00"
     },
     {
      "date": "2024-11-22",
-     "value": "2995.74",
+     "value": "4363.87",
      "carried": "false",
-     "added": "1770.37"
+     "added": "2581.00"
     },
     {
      "date": "2024-11-29",
-     "value": "3009.96",
+     "value": "4381.10",
      "carried": "false",
-     "added": "1776.22"
+     "added": "2586.00"
     },
     {
      "date": "2024-12-06",
-     "value": "2981.87",
+     "value": "4340.67",
      "carried": "false",
-     "added": "1779.33"
+     "added": "2591.00"
     },
     {
      "date": "2024-12-13",
-     "value": "3038.68",
+     "value": "4425.64",
      "carried": "false",
-     "added": "1781.21"
+     "added": "2596.00"
     },
     {
      "date": "2024-12-20",
-     "value": "2934.40",
+     "value": "4273.61",
      "carried": "false",
-     "added": "1784.72"
+     "added": "2601.00"
     },
     {
      "date": "2024-12-27",
-     "value": "2926.45",
+     "value": "4261.91",
      "carried": "false",
-     "added": "1788.24"
+     "added": "2606.00"
     },
     {
      "date": "2024-12-31",
-     "value": "2949.37",
+     "value": "4295.37",
      "carried": "false",
-     "added": "1789.92"
+     "added": "2608.50"
     }
    ],
    "series_resolution": "weekly",
    "series_rule": "Chart shows daily values for ranges up to 366 days and one value per week (the week's last trading day) for longer ranges. All figures are calculated daily.",
-   "transactions_used": "3606",
+   "transactions_used": "5217",
    "transactions_ignored": "0",
    "engine_version": "0.2.0",
    "buys_included": false
@@ -3194,7 +3194,7 @@
    "style": "broad",
    "scenario_seed": 1202,
    "market_checksum": "b1c96edd103ce9744901538b07321256bfb46e47eed041728417f954ec23cc70",
-   "input_checksum": "76845ab611596e9bcdb57c7460831f13d823e95902ee846a1b7542dda0963945",
+   "input_checksum": "faf3d47192819b7e9d4df1db383681d01ae48d5cd951e5becac24e45245934a0",
    "label": "Synthetic scenario. Not a real fund, not real prices, and not a forecast."
   }
  }

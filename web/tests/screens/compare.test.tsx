@@ -36,7 +36,7 @@ describe("Compare screen", () => {
       expect(screen.getByRole("rowheader", { name: r })).toBeTruthy();
     }
     expect(screen.getByRole("columnheader", { name: "B minus A" })).toBeTruthy();
-    expect(text).toContain("−$65.11");
+    expect(text).toContain("−$91.91");
     expect(text).toContain(COPY.compareNote);
     expect(text).toContain("A, lowest point compared with money put in:");
     expect(text).toContain("B, lowest point compared with money put in:");

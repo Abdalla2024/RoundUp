@@ -38,7 +38,7 @@ export function SavedView() {
     if (!r) return;
     const c = x.config;
     const request: SimulateRequest = { scenario_id: c.scenario_id, style: c.style as Style, start: c.start, end: c.end,
-      strategy: c.strategy as Strategy, reinvest: c.reinvest };
+      strategy: c.strategy as Strategy, reinvest: c.reinvest, ...(c.typical ? { typical: c.typical } : {}) };
     setRun({ request, sample: true, savedName: x.name, response: { result: r.result, meta: {
       engine_version: r.engine_version, model_version: r.model_version, scenario_id: c.scenario_id, style: c.style as Style,
       scenario_seed: r.scenario_seed, market_checksum: r.market_checksum, input_checksum: r.input_checksum,

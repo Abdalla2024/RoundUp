@@ -9,6 +9,10 @@ PYTHONPATH=engine/src .venv/bin/python samples/make_samples.py           # rewri
 PYTHONPATH=engine/src .venv/bin/python samples/make_samples.py --check   # verify
 ```
 
+## Relation to "Typical spending"
+
+`sample-typical-5-per-week.csv` is what the website's **Typical spending** mode produces for 5 purchases a week at a $0.50 average over 8 whole weeks (Monday 2024-01-01 to Sunday 2024-02-25), written out by rule R-1.9 with plain arithmetic in `make_samples.py`: 40 purchases of 12.50 on Monday, Tuesday, Wednesday, Friday and Saturday of each week, **$20.00** of round-ups. Upload it with those dates and the result is identical to typical mode with the same inputs (a test compares the two, including the input checksum). Signing: Purchases are positive numbers.
+
 ## The files
 
 | File | Layout | What to choose in the app |

@@ -27,17 +27,17 @@ describe("Results screen", () => {
     const text = container.textContent ?? "";
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Your sample round-ups in a made-up market");
     expect(screen.getByText(/In this made-up scenario/).textContent?.replace(/\s+/g, " ")).toBe(
-      "In this made-up scenario, $1,789.92 of sample round-ups ends at $2,949.37 on Dec 31, 2024: $1,159.45 more than was put in.");
+      "In this made-up scenario, $2,608.50 of sample round-ups ends at $4,295.37 on Dec 31, 2024: $1,686.87 more than was put in.");
     expect(text).toContain(`${COPY.disclaimerLead} ${COPY.disclaimer(true)}`);
     for (const t of ["Round-ups added", "Value at end", "Dividends (simulated)", "Growth on round-ups"]) {
       expect(screen.getByRole("button", { name: t })).toBeTruthy();
     }
-    expect(text).toContain("+$1,159.45");
+    expect(text).toContain("+$1,686.87");
     // owner decision 2026-10-13: dollar figure only, no percentage next to "Growth on round-ups"
-    expect(text).toContain("+$1,159.45compared with the round-ups added");
+    expect(text).toContain("+$1,686.87compared with the round-ups added");
     expect(text).not.toMatch(/\d%/);
-    expect(text).toContain("Lowest point compared with money put in: on Nov 6, 2017 the value was $344.52, which was $164.98 below the $509.50 of round-ups added by then.");
-    expect(text).toContain("On the last day, $0.95 of round-ups was waiting to be invested and $0.00 of dividends was kept as cash.");
+    expect(text).toContain("Lowest point compared with money put in: on Nov 6, 2017 the value was $500.83, which was $242.17 below the $743.00 of round-ups added by then.");
+    expect(text).toContain("On the last day, $3.50 of round-ups was waiting to be invested and $0.00 of dividends was kept as cash.");
     expect(text).toContain(simulate.response.result.series_rule);
     expect(screen.getByTestId("explainer-placeholder").textContent).toContain("Coming later:");
     await waitFor(() => expect(screen.getByText("All assumptions (12)")).toBeTruthy());
@@ -49,7 +49,8 @@ describe("Results screen", () => {
   test("every dollar figure on screen comes verbatim from the API response", () => {
     const { container } = renderWith(<ResultsView />, { run: RUN });
     fireEvent.click(screen.getByRole("button", { name: "Show the chart as a table" }));
-    const allowed = apiMoneyStrings(simulate.response);
+    // Every figure comes from the API response, plus the user's own typed average round-up echoed in the estimate note (formatting, never arithmetic).
+    const allowed = new Set([...apiMoneyStrings(simulate.response), simulate.request.typical.average_roundup]);
     const shown = shownMoney(container.textContent ?? "");
     expect(shown.length).toBeGreaterThan(500);               // includes the whole table
     expect(shown.filter((m) => !allowed.has(m))).toEqual([]);
@@ -147,7 +148,7 @@ describe("Results screen", () => {
     const { container } = renderWith(<ResultsView />, { run: RUN });
     const tech = container.querySelector("details.tech")?.textContent?.replace(/\s+/g, " ") ?? "";
     expect(tech).toContain("scenario seed");
-    expect(tech).toContain("purchase list number 42, up to 2 purchases a day");
+    expect(tech).toContain("typical spending, 10 purchases a week, average round-up $0.50");
     expect(tech).toContain("Jan 2, 2015 to Dec 31, 2024");
     expect(tech).toContain(COPY.strategy[simulate.request.strategy]);
     expect(tech).not.toContain("anyone reproduce");
@@ -164,5 +165,17 @@ describe("Results screen", () => {
     expect(text).toContain(COPY.disclaimer(false));
     expect(text).toContain("from 1 purchase");                // L8: singular
     expect(text).not.toContain("1 purchases");
+  });
+
+  test("typical spending is labelled as an estimate from averages on the results page", () => {
+    const { container } = renderWith(<ResultsView />, { run: RUN });
+    expect(screen.getByTestId("typical-note").textContent).toBe(COPY.typicalNote("10", "$0.50"));
+    expect(container.textContent).toContain("Real spending varies.");
+  });
+
+  test("a result from an uploaded file or a purchase list has no typical-spending note", () => {
+    const run = { ...RUN, request: { ...RUN.request, typical: undefined, transactions: [] }, sample: false };
+    renderWith(<ResultsView />, { run });
+    expect(screen.queryByTestId("typical-note")).toBeNull();
   });
 });

@@ -5,7 +5,8 @@ import type { Result } from "./types";
 
 export interface SavedScenario {
   id: string; name: string; created_at: string;
-  config: { scenario_id: string; style: string; start: string; end: string; strategy: string; reinvest: boolean };
+  config: { scenario_id: string; style: string; start: string; end: string; strategy: string; reinvest: boolean;
+            typical?: { per_week: number; average_roundup: string } | null };
   scenario_results: { result: Result; engine_version: string; model_version: string; scenario_seed: number;
                       market_checksum: string; input_checksum: string; created_at: string }[];
 }

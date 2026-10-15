@@ -65,9 +65,23 @@ def files():
         "sample-split-columns.csv": write(("Date", "Description", "Money out", "Money in", "Status"),
             lambda r: (r[0], r[1], "" if r[4] == "refund" else money(r[2]), money(r[2]) if r[4] == "refund" else "", r[3])),
         # a column that says debit or credit
+        "sample-typical-5-per-week.csv": typical_5x8(),
         "sample-type-column.csv": write(("Date", "Description", "Amount", "Type", "Status"),
             lambda r: (r[0], r[1], money(r[2]), "credit" if r[4] == "refund" else "debit", r[3])),
     }
+
+
+def typical_5x8():
+    """5 purchases a week for 8 whole weeks at a 50-cent average, written out by rule R-1.9 with plain arithmetic (not the engine's code):
+    purchase k of 5 on Monday + floor(7k/5) days, each 12.50. Upload it with dates 2024-01-01 to 2024-02-25 and the result must equal
+    the website's 'typical spending' with 5 a week and $0.50: 40 purchases, $20.00."""
+    from datetime import date, timedelta
+    monday = date(2024, 1, 1)
+    out = ["Date,Description,Amount,Status"]
+    for week in range(8):
+        for k in range(5):
+            out.append(f"{(monday + timedelta(days=7 * week + (7 * k) // 5)).isoformat()},Typical purchase,12.50,posted")
+    return "\n".join(out) + "\n"
 
 
 def expected():
@@ -84,6 +98,7 @@ def expected():
             "unrecognised_status": sum(r[4] == "unrecognised" for r in rs),
             "whole_dollar": sum(r[2] % 100 == 0 for r in purchases),
         },
+        "typical_5x8": {"window": {"start": "2024-01-01", "end": "2024-02-25"}, "rows": 40, "purchases": 40, "contributed": "20.00"},
         "simulate": {
             "transactions_used": len(purchases),
             "transactions_ignored": len(rs) - len(purchases),

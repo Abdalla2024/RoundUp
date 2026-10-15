@@ -6,7 +6,7 @@ import type { CompareRequest, CompareResponse, Mapping, ParseResponse, SimulateR
 // The last run, and the setup form as last filled in, live in memory only (nothing is stored in the browser).
 export interface LastRun { request: SimulateRequest; response: SimulateResponse; sample: boolean; savedName?: string }
 export interface SetupDraft {
-  source: "generate" | "upload"; seed: string; perDay: string; scenarioId: string; style: Style; strategy: Strategy;
+  source: "typical" | "upload"; perWeek: string; avgRoundup: string; scenarioId: string; style: Style; strategy: Strategy;
   reinvest: boolean; start: string; end: string; csv: string | null; columns: string[]; mapping: Mapping;
   convention: string; convNote: string; countUnrecognised: boolean; parsed: ParseResponse | null; slashDates: boolean;
 }

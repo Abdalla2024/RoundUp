@@ -24,15 +24,6 @@ describe("Setup screen", () => {
     expect(container.textContent).toContain("Starting setting");
     expect(container.textContent).toContain("All four are equally valid to explore.");
   });
-  test("generate: sends the request and goes to results", async () => {
-    sim.mockResolvedValue(simulate.response);
-    renderWith(<SetupForm />);
-    await waitFor(() => screen.getByRole("radio", { name: /Crash and recovery/ }));
-    fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
-    await waitFor(() => expect(pushed).toEqual(["/results"]));
-    expect(sim).toHaveBeenCalledWith({ scenario_id: "crash-and-recovery", style: "broad", start: "2015-01-02",
-      end: "2024-12-31", strategy: "threshold", reinvest: true, generate: { seed: 42, max_per_day: 2 } });
-  });
   test("API validation errors are shown in plain language, focused, and fields marked", async () => {
     sim.mockImplementation(() => Promise.reject(new ApiError(422, "WINDOW_OUTSIDE_DATA", "The dates must be inside the scenario's range.", ["start"])));
     renderWith(<SetupForm />);
@@ -48,14 +39,6 @@ describe("Setup screen", () => {
     await waitFor(() => screen.getByRole("radio", { name: /Crash and recovery/ }));
     fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
     await waitFor(() => expect(screen.getByRole("alert").textContent).toContain("wait 12 seconds"));
-  });
-  test("bad purchase list number is caught before calling the API", async () => {
-    renderWith(<SetupForm />);
-    await waitFor(() => screen.getByRole("radio", { name: /Crash and recovery/ }));
-    fireEvent.change(screen.getByLabelText(/Made-up purchase list number/), { target: { value: "4.2" } });
-    fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
-    expect(screen.getByRole("alert").textContent).toContain("whole number");
-    expect(sim).not.toHaveBeenCalled();
   });
   test("CSV: columns come from the header, rows are checked by the API, then simulated", async () => {
     parse.mockResolvedValue(parseFx.response);
@@ -101,35 +84,16 @@ describe("Setup screen", () => {
     }
     renderWith(<Toggle />);
     await ready();
-    fireEvent.change(screen.getByLabelText(/Made-up purchase list number/), { target: { value: "7" } });
+    fireEvent.change(screen.getByLabelText(COPY.perWeekLabel, { selector: "#perweek" }), { target: { value: "14" } });
     fireEvent.click(screen.getByRole("radio", { name: /Sideways/ }));
     fireEvent.click(screen.getByRole("radio", { name: /Once a week/ }));
     fireEvent.click(screen.getByRole("button", { name: "toggle" }));
-    expect(screen.queryByLabelText(/Made-up purchase list number/)).toBeNull();
+    expect(screen.queryByLabelText(COPY.perWeekLabel, { selector: "#perweek" })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "toggle" }));
     await ready();
-    expect((screen.getByLabelText(/Made-up purchase list number/) as HTMLInputElement).value).toBe("7");
+    expect((screen.getByLabelText(COPY.perWeekLabel, { selector: "#perweek" }) as HTMLInputElement).value).toBe("14");
     expect((screen.getByRole("radio", { name: /Sideways/ }) as HTMLInputElement).checked).toBe(true);
     expect((screen.getByRole("radio", { name: /Once a week/ }) as HTMLInputElement).checked).toBe(true);
-  });
-
-  test("M3: purchase list number range in the hint and the check; only the wrong field is marked", async () => {
-    renderWith(<SetupForm />);
-    await ready();
-    expect(screen.getByText(COPY.seedHint)).toBeTruthy();
-    for (const bad of ["2147483648", "-1", "99999999999"]) {
-      fireEvent.change(screen.getByLabelText(/Made-up purchase list number/), { target: { value: bad } });
-      fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
-      expect(screen.getByRole("alert").textContent).toContain(COPY.seedError);
-      expect(screen.getByLabelText(/Made-up purchase list number/).getAttribute("aria-invalid")).toBe("true");
-      expect(screen.getByLabelText(/Most purchases in one day/).getAttribute("aria-invalid")).toBe("false");
-    }
-    fireEvent.change(screen.getByLabelText(/Made-up purchase list number/), { target: { value: "2147483647" } });
-    fireEvent.change(screen.getByLabelText(/Most purchases in one day/), { target: { value: "4" } });
-    fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
-    expect(screen.getByRole("alert").textContent).toContain(COPY.perDayError);
-    expect(screen.getByLabelText(/Made-up purchase list number/).getAttribute("aria-invalid")).toBe("false");
-    expect(sim).not.toHaveBeenCalled();
   });
 
   test("M4: each sign option shows the columns it needs, and only those are sent", async () => {
@@ -369,21 +333,6 @@ describe("Setup screen", () => {
     expect(signing().getAttribute("aria-invalid")).toBe("false");
   });
 
-  test("the made-up purchase fields explain themselves in plain language (owner-approved wording)", async () => {
-    const { container } = renderWith(<SetupForm />);
-    await ready();
-    const text = container.textContent ?? "";
-    expect(text).toContain("RoundUp makes up a list of everyday purchases for you. The number below picks which list.");
-    expect(screen.getByLabelText("Made-up purchase list number")).toBeTruthy();
-    expect(document.getElementById("seed-help")!.textContent).toBe(
-      "Pick any whole number from 0 to 2,147,483,647. The same number always gives the same purchases and the same results. A different number gives a different list.");
-    expect(screen.getByLabelText("Most purchases in one day")).toBeTruthy();
-    expect(document.getElementById("perday-help")!.textContent).toBe(
-      "Choose 1, 2 or 3. Each day gets anywhere from none up to this many made-up purchases.");
-    expect(text).not.toContain("Sample number");
-    expect(text).not.toContain("Purchases per day");
-  });
-
   // ---- R-1.4a (owner decision OQ-12): only clearly posted statuses count; the rest is flagged until the user decides ----
   async function checkedWithUnrecognised(n: number) {
     const res = JSON.parse(JSON.stringify(parseFx.response));
@@ -425,5 +374,91 @@ describe("Setup screen", () => {
     const t = await checked({ unrecognised_status: 0 });
     expect(t).not.toContain("a status we don");
     expect(screen.queryByRole("checkbox", { name: COPY.countUnrecognised })).toBeNull();
+  });
+
+  // ---- typical spending (R-1.9, owner decision 2026-10-15): a weekly count and an average round-up, no random numbers ----
+  const perWeek = () => screen.getByLabelText(COPY.perWeekLabel, { selector: "#perweek" }) as HTMLInputElement;
+  const slider = () => screen.getByRole("slider", { name: COPY.perWeekLabel }) as HTMLInputElement;
+  const average = () => screen.getByLabelText(COPY.averageLabel) as HTMLInputElement;
+
+  test("typical spending is the starting choice, with a slider and a number box, and says it is an estimate", async () => {
+    const { container } = renderWith(<SetupForm />);
+    await ready();
+    expect((screen.getByRole("radio", { name: new RegExp(COPY.typicalTitle) }) as HTMLInputElement).checked).toBe(true);
+    expect(perWeek().value).toBe("10");
+    expect(slider().value).toBe("10");
+    expect([slider().min, slider().max]).toEqual(["1", "60"]);
+    expect(container.textContent).toContain(COPY.typicalEstimate);
+    expect(document.getElementById("perweek-help")!.textContent).toBe(COPY.perWeekHint);
+    expect(average().value).toBe("0.50");
+    const details = screen.getByText(COPY.adjustAverage).closest("details") as HTMLDetailsElement;
+    expect(details.open).toBe(false);                               // tucked away
+    expect(details.textContent).toContain(COPY.adjustAverageBody);
+    for (const gone of ["Made-up purchase list number", "Most purchases in one day", "Sample number", "seed"]) expect(container.textContent).not.toContain(gone);
+  });
+
+  test("the slider and the number box stay in step", async () => {
+    renderWith(<SetupForm />);
+    await ready();
+    fireEvent.change(slider(), { target: { value: "25" } });
+    expect(perWeek().value).toBe("25");
+    fireEvent.change(perWeek(), { target: { value: "7" } });
+    expect(slider().value).toBe("7");
+    fireEvent.change(perWeek(), { target: { value: "" } });                  // an empty or invalid box is shown as typed; the slider keeps its last good value
+    expect(perWeek().value).toBe("");
+    expect(slider().value).toBe("7");
+  });
+
+  test("typical: the request carries the weekly count and the average as text, and goes to results", async () => {
+    sim.mockResolvedValue(simulate.response);
+    renderWith(<SetupForm />);
+    await ready();
+    fireEvent.change(perWeek(), { target: { value: "20" } });
+    fireEvent.change(average(), { target: { value: "0.25" } });
+    fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
+    await waitFor(() => expect(pushed).toEqual(["/results"]));
+    expect(sim).toHaveBeenCalledWith({ scenario_id: "crash-and-recovery", style: "broad", start: "2015-01-02", end: "2024-12-31",
+      strategy: "threshold", reinvest: true, typical: { per_week: 20, average_roundup: "0.25" } });
+  });
+
+  test("weekly counts outside 1 to 60, or not whole numbers, are caught before the API; only that field is marked", async () => {
+    renderWith(<SetupForm />);
+    await ready();
+    for (const bad of ["0", "61", "5.5", "abc", "", "-3", "1e1"]) {
+      fireEvent.change(perWeek(), { target: { value: bad } });
+      fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
+      expect(screen.getByRole("alert").textContent).toContain(COPY.perWeekError);
+      expect(perWeek().getAttribute("aria-invalid")).toBe("true");
+      expect(average().getAttribute("aria-invalid")).toBe("false");
+      expect(sim).not.toHaveBeenCalled();
+    }
+    sim.mockResolvedValue(simulate.response);
+    fireEvent.change(perWeek(), { target: { value: "60" } });                         // the largest allowed value goes through
+    fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
+    await waitFor(() => expect(sim).toHaveBeenCalled());
+    expect(sim.mock.calls[0][0].typical.per_week).toBe(60);
+  });
+
+  test("averages must be $0.01 to $0.99 written with two decimals; the error opens the adjust box and marks the field", async () => {
+    renderWith(<SetupForm />);
+    await ready();
+    for (const bad of ["0.00", "1.00", "0.5", "0.505", ".50", "abc", "", "-0.50", "0,50"]) {
+      fireEvent.change(average(), { target: { value: bad } });
+      fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
+      expect(screen.getByRole("alert").textContent).toContain(COPY.averageError);
+      expect(average().getAttribute("aria-invalid")).toBe("true");
+      expect((screen.getByText(COPY.adjustAverage).closest("details") as HTMLDetailsElement).open).toBe(true);
+      expect(perWeek().getAttribute("aria-invalid")).toBe("false");
+    }
+  });
+
+  test("the browser never computes a money figure for the typical inputs: the average is sent exactly as typed", async () => {
+    sim.mockResolvedValue(simulate.response);
+    renderWith(<SetupForm />);
+    await ready();
+    fireEvent.change(average(), { target: { value: "0.99" } });
+    fireEvent.click(screen.getByRole("button", { name: "Run simulation" }));
+    await waitFor(() => expect(sim).toHaveBeenCalled());
+    expect(sim.mock.calls[0][0].typical.average_roundup).toBe("0.99");
   });
 });
