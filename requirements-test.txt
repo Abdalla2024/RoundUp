@@ -1,4 +1,4 @@
-# Test-only additions on top of requirements.txt
+# Test-only additions on top of requirements-ci.txt (pip) or requirements.txt (Vercel)
 pytest==9.1.1
 hypothesis==6.169.0
 uvicorn==0.54.0

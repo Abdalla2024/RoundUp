@@ -6,7 +6,23 @@ permissions:
   contents: read
 
 jobs:
+  # Fast guard (stage 6, after CI run 38765010785): the two requirements files must install with the exact commands used
+  # below (pip, fresh venv) and with uv (what Vercel uses). Everything else waits for it.
+  requirements:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97   # v7.0.0
+        with:
+          python-version: "3.13.2"
+      - name: Install uv (pinned), to check the Vercel file too
+        run: python -m pip install uv==0.13.0
+      - name: Requirements files install in a fresh environment
+        run: python tools/check_requirements.py
+
   python:
+    needs: requirements
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -17,7 +33,7 @@ jobs:
       - name: Install (pinned)
         run: |
           python -m venv .venv
-          .venv/bin/pip install -r requirements.txt -r requirements-test.txt
+          .venv/bin/pip install -r requirements-ci.txt -r requirements-test.txt
       - name: Engine, scenario generator, cross-check agreement
         run: .venv/bin/python -m pytest -q engine
       - name: Independent implementation self-tests
@@ -35,6 +51,7 @@ jobs:
         run: .venv/bin/python engine/tools/fault_injection.py
 
   web:
+    needs: requirements
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -48,7 +65,7 @@ jobs:
       - name: Install API for end-to-end tests (pinned)
         run: |
           python -m venv .venv
-          .venv/bin/pip install -r requirements.txt -r requirements-test.txt
+          .venv/bin/pip install -r requirements-ci.txt -r requirements-test.txt
       - name: Install web (exact versions from package-lock.json)
         run: cd web && npm ci
       - name: Typecheck

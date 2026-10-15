@@ -18,7 +18,7 @@ From the repository root, with Python 3.12 or newer:
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt -r requirements-test.txt
+.venv/bin/pip install -r requirements-ci.txt -r requirements-test.txt     # pip: use requirements-ci.txt (requirements.txt is the Vercel form)
 
 .venv/bin/python -m pytest -q engine                       # engine + scenario generator + cross-check agreement
 .venv/bin/python -m pytest -q api/tests -W ignore::DeprecationWarning               # API tests
@@ -40,7 +40,7 @@ Run the API locally: `.venv/bin/python -m uvicorn app:app` (uvicorn is not pinne
 
 ## Deploying the API to Vercel
 
-- The API is a Vercel project whose **Root Directory is the repository root**. Vercel resolves `app.py` → `roundup_api.main:app` and installs `requirements.txt`, which installs the two local packages `./engine` and `./api`.
+- The API is a Vercel project whose **Root Directory is the repository root**. Vercel resolves `app.py` → `roundup_api.main:app` and installs `requirements.txt`, which installs the two local packages as `roundup-engine @ ./engine` and `roundup-api @ ./api` (the form its uv installer accepts; pip rejects it). pip, CI and local setup use `requirements-ci.txt`, derived from it by `tools/check_requirements.py --write`; `python tools/check_requirements.py` checks both install paths.
 - A project rooted at `api/` would not work: "Your app will not be able to access files outside of that directory. You also cannot use `..`" ([Vercel: Root Directory](https://vercel.com/docs/builds/configure-a-build#root-directory)).
 - `vercel.json` excludes tests, mocks and docs from the function bundle.
 - **Not yet verified on Vercel:** whether its Python installer accepts the local-path lines `./engine` and `./api`. Confirm on the first deploy.
