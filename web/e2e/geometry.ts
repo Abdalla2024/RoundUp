@@ -44,7 +44,10 @@ export async function geometryIssues(page: Page, opts: { selectValues?: boolean 
     const controls = all.filter((e) => e.matches("a[href], button, input:not([type=hidden]), select, textarea, summary, [tabindex]:not([tabindex='-1'])"));
     const hasOwnText = (e: Element) => [...e.childNodes].some((n) => n.nodeType === 3 && (n.textContent ?? "").trim() !== "");
     const texts = all.filter((e) => hasOwnText(e) && !e.matches("script, style, option, title, desc"));
-    const boxed = [...new Set([...controls, ...texts])].filter((e) => !inScroller(e) && !e.closest("dialog:not([open])"));
+    // Sticky and fixed elements (the progress rail) are meant to sit on top of the page as it scrolls, so they are not "overlapping" what
+    // passes under them; they still count for the window-edge check below.
+    const overlays = (e: Element) => { for (let n: Element | null = e; n && n !== document.body; n = n.parentElement) { const p = getComputedStyle(n).position; if (p === "sticky" || p === "fixed") return true; } return false; };
+    const boxed = [...new Set([...controls, ...texts])].filter((e) => !inScroller(e) && !e.closest("dialog:not([open])") && !e.closest(".decor"));
 
     // 1. overlap
     const rects = new Map(boxed.map((e) => [e, e.getBoundingClientRect()] as const));
@@ -55,6 +58,7 @@ export async function geometryIssues(page: Page, opts: { selectValues?: boolean 
       for (let j = i + 1; j < boxed.length; j++) {
         const a = boxed[i], b = boxed[j];
         if (a.contains(b) || b.contains(a)) continue;
+        if (overlays(a) !== overlays(b)) continue;                 // a sticky element over the scrolled page is by design
         const ra = rects.get(a)!, rb = rects.get(b)!;
         if (Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left) <= 2 || Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top) <= 2) continue;
         for (const la of lines.get(a)!) {

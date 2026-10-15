@@ -17,7 +17,7 @@ export interface Dip { date: string; value: string; added: string; below_by: str
 export interface Summary {
   contributed: string; roundup_buys: string; dividend_buys: string; dividends_earned: string; dividends_paid: string;
   shares: string; holdings_value: string; uninvested_cash: string; roundups_waiting: string; dividends_as_cash: string;
-  receivables: string; ending_value: string; gain: string; gain_pct: string; as_of: string; deepest_dip: Dip | null;
+  receivables: string; composition?: { key: string; amount: string; share_bp: number }[]; ending_value: string; gain: string; gain_pct: string; as_of: string; deepest_dip: Dip | null;
 }
 export interface Point { date: string; value: string; carried: string; added: string }
 export interface Result {
@@ -34,7 +34,7 @@ export interface CompareResponse {
   difference: { ending_value: string; gain: string; dividends_earned: string; uninvested_cash: string;
                 roundup_buys: string; dividend_buys: string };
 }
-export interface ScenarioStyle { style: Style; name: string; symbol: string; start: string; end: string; market_checksum: string }
+export interface ScenarioStyle { style: Style; name: string; symbol: string; start: string; end: string; market_checksum: string; shape?: number[] }
 export interface ScenarioInfo { id: string; name: string; description: string; label: string; seed: number; styles: ScenarioStyle[] }
 export interface ScenariosResponse { label: string; model_version: string; scenarios: ScenarioInfo[] }
 export interface AssumptionsResponse { disclaimer: string; assumptions: { id: string; title: string; text: string }[] }

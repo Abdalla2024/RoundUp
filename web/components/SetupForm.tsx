@@ -7,10 +7,15 @@ import { csvHeader } from "@/lib/csvHeader";
 import { count, longDate } from "@/lib/format";
 import type { Mapping, ParseResponse, ScenariosResponse, SimulateRequest, Strategy, Style, TransactionIn } from "@/lib/types";
 import { ErrorNotice } from "./Chrome";
+import { Icon, type IconName } from "./Icon";
+import { ProgressRail } from "./ProgressRail";
+import { Skeleton } from "./Skeleton";
+import { Sparkline } from "./Sparkline";
 import { useRun, type SetupDraft } from "./RunContext";
 import { useRateLimitWait } from "./useRateLimitWait";
 
 const MAX_CSV_CHARS = 2_000_000;
+const STRATEGY_ICON: Record<Strategy, IconName> = { threshold: "coins", next_session: "clock", weekly: "repeat", monthly: "calendar" };
 const STRATEGIES: [Strategy, string, string][] = [
   ["threshold", "When they reach $5", "Saved-up round-ups are invested once they add up to $5."],
   ["next_session", "After every purchase day", "Each day’s round-ups are invested on the next trading day."],
@@ -163,17 +168,18 @@ export function SetupForm() {
 
   return (
     <form onSubmit={onSubmit} noValidate aria-describedby={error ? "form-error" : undefined}>
+      <ProgressRail />
       {error && <div ref={errorRef} tabIndex={-1} id="form-error"><ErrorNotice message={error.message} requestId={error.requestId} /></div>}
 
-      <fieldset><legend><span className="step">Step 1 of 4</span>Your purchases</legend>
+      <fieldset className="step-card" id="step-1" data-step="1"><legend><span className="step-icon"><Icon name="wallet" /></span><span className="step-title"><span className="step">Step 1 of 4</span>Your purchases</span></legend>
         <p className="muted small">Round-ups come from purchases. Use sample spending, or upload a CSV export from your bank.
           Uploaded files are read in your session and not stored.</p>
         <div className="options">
-          <label className="option"><input type="radio" name="source" value="typical" checked={f.source === "typical"}
-            onChange={() => set({ source: "typical" })} /><span className="title">{COPY.typicalTitle}</span>
+          <label className="option choice"><input type="radio" name="source" value="typical" checked={f.source === "typical"}
+            onChange={() => set({ source: "typical" })} /><span className="choice-icon"><Icon name="sliders" /></span><span className="title">{COPY.typicalTitle}</span>
             <span className="desc">{COPY.typicalDesc}</span></label>
-          <label className="option"><input type="radio" name="source" value="upload" checked={f.source === "upload"}
-            onChange={() => set({ source: "upload" })} /><span className="title">Upload a CSV</span>
+          <label className="option choice"><input type="radio" name="source" value="upload" checked={f.source === "upload"}
+            onChange={() => set({ source: "upload" })} /><span className="choice-icon"><Icon name="upload" /></span><span className="title">Upload a CSV</span>
             <span className="desc">You choose which columns hold the date and amount. Merchant names are never stored.</span></label>
         </div>
         {f.source === "typical" ? (<>
@@ -256,32 +262,39 @@ export function SetupForm() {
         )}
       </fieldset>
 
-      <fieldset><legend><span className="step">Step 2 of 4</span>Market scenario</legend>
+      <fieldset className="step-card" id="step-2" data-step="2"><legend><span className="step-icon"><Icon name="layers" /></span><span className="step-title"><span className="step">Step 2 of 4</span>Market scenario</span></legend>
         <p className="muted small">Every scenario is made up by a published model, so you can see how round-ups behave in
           different kinds of made-up markets. <strong>{COPY.label}</strong></p>
         <div className="options">
-          {(scen?.scenarios ?? []).map((s) => (
-            <label className="option" key={s.id}><input type="radio" name="scenario" value={s.id}
-              checked={f.scenarioId === s.id} onChange={() => set({ scenarioId: s.id })} />
-              <span className="title">{s.name}</span><span className="desc">{s.description}</span></label>))}
+          {!scen && !error && [0, 1, 2, 3].map((i) => (
+            <div className="option choice scenario skeleton-card" key={i} role="presentation"><Skeleton height={20} width="55%" /><Skeleton height={36} /><Skeleton height={14} /><Skeleton height={14} width="80%" /></div>))}
+          {(scen?.scenarios ?? []).map((s) => {
+            const shape = s.styles.find((x) => x.style === f.style)?.shape;
+            return (
+              <label className="option choice scenario" key={s.id} data-scenario={s.id}><input type="radio" name="scenario" value={s.id}
+                checked={f.scenarioId === s.id} onChange={() => set({ scenarioId: s.id })} />
+                <span className="title">{s.name}<span className={`chip chip-${s.id}`}>{COPY.scenarioChip[s.id] ?? "Made-up"}</span></span>
+                {shape && <Sparkline shape={shape} />}
+                <span className="desc">{s.description}</span></label>);
+          })}
         </div>
-        <p id="style-h" style={{ margin: "20px 0 0", fontWeight: 650 }}>Style</p>
+        <p id="style-h" className="subhead">Style</p>
         <div className="options" role="radiogroup" aria-labelledby="style-h">
-          <label className="option"><input type="radio" name="style" value="broad" checked={f.style === "broad"}
+          <label className="option choice"><input type="radio" name="style" value="broad" checked={f.style === "broad"}
             onChange={() => set({ style: "broad" })} /><span className="title">Broad-market style</span>
             <span className="desc">In this model: smaller dividends, slightly higher price drift.</span></label>
-          <label className="option"><input type="radio" name="style" value="dividend" checked={f.style === "dividend"}
+          <label className="option choice"><input type="radio" name="style" value="dividend" checked={f.style === "dividend"}
             onChange={() => set({ style: "dividend" })} /><span className="title">Dividend style</span>
             <span className="desc">In this model: larger dividends, slightly lower price drift.</span></label>
         </div>
       </fieldset>
 
-      <fieldset><legend><span className="step">Step 3 of 4</span>How round-ups are invested</legend>
+      <fieldset className="step-card" id="step-3" data-step="3"><legend><span className="step-icon"><Icon name="sliders" /></span><span className="step-title"><span className="step">Step 3 of 4</span>How round-ups are invested</span></legend>
         <p className="muted small">All four are equally valid to explore. Comparing them is the point.</p>
         <div className="options">
           {STRATEGIES.map(([v, t, d]) => (
-            <label className="option" key={v}><input type="radio" name="strategy" value={v} checked={f.strategy === v}
-              onChange={() => set({ strategy: v })} /><span className="title">{t}{v === "threshold" && <> <span className="tag">Starting setting</span></>}</span>
+            <label className="option choice" key={v}><input type="radio" name="strategy" value={v} checked={f.strategy === v}
+              onChange={() => set({ strategy: v })} /><span className="choice-icon"><Icon name={STRATEGY_ICON[v]} /></span><span className="title">{t}{v === "threshold" && <> <span className="tag">Starting setting</span></>}</span>
               <span className="desc">{d}</span></label>))}
         </div>
         <label className="switch"><input type="checkbox" checked={f.reinvest} onChange={(e) => set({ reinvest: e.target.checked })} />
@@ -289,7 +302,7 @@ export function SetupForm() {
             <span className="small muted">Use dividend cash to buy more of the same scenario&rsquo;s shares on the day it is paid. Turn off to keep it as cash.</span></span></label>
       </fieldset>
 
-      <fieldset><legend><span className="step">Step 4 of 4</span>Dates</legend>
+      <fieldset className="step-card" id="step-4" data-step="4"><legend><span className="step-icon"><Icon name="calendar" /></span><span className="step-title"><span className="step">Step 4 of 4</span>Dates</span></legend>
         <p className="muted small">{range ? `This scenario runs from ${longDate(range.start)} to ${longDate(range.end)}. ` : ""}{COPY.datesNote}</p>
         <div className="fields">
           <div className="field"><label htmlFor="start">Start date</label>

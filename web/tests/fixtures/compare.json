@@ -35,6 +35,28 @@
     "dividends_as_cash": "0.00",
     "receivables": "0.00",
     "ending_value": "4295.37",
+    "composition": [
+     {
+      "key": "shares",
+      "amount": "4291.87",
+      "share_bp": 9992
+     },
+     {
+      "key": "roundups_waiting",
+      "amount": "3.50",
+      "share_bp": 8
+     },
+     {
+      "key": "dividends_as_cash",
+      "amount": "0.00",
+      "share_bp": 0
+     },
+     {
+      "key": "receivables",
+      "amount": "0.00",
+      "share_bp": 0
+     }
+    ],
     "gain": "1686.87",
     "gain_pct": "64.67",
     "as_of": "2024-12-31",
@@ -3209,6 +3231,28 @@
     "dividends_as_cash": "255.22",
     "receivables": "0.00",
     "ending_value": "4203.46",
+    "composition": [
+     {
+      "key": "shares",
+      "amount": "3926.25",
+      "share_bp": 9341
+     },
+     {
+      "key": "roundups_waiting",
+      "amount": "22.00",
+      "share_bp": 52
+     },
+     {
+      "key": "dividends_as_cash",
+      "amount": "255.22",
+      "share_bp": 607
+     },
+     {
+      "key": "receivables",
+      "amount": "0.00",
+      "share_bp": 0
+     }
+    ],
     "gain": "1594.96",
     "gain_pct": "61.14",
     "as_of": "2024-12-31",

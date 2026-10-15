@@ -29,6 +29,28 @@
     "dividends_as_cash": "0.00",
     "receivables": "0.00",
     "ending_value": "252.59",
+    "composition": [
+     {
+      "key": "shares",
+      "amount": "251.59",
+      "share_bp": 9960
+     },
+     {
+      "key": "roundups_waiting",
+      "amount": "1.00",
+      "share_bp": 40
+     },
+     {
+      "key": "dividends_as_cash",
+      "amount": "0.00",
+      "share_bp": 0
+     },
+     {
+      "key": "receivables",
+      "amount": "0.00",
+      "share_bp": 0
+     }
+    ],
     "gain": "-7.41",
     "gain_pct": "-2.85",
     "as_of": "2012-12-31",

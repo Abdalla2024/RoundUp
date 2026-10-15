@@ -34,7 +34,7 @@ export function pointText(p: Point, label = "value"): string {
     (p.carried === "true" ? " Price carried from the last trading day." : "");
 }
 
-export function ValueChart({ result, title, color = "var(--series-1)", yTop, small, label = "Value", level = 2 }:
+export function ValueChart({ result, title, color = "var(--series-a)", yTop, small, label = "Value", level = 2 }:
   { result: Result; title: string; color?: string; yTop?: number; small?: boolean; label?: string; level?: 2 | 3 }) {
   const pts = result.series;
   const top = yTop ?? chartTop(pts);
@@ -74,8 +74,7 @@ export function ValueChart({ result, title, color = "var(--series-1)", yTop, sma
       <figcaption>{result.series_rule} {COPY.datesNote}</figcaption>
       <p className="small muted" id={`${id}-sum`}>{chartSummary(result)}</p>
       <p className="small muted">{COPY.chartKeys}</p>
-      <button type="button" className="linklike" aria-expanded={showTable} onClick={() => setShowTable(!showTable)}
-        style={{ color: "var(--link)", fontWeight: 600 }}>
+      <button type="button" className="linklike show-table" aria-expanded={showTable} onClick={() => setShowTable(!showTable)}>
         {showTable ? "Hide the table" : "Show the chart as a table"}</button>
       {showTable && (
         <div className="table-scroll" tabIndex={0} role="region" aria-label={`${title} as a table`}>

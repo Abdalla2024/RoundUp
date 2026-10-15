@@ -67,7 +67,7 @@ describe("Saved scenarios screen", () => {
     del.mockResolvedValue(undefined);
     const { container } = renderWith(<SavedView />, { session: SESSION });
     await waitFor(() => screen.getByRole("button", { name: /^Delete / }));
-    expect(container.querySelector(".saved-item h2 bdi")?.textContent).toBe("\u202Eemoji");
+    expect(container.querySelector(".saved-card h2 bdi")?.textContent).toBe("\u202Eemoji");
     fireEvent.click(screen.getByRole("button", { name: /^Delete / }));
     fireEvent.click(screen.getByRole("button", { name: "Delete" }));
     await waitFor(() => expect(screen.getByRole("status").textContent).toBe(COPY.deleted("\u202Eemoji")));

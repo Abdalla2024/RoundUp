@@ -71,6 +71,9 @@ export const COPY = {
   checkNoRows: "This file has no rows below the header.",
   dateFormats: "Dates must look like 2024-01-31, or like 01/31/2024 (month first). A time after the date is not accepted.",
   // Typical spending (R-1.9, owner decision 2026-10-15): the user gives a weekly count and an average round-up; no random numbers.
+  diffSummary: (higher: boolean, amount: string) => `In this one made-up scenario, B ends ${amount} ${higher ? "higher" : "lower"} than A on the last day.`,
+  diffSame: "In this one made-up scenario, A and B end at the same value on the last day.",
+  scenarioChip: { "steady-growth": "Gradual rise", "crash-and-recovery": "Dip and back", "sideways": "Wanders about", "high-volatility": "Big swings" } as Record<string, string>,
   typicalTitle: "Typical spending",
   typicalDesc: "An estimate from averages: you tell us how many purchases you make in a typical week.",
   typicalEstimate: "This is an estimate based on averages. Real spending varies.",

@@ -3,12 +3,14 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { COPY } from "@/lib/copy";
-import { count, counted, dateRange, money } from "@/lib/format";
+import { count, counted, dateRange, longDate, money } from "@/lib/format";
 import type { SimulateRequest } from "@/lib/types";
 import { useAuth } from "./AuthContext";
 import { Disclaimer, ErrorNotice } from "./Chrome";
 import { KeyPoints } from "./KeyPoints";
-import { CashSentence, DipSentence, Headline, StatTiles } from "./ResultParts";
+import { CashSentence, CompositionStrip, DipSentence, Headline, StatTiles } from "./ResultParts";
+import { Num } from "./Num";
+import { Icon } from "./Icon";
 import { useRun } from "./RunContext";
 import { SignInForm } from "./SignIn";
 import { ValueChart } from "./ValueChart";
@@ -32,7 +34,7 @@ export function ResultsView() {
   const [error, setError] = useState<ApiError | null>(null);
 
   if (!run) {
-    return (<section className="card empty"><h1>No results yet</h1><p className="muted">Run a simulation first.</p>
+    return (<section className="card empty"><span className="empty-icon"><Icon name="trend" size={32} /></span><h1>No results yet</h1><p className="muted">Run a simulation first.</p>
       <Link className="btn btn-primary" href="/">Set up a simulation</Link></section>);
   }
   const { response, request, sample } = run;
@@ -68,14 +70,19 @@ export function ResultsView() {
       </ul>
       {request.typical && <p className="muted small" data-testid="typical-note">{COPY.typicalNote(String(request.typical.per_week), money(request.typical.average_roundup))}</p>}
       <Disclaimer sample={sample} />
-      {r.summary.contributed === "0.00"
-        ? <p className="headline">{r.transactions_used === "0" ? COPY.noneInWindow : COPY.wholeDollar}</p>
-        : <Headline result={r} sample={sample} />}
+      <section className="results-hero" aria-label="Result">
+        <p className="hero-label">Value at the end, {longDate(r.summary.as_of)}</p>
+        <Num className="hero-figure" text={money(r.summary.ending_value)} />
+        {r.summary.contributed === "0.00"
+          ? <p className="headline">{r.transactions_used === "0" ? COPY.noneInWindow : COPY.wholeDollar}</p>
+          : <Headline result={r} sample={sample} />}
+      </section>
       <StatTiles result={r} sample={sample} />
       {r.transactions_ignored !== "0" && <p className="muted" data-testid="not-counted">{COPY.notCounted(count(r.transactions_ignored))}</p>}
-      <ValueChart result={r} title="Value over time" />
-      <DipSentence dip={r.summary.deepest_dip} />
-      <CashSentence result={r} />
+      <CompositionStrip result={r} />
+      <div className="card chart-card"><ValueChart result={r} title="Value over time" />
+        <DipSentence dip={r.summary.deepest_dip} />
+        <CashSentence result={r} /></div>
 
       <h2 style={{ marginTop: 24 }}>Questions about these numbers</h2>
       <p className="small muted" data-testid="explainer-placeholder"><strong>Coming later:</strong> {COPY.explainer}</p>

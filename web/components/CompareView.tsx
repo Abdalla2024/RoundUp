@@ -3,9 +3,10 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { COPY } from "@/lib/copy";
-import { count, dateRange, money, signedMoney } from "@/lib/format";
+import { count, dateRange, isNegative, money, signedMoney, unsignedMoney } from "@/lib/format";
 import type { Strategy } from "@/lib/types";
 import { Disclaimer, ErrorNotice } from "./Chrome";
+import { Icon } from "./Icon";
 import { KeyPoints } from "./KeyPoints";
 import { DipSentence } from "./ResultParts";
 import { useRun } from "./RunContext";
@@ -42,7 +43,7 @@ export function CompareView() {
   const [coolingDown, noteRateLimit] = useRateLimitWait();     // reviewer L2
 
   if (!run) {
-    return (<section className="card empty"><h1>Compare two ways of investing</h1>
+    return (<section className="card empty"><span className="empty-icon"><Icon name="layers" size={32} /></span><h1>Compare two ways of investing</h1>
       <p className="muted">{COPY.compareEmpty}</p>
       <Link className="btn btn-primary" href="/">Set up a simulation</Link></section>);
   }
@@ -83,10 +84,12 @@ export function CompareView() {
       {error && <ErrorNotice message={error.message} requestId={error.requestId} />}
       {C && req && (<>
         <div style={{ marginTop: 24 }}><Disclaimer sample={compare!.sample} /></div>
+        <div className="diff-summary" data-testid="diff-summary"><Icon name="info" size={24} />
+          <p>{C.difference.ending_value === "0.00" ? COPY.diffSame : COPY.diffSummary(!isNegative(C.difference.ending_value), unsignedMoney(C.difference.ending_value))}</p></div>
         <div className="compare-grid">
-          <div className="card"><h2 className="col-head"><span className="key" style={{ background: "var(--series-1)" }} aria-hidden="true" />A</h2>
+          <div className="card"><h2 className="col-head"><span className="key" style={{ background: "var(--series-a)" }} aria-hidden="true" />A</h2>
             <p style={{ margin: 0 }}>{COPY.strategy[req.a.strategy]}. {COPY.dividends(req.a.reinvest)}.</p></div>
-          <div className="card"><h2 className="col-head"><span className="key" style={{ background: "var(--series-2)" }} aria-hidden="true" />B</h2>
+          <div className="card"><h2 className="col-head"><span className="key" style={{ background: "var(--series-b)" }} aria-hidden="true" />B</h2>
             <p style={{ margin: 0 }}>{COPY.strategy[req.b.strategy]}. {COPY.dividends(req.b.reinvest)}.</p></div>
         </div>
         <div className="table-scroll" style={{ maxHeight: "none" }} role="region" aria-label="Comparison table" tabIndex={0}>
@@ -97,8 +100,8 @@ export function CompareView() {
         <p className="small muted" style={{ marginTop: 8 }}>{COPY.compareNote}</p>
         <h2 style={{ marginTop: 24 }}>Value over time</h2>
         <div className="multiples">
-          <ValueChart result={C.a} title={`A: ${COPY.strategy[req.a.strategy].toLowerCase()}`} yTop={top} small label="A" level={3} />
-          <ValueChart result={C.b} title={`B: ${COPY.strategy[req.b.strategy].toLowerCase()}`} yTop={top} small label="B" color="var(--series-2)" level={3} />
+          <div className="card"><ValueChart result={C.a} title={`A: ${COPY.strategy[req.a.strategy].toLowerCase()}`} yTop={top} small label="A" level={3} /></div>
+          <div className="card"><ValueChart result={C.b} title={`B: ${COPY.strategy[req.b.strategy].toLowerCase()}`} yTop={top} small label="B" color="var(--series-b)" level={3} /></div>
         </div>
         <DipSentence dip={C.a.summary.deepest_dip} who="A" />
         <DipSentence dip={C.b.summary.deepest_dip} who="B" />

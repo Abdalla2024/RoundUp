@@ -53,6 +53,63 @@ test("typical spending: a weekly count outside 1 to 60 is explained and focuses 
   await expect(page).toHaveURL(/\/$/);
 });
 
+test("theme: the system setting decides until the person chooses; the choice survives a reload", async ({ browser }) => {
+  const ctx = await browser.newContext({ colorScheme: "dark" });
+  const page = await ctx.newPage();
+  const bg = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  await page.goto("/");
+  expect(await bg()).toBe("rgb(10, 16, 32)");                                      // system dark: the dark token --bg (#0A1020)
+  const toggle = page.getByRole("button", { name: /^Colour theme:/ });
+  await expect(toggle).toHaveAccessibleName("Colour theme: the system setting. Change to light.");
+  await toggle.click();
+  expect(await bg()).toBe("rgb(244, 246, 251)");                                   // chosen light, although the system is dark
+  await page.reload();
+  expect(await bg()).toBe("rgb(244, 246, 251)");                                   // remembered, applied before paint
+  await page.getByRole("button", { name: /^Colour theme:/ }).click();              // dark
+  await page.getByRole("button", { name: /^Colour theme:/ }).click();              // back to the system setting
+  await page.reload();
+  expect(await bg()).toBe("rgb(10, 16, 32)");
+  await ctx.close();
+});
+
+test("reduced motion: the digit roll and the skeleton shimmer are switched off; otherwise they run", async ({ browser }) => {
+  for (const [reduce, expected] of [["reduce", "none"], ["no-preference", "roll"]] as const) {
+    const ctx = await browser.newContext({ reducedMotion: reduce });
+    const page = await ctx.newPage();
+    await page.goto("/");
+    await page.getByRole("button", { name: "Run simulation" }).click();
+    await page.waitForURL("**/results");
+    await page.locator(".hero-figure .roll").first().waitFor();
+    const name = await page.locator(".hero-figure .roll").first().evaluate((el) => getComputedStyle(el, "::before").animationName);
+    expect(name).toBe(expected);
+    await ctx.close();
+  }
+});
+
+test("setup: the scenario cards draw their shapes, and the progress rail follows the page", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".scenario .spark")).toHaveCount(4);
+  await expect(page.locator(".rail li[data-state='current']")).toContainText("Your purchases");
+  await page.evaluate(() => document.getElementById("step-3")!.scrollIntoView({ block: "start" }));
+  await expect(page.locator(".rail li[data-state='current']")).toContainText("How round-ups are invested");
+  await expect(page.locator(".rail li[data-state='done']")).toHaveCount(2);
+});
+
+test("results: the hero figure is the engine's end value and the composition strip shows what it is made of", async ({ page }) => {
+  await runSample(page);
+  const text = await page.locator(".hero-figure").innerText();
+  expect(text.replace(/\s+/g, "")).toMatch(/^\$[\d,]+\.\d{2}$/);
+  await expect(page.locator(".results-hero .headline")).toContainText(text.replace(/\s+/g, ""));
+  await expect(page.getByTestId("composition")).toContainText("Invested in shares");
+});
+
+test("compare: a neutral difference line sits above the two coloured strategy cards", async ({ page }) => {
+  await runSample(page);
+  await page.getByRole("link", { name: "Compare with another way of investing" }).click();
+  await page.getByRole("button", { name: "Compare" }).click();
+  await expect(page.getByTestId("diff-summary")).toContainText(/In this one made-up scenario, B ends \$[\d,]+\.\d{2} (higher|lower) than A on the last day\./);
+});
+
 test("compare: two strategies side by side", async ({ page }) => {
   await runSample(page);
   await page.getByRole("link", { name: "Compare with another way of investing" }).click();

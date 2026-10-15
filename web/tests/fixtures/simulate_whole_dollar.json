@@ -32,6 +32,28 @@
     "dividends_as_cash": "0.00",
     "receivables": "0.00",
     "ending_value": "0.00",
+    "composition": [
+     {
+      "key": "shares",
+      "amount": "0.00",
+      "share_bp": 0
+     },
+     {
+      "key": "roundups_waiting",
+      "amount": "0.00",
+      "share_bp": 0
+     },
+     {
+      "key": "dividends_as_cash",
+      "amount": "0.00",
+      "share_bp": 0
+     },
+     {
+      "key": "receivables",
+      "amount": "0.00",
+      "share_bp": 0
+     }
+    ],
     "gain": "0.00",
     "gain_pct": "n/a",
     "as_of": "2024-12-31",

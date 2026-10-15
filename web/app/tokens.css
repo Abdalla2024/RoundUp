@@ -1,0 +1,95 @@
+/* GENERATED from tokens.json by tools/gen-tokens-css.mjs. Do not edit by hand (run: npm run tokens). */
+:root {
+  color-scheme: light;
+  --bg: #F4F6FB;
+  --surface: #FFFFFF;
+  --teal-tint: #E3F5F1;
+  --indigo-tint: #ECEEFC;
+  --ink: #0E1A3B;
+  --ink2: #475069;
+  --line: #D5DCEB;
+  --control: #6F7B96;
+  --primary: #4338CA;
+  --on-primary: #FFFFFF;
+  --accent: #0F766E;
+  --accent-vivid: #14B8A6;
+  --on-accent: #FFFFFF;
+  --link: #4338CA;
+  --focus: #4338CA;
+  --amber-bg: #FFF3D1;
+  --amber-line: #B45309;
+  --amber-ink: #3D2A00;
+  --hero-from: #1E1B6E;
+  --hero-to: #0F766E;
+  --on-hero: #FFFFFF;
+  --on-hero2: #F5F7FF;
+  --series-a: #0F766E;
+  --series-b: #4338CA;
+  --added: #475069;
+  --danger: #B42318;
+  --danger-bg: #FDECEA;
+}
+/* the system setting, unless the person chose light explicitly */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0A1020;
+    --surface: #121A30;
+    --teal-tint: #0F2F2E;
+    --indigo-tint: #1B2250;
+    --ink: #E8ECF8;
+    --ink2: #A9B3CC;
+    --line: #263154;
+    --control: #7C89AB;
+    --primary: #818CF8;
+    --on-primary: #0A1020;
+    --accent: #2DD4BF;
+    --accent-vivid: #2DD4BF;
+    --on-accent: #0A1020;
+    --link: #A5B4FC;
+    --focus: #A5B4FC;
+    --amber-bg: #2B2208;
+    --amber-line: #D9A441;
+    --amber-ink: #FBE7B4;
+    --hero-from: #1E1B6E;
+    --hero-to: #0F766E;
+    --on-hero: #FFFFFF;
+    --on-hero2: #F5F7FF;
+    --series-a: #2DD4BF;
+    --series-b: #A5B4FC;
+    --added: #A9B3CC;
+    --danger: #FDA29B;
+    --danger-bg: #3A1512;
+  }
+}
+/* dark chosen explicitly with the toggle */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0A1020;
+  --surface: #121A30;
+  --teal-tint: #0F2F2E;
+  --indigo-tint: #1B2250;
+  --ink: #E8ECF8;
+  --ink2: #A9B3CC;
+  --line: #263154;
+  --control: #7C89AB;
+  --primary: #818CF8;
+  --on-primary: #0A1020;
+  --accent: #2DD4BF;
+  --accent-vivid: #2DD4BF;
+  --on-accent: #0A1020;
+  --link: #A5B4FC;
+  --focus: #A5B4FC;
+  --amber-bg: #2B2208;
+  --amber-line: #D9A441;
+  --amber-ink: #FBE7B4;
+  --hero-from: #1E1B6E;
+  --hero-to: #0F766E;
+  --on-hero: #FFFFFF;
+  --on-hero2: #F5F7FF;
+  --series-a: #2DD4BF;
+  --series-b: #A5B4FC;
+  --added: #A9B3CC;
+  --danger: #FDA29B;
+  --danger-bg: #3A1512;
+}
