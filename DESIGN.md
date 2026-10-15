@@ -137,3 +137,37 @@ Used in tooltips, the assumptions panel and "How this works". The AI explainer i
 | Hindsight bias | We picked these funds knowing they are popular today, which makes the past look more predictable than it was. |
 | Data as of | The most recent market day included in these numbers. |
 | Uninvested cash | Round-ups waiting for their investment day. They count at face value and earn nothing here. |
+
+## 10. Stage 6 redesign: direction and spec (2026-10-15)
+
+**Goal:** modern, sleek, friendly and colourful, still calm and trustworthy, with every disclaimer visible. WCAG 2.2 AA throughout.
+
+### Palette (hex values are in `web/app/tokens.json`; `node web/tools/contrast.mjs` prints every ratio, and `web/tests/contrast.test.ts` fails the build if any pair drops below its minimum)
+
+| Role | Light | Dark |
+|---|---|---|
+| Page / card | `#F4F6FB` / `#FFFFFF` | `#0A1020` / `#121A30` |
+| Ink (deep navy) / secondary ink | `#0E1A3B` / `#475069` | `#E8ECF8` / `#A9B3CC` |
+| Primary (indigo): buttons, links, focus | `#4338CA` (white text) | `#818CF8` (dark text); links/focus `#A5B4FC` |
+| Accent (teal): value line, success, icons | `#0F766E` (text and fills), `#14B8A6` (decorative fills) | `#2DD4BF` |
+| Soft tints | teal `#E3F5F1`, indigo `#ECEEFC` | teal `#0F2F2E`, indigo `#1B2250` |
+| Amber (warnings and notes only) | bg `#FFF3D1`, border `#B45309`, text `#3D2A00` | bg `#2B2208`, border `#D9A441`, text `#FBE7B4` |
+| Hero gradient (header only) | `#1E1B6E` to `#0F766E`, white text | same |
+
+Measured contrast (light / dark): body text on page 15.80 / 16.05; on card 17.08 / 14.62; secondary text on card 8.02 / 8.23; links on card 7.90 / 8.66; primary button text 7.90 / 6.35; accent button text 5.47 / 10.18; hero text on the lightest gradient end 5.47 and 5.12; amber note text 12.42 / 12.88; error text 5.75 / 8.35; control borders on card 4.24 / 4.95 (needs 3); focus ring on card 7.90 / 8.66 (needs 3); chart lines on card: value 5.47 / 9.28, strategy B 7.90 / 8.66, round-ups added 8.02 / 8.23 (need 3). All 48 pairs pass. (The first draft failed one: secondary hero text at 4.44, changed to `#F5F7FF`, now 5.12.)
+
+### Type
+One self-hosted sans, **Manrope** (variable, loaded with `next/font/google`: downloaded at build time and served from our own origin, so no request to a font server at run time), tabular figures for every number. Scale: hero heading clamp(32 to 52 px)/1.1/800; page title 32/1.15/800; section 24/1.25/700; card title 18/1.3/700; body 16/1.55/500; small 14/1.5; axis and captions 12; hero figure clamp(40 to 64 px)/1/800; stat figure 28/1.1/800. Spacing on a 4 px grid (4, 8, 12, 16, 24, 32, 48, 64). Radii: controls 12, cards 20, hero 28, chips 999. Soft shadows in light mode, 1 px borders in dark.
+
+### Components
+Header (logo mark, nav, theme toggle: system by default, explicit override remembered) · hero with one call to action · sticky **progress rail** for the four setup steps (done / current / to do; one page, not a wizard, so every choice stays visible and keyboard order stays simple) · choice cards (radio cards with icons) · **scenario cards** with a coloured chip and a **sparkline of the model's own shape** (computed by the scenario generator, passed through the API, drawn as an SVG that screen readers skip) · large aligned inputs (equal heights, baseline-aligned labels) · weekly-purchases slider with its explanation beside it · tucked-away "adjust" disclosure · results hero figure with a **digit-roll count-up** (CSS only, no arithmetic on money, off under reduced motion) · stat cards with icons · **composition strip** · area chart · compare strategy cards with a "difference" summary · saved-scenario cards · skeleton loaders · friendly empty and error states · amber note for disclaimers · assumptions panel · footer. One icon set: 24 px stroke icons drawn for this project, inline SVG, `aria-hidden`, never the only carrier of meaning.
+
+### Chart style
+Area chart with a soft gradient fill under the **value** line (teal), a dashed **round-ups added** line (slate-indigo), one axis starting at $0, recessive grid, no animation. Compare: two small multiples on a shared scale, A teal and B indigo, each labelled A or B so colour is never the only cue. A table and a text summary stay for every chart.
+
+### Where I changed your direction, and why
+1. **"Colour-coded strip splitting contributions, growth, dividends and cash waiting"** becomes a strip showing **what the end value is made of**: shares, round-ups waiting, dividends kept as cash (the parts always add up to the end value). Growth can be negative, which a split cannot show honestly, and the widths must come from the engine, not the browser. The shares are computed in the engine (rule R-13.3, with golden cases and an independent cross-check).
+2. **Guided stepper** is one page with a sticky progress rail rather than a hide-and-reveal wizard: fewer clicks, nothing hidden, simpler keyboard and screen-reader use.
+3. **Count-up** rolls the digits of the engine's own figure (CSS) instead of interpolating numbers, because the browser must never calculate a money figure.
+4. **Sparklines** are drawn from the scenario model itself, not hand-drawn lookalikes, so they cannot misrepresent a scenario.
+5. **Amber** stays for warnings and notes only (the disclaimer note, errors that need attention); the colourful accents are teal and indigo.
