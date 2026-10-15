@@ -1,0 +1,31 @@
+- link "Skip to main content":
+  - /url: "#main"
+- banner:
+  - link "RoundUp":
+    - /url: /
+  - navigation "Main":
+    - link "New simulation":
+      - /url: /
+    - link "Compare":
+      - /url: /compare
+    - link "Saved scenarios":
+      - /url: /saved
+    - link "How this works":
+      - /url: /how
+    - link "Sign in":
+      - /url: /saved
+  - 'button "Colour theme: the system setting. Change to light."'
+  - paragraph: Synthetic scenario. Not a real fund, not real prices, and not a forecast.
+- main:
+  - heading "No results yet" [level=1]
+  - paragraph: Run a simulation first.
+  - link "Set up a simulation":
+    - /url: /
+- contentinfo:
+  - text: RoundUp is an educational demo. No money moves and nothing here is advice or a forecast.
+  - link "Privacy":
+    - /url: /privacy
+  - text: ·
+  - link "How this works":
+    - /url: /how
+- alert

@@ -1,0 +1,139 @@
+- link "Skip to main content":
+  - /url: "#main"
+- banner:
+  - link "RoundUp":
+    - /url: /
+  - navigation "Main":
+    - link "New simulation":
+      - /url: /
+    - link "Compare":
+      - /url: /compare
+    - link "Saved scenarios":
+      - /url: /saved
+    - link "How this works":
+      - /url: /how
+    - link "Sign in":
+      - /url: /saved
+  - 'button "Colour theme: the system setting. Change to light."'
+  - paragraph: Synthetic scenario. Not a real fund, not real prices, and not a forecast.
+- main:
+  - region "See how spare change behaves in a made-up market":
+    - paragraph: An educational demo
+    - heading "See how spare change behaves in a made-up market" [level=1]
+    - paragraph: "Say how many purchases you make in a typical week, pick a made-up market, and watch the round-ups add up. Everything here is an estimate on made-up prices: no real money, no real funds, no advice."
+    - link "Start a simulation":
+      - /url: "#step-1"
+    - link "How this works":
+      - /url: /how
+  - navigation "Progress":
+    - list:
+      - listitem:
+        - 'link "1 Step 1 of 4: Your purchases"':
+          - /url: "#step-1"
+      - listitem:
+        - 'link "2 Step 2 of 4: Market scenario"':
+          - /url: "#step-2"
+      - listitem:
+        - 'link "3 Step 3 of 4: How round-ups are invested"':
+          - /url: "#step-3"
+      - listitem:
+        - 'link "4 Step 4 of 4: Dates"':
+          - /url: "#step-4"
+  - alert:
+    - paragraph: "Choose how amounts are signed in this file, in the box named “How are amounts signed?”. Your options are: “Purchases are positive numbers”, “Purchases are negative numbers”, “Money out and money in columns”, or “A column says debit or credit”."
+  - group "Step 1 of 4 Your purchases":
+    - text: Step 1 of 4 Your purchases
+    - paragraph: Round-ups come from purchases. Use sample spending, or upload a CSV export from your bank. Uploaded files are read in your session and not stored.
+    - 'radio "Typical spending An estimate from averages: you tell us how many purchases you make in a typical week."'
+    - text: "Typical spending An estimate from averages: you tell us how many purchases you make in a typical week."
+    - radio "Upload a CSV You choose which columns hold the date and amount. Merchant names are never stored." [checked]
+    - text: Upload a CSV You choose which columns hold the date and amount. Merchant names are never stored. CSV file (up to 2 MB)
+    - button "CSV file (up to 2 MB)"
+    - text: How are amounts signed?
+    - combobox "How are amounts signed?" [invalid]:
+      - option "Choose how amounts are signed" [selected]
+      - option "Purchases are positive numbers"
+      - option "Purchases are negative numbers"
+      - option "Money out and money in columns"
+      - option "A column says debit or credit"
+    - paragraph: Banks write purchases in different ways. Look at one purchase in your file. If it is a positive number (like 6.16), choose “Purchases are positive numbers”. If it has a minus sign (like -6.16), choose “Purchases are negative numbers”. If money out and money in are in two columns, or a column says debit or credit, choose the matching option. Choose one of the four options.
+    - group "Choose columns":
+      - text: Date column
+      - combobox "Date column":
+        - option "(none)"
+        - option "Date" [selected]
+        - option "Description"
+        - option "Amount"
+        - option "Status"
+      - text: Amount column
+      - combobox "Amount column":
+        - option "(none)"
+        - option "Date"
+        - option "Description"
+        - option "Amount" [selected]
+        - option "Status"
+      - text: Status column (optional)
+      - combobox "Status column (optional)":
+        - option "(none)"
+        - option "Date"
+        - option "Description"
+        - option "Amount"
+        - option "Status" [selected]
+      - text: Description column (optional)
+      - combobox "Description column (optional)":
+        - option "(none)"
+        - option "Date"
+        - option "Description" [selected]
+        - option "Amount"
+        - option "Status"
+    - paragraph:
+      - button "Check this file"
+  - group "Step 2 of 4 Market scenario":
+    - text: Step 2 of 4 Market scenario
+    - paragraph:
+      - text: Every scenario is made up by a published model, so you can see how round-ups behave in different kinds of made-up markets.
+      - strong: Synthetic scenario. Not a real fund, not real prices, and not a forecast.
+    - radio "Steady growth Gradual rise A synthetic market that rises gradually, with small day-to-day moves."
+    - text: Steady growth Gradual rise A synthetic market that rises gradually, with small day-to-day moves.
+    - radio "Crash and recovery Dip and back A synthetic market that grows, falls sharply over a few months, then recovers." [checked]
+    - text: Crash and recovery Dip and back A synthetic market that grows, falls sharply over a few months, then recovers.
+    - 'radio "Sideways Wanders about A synthetic market with no overall trend: prices wander up and down."'
+    - text: "Sideways Wanders about A synthetic market with no overall trend: prices wander up and down."
+    - radio "High volatility Big swings A synthetic market with large daily swings in both directions."
+    - text: High volatility Big swings A synthetic market with large daily swings in both directions.
+    - paragraph: Style
+    - radiogroup "Style":
+      - 'radio "Broad-market style In this model: smaller dividends, slightly higher price drift." [checked]'
+      - text: "Broad-market style In this model: smaller dividends, slightly higher price drift."
+      - 'radio "Dividend style In this model: larger dividends, slightly lower price drift."'
+      - text: "Dividend style In this model: larger dividends, slightly lower price drift."
+  - group "Step 3 of 4 How round-ups are invested":
+    - text: Step 3 of 4 How round-ups are invested
+    - paragraph: All four are equally valid to explore. Comparing them is the point.
+    - radio "When they reach $5 Starting setting Saved-up round-ups are invested once they add up to $5." [checked]
+    - text: When they reach $5 Starting setting Saved-up round-ups are invested once they add up to $5.
+    - radio "After every purchase day Each day’s round-ups are invested on the next trading day."
+    - text: After every purchase day Each day’s round-ups are invested on the next trading day.
+    - radio "Once a week The week’s round-ups are invested after Sunday."
+    - text: Once a week The week’s round-ups are invested after Sunday.
+    - radio "Once a month The month’s round-ups are invested after the month ends."
+    - text: Once a month The month’s round-ups are invested after the month ends.
+    - checkbox "Reinvest dividends Use dividend cash to buy more of the same scenario’s shares on the day it is paid. Turn off to keep it as cash." [checked]
+    - text: Reinvest dividends Use dividend cash to buy more of the same scenario’s shares on the day it is paid. Turn off to keep it as cash.
+  - group "Step 4 of 4 Dates":
+    - text: Step 4 of 4 Dates
+    - paragraph: This scenario runs from Jan 3, 2012 to Sep 30, 2026. Scenario dates follow a real calendar, but the prices are made up.
+    - text: Start date
+    - textbox "Start date": 2015-01-02
+    - text: End date
+    - textbox "End date": 2024-12-31
+  - button "Run simulation"
+  - text: Nothing is saved unless you sign in and choose Save.
+- contentinfo:
+  - text: RoundUp is an educational demo. No money moves and nothing here is advice or a forecast.
+  - link "Privacy":
+    - /url: /privacy
+  - text: ·
+  - link "How this works":
+    - /url: /how
+- alert

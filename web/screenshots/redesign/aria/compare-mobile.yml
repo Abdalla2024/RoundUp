@@ -1,0 +1,157 @@
+- link "Skip to main content":
+  - /url: "#main"
+- banner:
+  - link "RoundUp":
+    - /url: /
+  - navigation "Main":
+    - link "New simulation":
+      - /url: /
+    - link "Compare":
+      - /url: /compare
+    - link "Saved scenarios":
+      - /url: /saved
+    - link "How this works":
+      - /url: /how
+    - link "Sign in":
+      - /url: /saved
+  - 'button "Colour theme: the system setting. Change to light."'
+  - paragraph: Synthetic scenario. Not a real fund, not real prices, and not a forecast.
+- main:
+  - complementary:
+    - region "Key points":
+      - heading "Key points" [level=2]
+      - list:
+        - listitem:
+          - strong: Made-up prices.
+          - text: The scenario is invented. It is not a real fund or a real market.
+        - listitem:
+          - strong: Not a forecast.
+          - text: It says nothing about what any market will do.
+        - listitem:
+          - strong: No fees included.
+          - text: Real round-up apps may charge fees that matter a lot for small balances.
+        - listitem:
+          - strong: Not advice.
+          - text: Nothing here suggests what you should do with your money.
+      - group: All assumptions (12)
+  - heading "Compare two ways of investing" [level=1]
+  - paragraph: Same sample purchases, same synthetic scenario (crash and recovery, broad-market style, Jan 2, 2015 – Dec 31, 2024). Only the settings below differ. Scenario dates follow a real calendar, but the prices are made up.
+  - group "A How round-ups are invested":
+    - text: A How round-ups are invested
+    - radio "Invest each time round-ups reach $5" [checked]
+    - text: Invest each time round-ups reach $5
+    - radio "Invest after every purchase day"
+    - text: Invest after every purchase day
+    - radio "Invest once a week"
+    - text: Invest once a week
+    - radio "Invest once a month"
+    - text: Invest once a month
+    - checkbox "Reinvest dividends" [checked]
+    - text: Reinvest dividends
+  - group "B How round-ups are invested":
+    - text: B How round-ups are invested
+    - radio "Invest each time round-ups reach $5"
+    - text: Invest each time round-ups reach $5
+    - radio "Invest after every purchase day"
+    - text: Invest after every purchase day
+    - radio "Invest once a week"
+    - text: Invest once a week
+    - radio "Invest once a month" [checked]
+    - text: Invest once a month
+    - checkbox "Reinvest dividends"
+    - text: Reinvest dividends
+  - button "Compare"
+  - note:
+    - paragraph:
+      - strong: Hypothetical simulation on a synthetic market.
+      - text: These results show how sample round-ups behave in a made-up market scenario. No money was invested, the prices are not real, and this is not a forecast. It is not investment, tax or financial advice.
+  - paragraph: In this one made-up scenario, B ends $91.91 lower than A on the last day.
+  - heading "A" [level=2]
+  - paragraph: Invest each time round-ups reach $5. Dividends reinvested.
+  - heading "B" [level=2]
+  - paragraph: Invest once a month. Dividends kept as cash.
+  - region "Comparison table":
+    - table "Results for A and B, and B minus A":
+      - caption: Results for A and B, and B minus A
+      - rowgroup:
+        - row "Figure A B B minus A":
+          - columnheader "Figure"
+          - columnheader "A"
+          - columnheader "B"
+          - columnheader "B minus A"
+      - rowgroup:
+        - row "Round-ups added A $2,608.50 B $2,608.50 B minus A same for both":
+          - rowheader "Round-ups added"
+          - cell "A $2,608.50"
+          - cell "B $2,608.50"
+          - cell "B minus A same for both"
+        - row "Value at end A $4,295.37 B $4,203.46 B minus A −$91.91":
+          - rowheader "Value at end"
+          - cell "A $4,295.37"
+          - cell "B $4,203.46"
+          - cell "B minus A −$91.91"
+        - row "Growth on round-ups A +$1,686.87 B +$1,594.96 B minus A −$91.91":
+          - rowheader "Growth on round-ups"
+          - cell "A +$1,686.87"
+          - cell "B +$1,594.96"
+          - cell "B minus A −$91.91"
+        - row "Dividends (simulated) A $270.54 B $255.22 B minus A −$15.32":
+          - rowheader "Dividends (simulated)"
+          - cell "A $270.54"
+          - cell "B $255.22"
+          - cell "B minus A −$15.32"
+        - row "Round-ups waiting to be invested A $3.50 B $22.00 B minus A see A and B":
+          - rowheader "Round-ups waiting to be invested"
+          - cell "A $3.50"
+          - cell "B $22.00"
+          - cell "B minus A see A and B"
+        - row "Dividends kept as cash A $0.00 B $255.22 B minus A see A and B":
+          - rowheader "Dividends kept as cash"
+          - cell "A $0.00"
+          - cell "B $255.22"
+          - cell "B minus A see A and B"
+        - row "Times invested from round-ups A 521 B 119 B minus A −402":
+          - rowheader "Times invested from round-ups"
+          - cell "A 521"
+          - cell "B 119"
+          - cell "B minus A −402"
+        - row "Times invested from dividends A 40 B 0 B minus A −40":
+          - rowheader "Times invested from dividends"
+          - cell "A 40"
+          - cell "B 0"
+          - cell "B minus A −40"
+  - paragraph: Both use the same round-ups, so “B minus A” is the same for value at end and for growth on round-ups. Cash waiting and dividends kept as cash are part of the value at end. These differences come from this one made-up scenario and say nothing about which choice works better in general.
+  - heading "Value over time" [level=2]
+  - 'figure "A: invest each time round-ups reach $5"':
+    - 'heading "A: invest each time round-ups reach $5" [level=3]'
+    - 'group "A: invest each time round-ups reach $5. To read values with the keyboard, select the chart, then use the arrow keys, Home, End, Page Up and Page Down."':
+      - 'img "A: invest each time round-ups reach $5"': 2015 2019 2024 $0 $1,500 $3,000 $5,000
+    - paragraph
+    - text: Chart shows daily values for ranges up to 366 days and one value per week (the week's last trading day) for longer ranges. All figures are calculated daily. Scenario dates follow a real calendar, but the prices are made up.
+    - paragraph: From Jan 2, 2015 to Dec 31, 2024 the value goes from $1.00 to $4,295.37, with ups and downs in between, while the round-ups added go from $1.00 to $2,608.50.
+    - paragraph: To read values with the keyboard, select the chart, then use the arrow keys, Home, End, Page Up and Page Down.
+    - button "Show the chart as a table"
+  - 'figure "B: invest once a month"':
+    - 'heading "B: invest once a month" [level=3]'
+    - 'group "B: invest once a month. To read values with the keyboard, select the chart, then use the arrow keys, Home, End, Page Up and Page Down."':
+      - 'img "B: invest once a month"': 2015 2019 2024 $0 $1,500 $3,000 $5,000
+    - paragraph
+    - text: Chart shows daily values for ranges up to 366 days and one value per week (the week's last trading day) for longer ranges. All figures are calculated daily. Scenario dates follow a real calendar, but the prices are made up.
+    - paragraph: From Jan 2, 2015 to Dec 31, 2024 the value goes from $1.00 to $4,203.46, with ups and downs in between, while the round-ups added go from $1.00 to $2,608.50.
+    - paragraph: To read values with the keyboard, select the chart, then use the arrow keys, Home, End, Page Up and Page Down.
+    - button "Show the chart as a table"
+  - paragraph:
+    - strong: "A, lowest point compared with money put in:"
+    - text: on Nov 6, 2017 the value was $500.83, which was $242.17 below the $743.00 of round-ups added by then.
+  - paragraph:
+    - strong: "B, lowest point compared with money put in:"
+    - text: on Nov 6, 2017 the value was $505.81, which was $237.19 below the $743.00 of round-ups added by then.
+  - paragraph: Both charts use the same scale. The dashed line is the round-ups added so far.
+- contentinfo:
+  - text: RoundUp is an educational demo. No money moves and nothing here is advice or a forecast.
+  - link "Privacy":
+    - /url: /privacy
+  - text: ·
+  - link "How this works":
+    - /url: /how
+- alert: Compare two ways of investing · RoundUp
