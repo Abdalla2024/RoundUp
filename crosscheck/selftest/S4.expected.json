@@ -17,7 +17,29 @@
   "gain": "0.00",
   "gain_pct": "0.00",
   "as_of": "2024-02-02",
-  "deepest_dip": null
+  "deepest_dip": null,
+  "composition": [
+   {
+    "key": "shares",
+    "amount": "0.50",
+    "share_bp": 4167
+   },
+   {
+    "key": "roundups_waiting",
+    "amount": "0.70",
+    "share_bp": 5833
+   },
+   {
+    "key": "dividends_as_cash",
+    "amount": "0.00",
+    "share_bp": 0
+   },
+   {
+    "key": "receivables",
+    "amount": "0.00",
+    "share_bp": 0
+   }
+  ]
  },
  "buys": [
   {

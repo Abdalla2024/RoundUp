@@ -118,6 +118,27 @@ def shares_str(x):
     return fmt(x, 6)
 
 
+COMPOSITION_KEYS = ("shares", "roundups_waiting", "dividends_as_cash", "receivables")
+
+
+def composition(*parts):
+    """R-13.4: four exact parts -> [{"key", "amount", "share_bp"}] (largest-remainder basis points)."""
+    assert len(parts) == 4
+    total = sum(parts, Fraction(0))
+    if total <= 0:
+        bps = [0, 0, 0, 0]
+    else:
+        exact = [p * 10000 / total for p in parts]
+        bps = [e.numerator // e.denominator for e in exact]
+        rem = [e - b for e, b in zip(exact, bps)]
+        # leftover points: largest remainder first, earlier part first on ties
+        order = sorted(range(4), key=lambda i: (-rem[i], i))
+        for i in order[:10000 - sum(bps)]:
+            bps[i] += 1
+    return [{"key": k, "amount": money(p), "share_bp": b}
+            for k, p, b in zip(COMPOSITION_KEYS, parts, bps)]
+
+
 def jump(a, b):
     return max(a / b, b / a)
 
@@ -453,6 +474,7 @@ def run(sc):
         "deepest_dip": None if dip is None else {
             "date": dip[1].isoformat(), "value": money(dip[2]),
             "added": money(dip[3]), "below_by": money(dip[0])},
+        "composition": composition(holdings, rcash, dcash, recv),
     }
     return {"status": "ok", "error_code": None, "summary": summary, "buys": buys,
             "series": series, "transactions_used": str(len(used)),

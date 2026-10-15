@@ -422,3 +422,44 @@ case(typical_scenario("G-55-typical-maximum", TYP_CAL, TYP_FLAT, 60, "0.99", "th
 case(typical_scenario("G-56-typical-quarter", TYP_CAL, TYP_FLAT, 10, "0.25", "threshold", "2024-01-01", "2024-01-28",
                       description="A 25-cent average: 10 a week for 4 weeks contributes $10.00", covers=["R-1.9"]),
      summary={"contributed": "10.00"}, transactions_used="40", transactions_ignored="0")
+
+
+# ---------------------------------------------------------------- composition of the end value, R-13.4 (stage 6; hand-worked)
+def comp(sh, wa, dc, rc, bp):
+    """Expected composition list: amounts as display strings, shares in basis points."""
+    return [{"key": k, "amount": a, "share_bp": b} for k, a, b in
+            zip(("shares", "roundups_waiting", "dividends_as_cash", "receivables"), (sh, wa, dc, rc), bp)]
+
+# G-40 again (reinvest off): ending value 4.80 (0.5 sh x 9.60) + 0.20 dividend cash = 5.00 -> 9600, 0, 400, 0 basis points.
+case(scenario("G-60-composition-dividend-cash", JAN, DIV, TEN_HALVES, "next_session", "2024-01-02", "2024-01-31", reinvest=False,
+              dividends=[div("2024-01-10", "2024-01-12", "0.40")],
+              description="Composition: shares 4.80 and dividend cash 0.20 of 5.00", covers=["R-13.4"]),
+     summary={"composition": comp("4.80", "0.00", "0.20", "0.00", (9600, 0, 400, 0))})
+
+# G-41 again: shares 6.00 and 0.40 waiting of 6.40 -> 9375 and 625 basis points (both exact).
+case(scenario("G-61-composition-waiting", JAN, FLAT50,
+              repeat("2024-01-08", "5.20", 2) + repeat("2024-01-09", "5.20", 2) + repeat("2024-01-10", "5.20", 2)
+              + [tx("2024-01-12", "2.70"), tx("2024-01-12", "3.10"), tx("2024-01-13", "1.60")],
+              "threshold", "2024-01-02", "2024-01-31",
+              description="Composition: shares 6.00 and round-ups waiting 0.40 of 6.40", covers=["R-13.4"]),
+     summary={"composition": comp("6.00", "0.40", "0.00", "0.00", (9375, 625, 0, 0))})
+
+# Mon 01-08 4.37 -> 0.63 bought Tue; Tue 01-09 3.10 -> 0.90 bought Wed; Wed 01-10 2.20 -> 0.80 would be bought Thu, after the window:
+# waiting. Price flat 50. Ending value 0.63 + 0.90 + 0.80 = 2.33: shares 1.53, waiting 0.80. 1.53/2.33 = 6566.52 and 0.80/2.33 = 3433.47
+# basis points; the floors 6566 and 3433 leave 1, which goes to the larger remainder (.52 against .47): 6567 and 3433.
+case(scenario("G-62-composition-leftover-basis-point", JAN, FLAT50,
+              [tx("2024-01-08", "4.37"), tx("2024-01-09", "3.10"), tx("2024-01-10", "2.20")], "next_session", "2024-01-08", "2024-01-10",
+              description="Composition: the leftover basis point goes to the largest remainder", covers=["R-13.4"]),
+     summary={"ending_value": "2.33", "composition": comp("1.53", "0.80", "0.00", "0.00", (6567, 3433, 0, 0))})
+
+# TEN_HALVES bought Jan 9 (0.5 sh at 10.00); the 0.40 dividend (ex Jan 10) is paid Feb 5, after the window ends Jan 31: 0.20 receivable.
+# Ending value 0.5 x 9.60 + 0.20 = 5.00 -> shares 4.80 (9600), receivables 0.20 (400).
+case(scenario("G-63-composition-receivable", JAN, DIV, TEN_HALVES, "next_session", "2024-01-02", "2024-01-31",
+              dividends=[div("2024-01-10", "2024-02-05", "0.40")],
+              description="Composition: a dividend not yet paid at the end is a receivable", covers=["R-13.4"]),
+     summary={"composition": comp("4.80", "0.00", "0.00", "0.20", (9600, 0, 0, 400))})
+
+# A whole-dollar purchase adds nothing: ending value 0.00, so every share is 0.
+case(scenario("G-64-composition-nothing", JAN, FLAT50, [tx("2024-01-08", "4.00")], "next_session", "2024-01-08", "2024-01-31",
+              description="Composition: an ending value of $0 gives all-zero shares", covers=["R-13.4"]),
+     summary={"ending_value": "0.00", "composition": comp("0.00", "0.00", "0.00", "0.00", (0, 0, 0, 0))})

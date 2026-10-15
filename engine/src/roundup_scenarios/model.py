@@ -149,3 +149,44 @@ def get_published(scenario_id: str, style: str) -> ScenarioSeries:
         if s.meta["scenario_id"] == scenario_id and s.meta["style"] == style:
             return s
     raise KeyError((scenario_id, style))
+
+
+def _relative_samples(s: ScenarioSeries, points: int):
+    """`points` evenly spaced samples (first and last day included) of one share's value divided by its first value (exact fractions)."""
+    from fractions import Fraction
+    m = s.market
+    days = list(m.calendar)
+    value, factor, si = [], Fraction(1), 0
+    splits = sorted(m.splits, key=lambda x: x.ex_date)
+    for d in days:
+        while si < len(splits) and splits[si].ex_date <= d:
+            factor *= Fraction(splits[si].ratio)              # a split multiplies the shares held, so it never shows as a drop
+            si += 1
+        value.append(Fraction(m.closes.get(d, 0)) * factor)
+    n = len(days)
+    picked = [value[(i * (n - 1)) // (points - 1)] for i in range(points)]
+    return [v / picked[0] for v in picked]
+
+
+def shape(s: ScenarioSeries, points: int = 40) -> list[int]:
+    """A small picture of a scenario: `points` whole numbers from 0 to 100 (display only, stage 6).
+
+    Every published scenario is drawn on ONE shared vertical scale, so a gentle drift does not look like a crash: each series is the value of
+    one share held through the whole series (the close times the product of the split ratios so far) divided by its own first value; the
+    natural log of that ratio (a ratio is what "relative change" means) is drawn on one shared scale: the lowest across all published scenarios maps to 0 and the highest to 100 (rounded down). Exact fractions and Decimal, no floats. It draws a
+    sparkline on the scenario cards; it is never a price or a return.
+    """
+    return list(_all_shapes(points)[(s.meta["scenario_id"], s.meta["style"])])
+
+
+@lru_cache(maxsize=4)
+def _all_shapes(points: int) -> dict:
+    """Every published scenario's shape on the one shared scale (computed once)."""
+    def logs(sc):
+        with localcontext(CONTEXT):
+            return [(Decimal(x.numerator) / Decimal(x.denominator)).ln() for x in _relative_samples(sc, points)]    # ratios: a log scale
+    every = {(sc.meta["scenario_id"], sc.meta["style"]): logs(sc) for sc in published_scenarios()}
+    flat = [x for v in every.values() for x in v]
+    lo, hi = min(flat), max(flat)
+    with localcontext(CONTEXT):
+        return {k: tuple(int((x - lo) * 100 / (hi - lo)) for x in v) for k, v in every.items()}

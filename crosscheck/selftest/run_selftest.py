@@ -27,7 +27,7 @@ for p in sorted(glob.glob(os.path.join(HERE, "S*.json"))):
 # 1b. summary key order must follow the FORMAT.md example
 ORDER = ["contributed", "roundup_buys", "dividend_buys", "dividends_earned", "dividends_paid", "shares",
          "holdings_value", "uninvested_cash", "roundups_waiting", "dividends_as_cash", "receivables",
-         "ending_value", "gain", "gain_pct", "as_of", "deepest_dip"]
+         "ending_value", "gain", "gain_pct", "as_of", "deepest_dip", "composition"]
 check("summary key order", list(cc.run(json.load(open(os.path.join(HERE, "S5.json"))))["summary"]), ORDER)
 
 # 1c. deepest dip: exact comparison, earliest date on exact ties. Both days display below_by 0.01,
@@ -277,6 +277,55 @@ for strat in ["threshold", "next_session", "weekly", "monthly"]:
 ra = cc.run({"id": "x", "market": mk, "typical": {"per_week": "5", "average_roundup": "0.50"}, "config": cfg})
 check("typical run counts", [ra["status"], ra["transactions_used"], ra["transactions_ignored"], ra["summary"]["contributed"]],
       ["ok", "14", "0", "7.00"])
+
+
+# 4b. composition of the end value (R-13.4): hand-worked cases, property loop, full run
+import random
+def comp_bp(*parts):
+    try:
+        return [c["share_bp"] for c in cc.composition(*[F(p) for p in parts])]
+    except Exception as e:
+        return "EXC %r" % (e,)
+for label, parts, want in [
+        ("4.80/0/0.20/0", ("4.80", "0", "0.20", "0"), [9600, 0, 400, 0]),
+        ("1.53 and 0.80 (largest remainder)", ("1.53", "0.80", "0", "0"), [6567, 3433, 0, 0]),
+        ("6.00 and 0.40", ("6.00", "0.40", "0", "0"), [9375, 625, 0, 0]),
+        ("all zero", ("0", "0", "0", "0"), [0, 0, 0, 0]),
+        ("three equal thirds, tie to earliest", ("1/3", "1/3", "1/3", "0"), [3334, 3333, 3333, 0]),
+        ("three equal thirds in later slots", ("0", "1/3", "1/3", "1/3"), [0, 3334, 3333, 3333]),
+        ("one part only", ("0", "0", "0", "7.25"), [0, 0, 0, 10000])]:
+    check("composition bp: " + label, comp_bp(*parts), want)
+rows = cc.composition(F(480, 100), F(0), F(20, 100), F(0))
+check("composition shape", [(r["key"], r["amount"], r["share_bp"]) for r in rows],
+      [("shares", "4.80", 9600), ("roundups_waiting", "0.00", 0), ("dividends_as_cash", "0.20", 400),
+       ("receivables", "0.00", 0)])
+check("composition amount is display rounding of exact (half-even)",
+      [r["amount"] for r in cc.composition(F(1, 800), F(3, 200), F(5, 200) , F(0))], ["0.00", "0.02", "0.02", "0.00"])
+rng = random.Random(1304)
+bad = []
+for _ in range(3000):
+    parts = [F(rng.choice([0, 0, rng.randint(0, 10**7)]), rng.choice([1, 3, 7, 100, 10**6])) for _ in range(4)]
+    tot = sum(parts)
+    try:
+        bp = [r["share_bp"] for r in cc.composition(*parts)]
+    except Exception as e:
+        bad.append((parts, repr(e))); break
+    if tot == 0:
+        ok = bp == [0, 0, 0, 0]
+    else:
+        ok = sum(bp) == 10000 and all(abs(b - p * 10000 / tot) < 1 for b, p in zip(bp, parts)) \
+            and all(type(b) is int for b in bp)
+    if not ok:
+        bad.append((parts, bp))
+check("composition property loop (3000 random exact cases)", bad[:3], [])
+
+S5 = cc.run(json.load(open(os.path.join(HERE, "S5.json"))))
+check("S5 composition (2.40/0.30/0.10/0.00; first two tie on remainder, earlier wins)",
+      S5["summary"].get("composition"),
+      [{"key": "shares", "amount": "2.40", "share_bp": 8572},
+       {"key": "roundups_waiting", "amount": "0.30", "share_bp": 1071},
+       {"key": "dividends_as_cash", "amount": "0.10", "share_bp": 357},
+       {"key": "receivables", "amount": "0.00", "share_bp": 0}])
 
 # 5. CLI: multiple files -> mapping id -> result
 import subprocess

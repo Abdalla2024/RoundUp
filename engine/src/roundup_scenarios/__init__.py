@@ -2,7 +2,7 @@
 
 from .calendar import trading_calendar
 from .model import (END, FAMILIES, LABEL, MODEL_VERSION, START, STYLES, ScenarioSeries, generate_series,
-                    get_published, market_dict, published_scenarios)
+                    get_published, market_dict, published_scenarios, shape)
 
 __all__ = ["END", "FAMILIES", "LABEL", "MODEL_VERSION", "START", "STYLES", "ScenarioSeries",
-           "generate_series", "get_published", "market_dict", "published_scenarios", "trading_calendar"]
+           "generate_series", "get_published", "market_dict", "published_scenarios", "shape", "trading_calendar"]

@@ -87,7 +87,8 @@ The limits are kept in memory per server instance (see OPERATIONS.md).
 
 The summary also carries the stage-5 engine figures (FORMAT.md):
 - `roundups_waiting` + `dividends_as_cash` = `uninvested_cash`;
-- `deepest_dip`: the day the value was furthest below the round-ups added, or `null`.
+- `deepest_dip`: the day the value was furthest below the round-ups added, or `null`;
+- `composition` (stage 6, R-13.4, display only): four parts in this order, `shares`, `roundups_waiting`, `dividends_as_cash`, `receivables`, each `{"key", "amount", "share_bp"}`. The amounts add up to the ending value. `share_bp` is an integer from 0 to 10000 (basis points, largest-remainder rounding, earlier part first on ties), adding to exactly 10000 when the ending value is above $0 and all 0 when it is $0. It draws a strip of what the end value is made of; it is not a performance figure.
 
 The browser shows these strings as they are and never derives them.
 
@@ -106,8 +107,9 @@ It runs a tiny engine self-check. If that fails: 503 with `{"status": "degraded"
 {"label": "...", "model_version": "...", "scenarios": [{"id": "steady-growth", "name": "Steady growth",
  "description": "...", "label": "...", "seed": 1101, "styles": [{"style": "broad",
  "name": "Broad-market style (synthetic)", "symbol": "SYN-STEADY-GROWTH-BROAD", "start": "2012-01-03",
- "end": "2026-09-30", "market_checksum": "...", "parameters": {...}}]}]}
+ "end": "2026-09-30", "market_checksum": "...", "parameters": {...}, "shape": [34, 35, ...]}]}]}
 ```
+`shape` (stage 6, display only): 40 whole numbers from 0 to 100 that draw a sparkline of the scenario: one share's value (split-adjusted) divided by its own first value, on a natural-log scale shared by all eight published series, so the pictures can be compared with each other. It is computed by the scenario generator (`roundup_scenarios.shape`) and passed through; it is not a price or a return.
 There are 4 scenarios, each with 2 styles (`broad`, `dividend`).
 
 ### `GET /v1/assumptions`

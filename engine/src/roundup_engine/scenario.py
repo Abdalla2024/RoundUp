@@ -6,6 +6,7 @@ from datetime import date
 
 from . import ENGINE_VERSION
 from .market import DataError, Dividend, MarketSeries, Split
+from .composition import KEYS as COMPOSITION_KEYS, share_bp
 from .money import display_money, display_pct, display_shares, parse_decimal
 from .simulate import Config, simulate
 from .transactions import is_non_purchase
@@ -92,6 +93,12 @@ def _thin(points: list[dict], start: date, end: date) -> tuple[list[dict], str]:
     return kept, "weekly"
 
 
+def _composition(r) -> list[dict]:
+    parts = [r.holdings_value, r.roundups_waiting, r.dividends_as_cash, r.receivables]        # R-13.4
+    return [{"key": k, "amount": display_money(p), "share_bp": b}
+            for k, p, b in zip(COMPOSITION_KEYS, parts, share_bp(parts, r.ending_value))]
+
+
 def result_dict(r, cfg=None, series: str = "daily", include_buys: bool = True) -> dict:
     pct = r.gain_pct
     out = {
@@ -110,6 +117,7 @@ def result_dict(r, cfg=None, series: str = "daily", include_buys: bool = True) -
             "dividends_as_cash": display_money(r.dividends_as_cash),
             "receivables": display_money(r.receivables),
             "ending_value": display_money(r.ending_value),
+            "composition": _composition(r),
             "gain": display_money(r.gain),
             "gain_pct": "n/a" if pct is None else display_pct(pct),
             "as_of": r.as_of.isoformat(),

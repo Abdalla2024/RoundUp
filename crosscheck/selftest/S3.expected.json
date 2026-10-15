@@ -17,7 +17,29 @@
   "gain": "0.36",
   "gain_pct": "18.09",
   "as_of": "2024-05-14",
-  "deepest_dip": null
+  "deepest_dip": null,
+  "composition": [
+   {
+    "key": "shares",
+    "amount": "2.18",
+    "share_bp": 9192
+   },
+   {
+    "key": "roundups_waiting",
+    "amount": "0.01",
+    "share_bp": 42
+   },
+   {
+    "key": "dividends_as_cash",
+    "amount": "0.00",
+    "share_bp": 0
+   },
+   {
+    "key": "receivables",
+    "amount": "0.18",
+    "share_bp": 766
+   }
+  ]
  },
  "buys": [
   {

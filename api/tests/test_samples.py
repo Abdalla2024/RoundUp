@@ -65,3 +65,19 @@ def test_the_ignored_rows_are_the_right_ones(client):
     assert ignored == {"Bookshop refund": "credit", "Online shop refund": "credit", "Transfer to savings": "non_purchase",
                        "Card payment": "non_purchase", "Maple Grocery": "pending", "Bakery": "cancelled",
                        "Gym membership": "unrecognised"}
+
+
+def test_the_typical_sample_file_gives_the_same_result_as_typical_spending(client):
+    """samples/sample-typical-5-per-week.csv follows rule R-1.9 (written out independently); uploading it must equal the website's
+    typical-spending mode with 5 a week and a 50-cent average."""
+    want = EXPECTED["typical_5x8"]
+    out = client.post("/v1/transactions/parse", json={"csv": (SAMPLES / "sample-typical-5-per-week.csv").read_text(),
+        "mapping": {"date": "Date", "amount": "Amount", "description": "Description", "status": "Status"}, "sign_convention": "debits_positive"}).json()
+    assert out["summary"]["rows"] == want["rows"] and out["summary"]["purchases"] == want["purchases"]
+    txs = [{k: x[k] for k in ("posted_date", "amount", "direction", "status", "category")} for x in out["transactions"]]
+    window = {"start": want["window"]["start"], "end": want["window"]["end"], "scenario_id": "steady-growth", "style": "broad"}
+    uploaded = client.post("/v1/simulate", json={**window, "transactions": txs, "strategy": "threshold", "reinvest": True}).json()
+    typical = client.post("/v1/simulate", json={**window, "typical": {"per_week": 5, "average_roundup": "0.50"},
+                                                "strategy": "threshold", "reinvest": True}).json()
+    assert uploaded["result"]["summary"]["contributed"] == typical["result"]["summary"]["contributed"] == want["contributed"]
+    assert uploaded["result"] == typical["result"] and uploaded["meta"]["input_checksum"] == typical["meta"]["input_checksum"]

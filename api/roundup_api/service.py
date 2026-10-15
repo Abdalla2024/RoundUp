@@ -6,7 +6,7 @@ from roundup_engine import ENGINE_VERSION, run_scenario
 from roundup_engine.compare import compare_scenarios
 from roundup_engine.generator import generate_transactions
 from roundup_engine.scenario import input_checksum
-from roundup_scenarios import FAMILIES, LABEL, MODEL_VERSION, STYLES, get_published, market_dict
+from roundup_scenarios import FAMILIES, LABEL, MODEL_VERSION, STYLES, get_published, market_dict, shape
 
 from .errors import ENGINE_MESSAGES, ApiError
 
@@ -100,7 +100,7 @@ def scenarios_listing() -> dict:
             _, meta = _market(fid, st)
             styles.append({"style": st, "name": meta["style_name"], "symbol": meta["symbol"], "start": meta["start"],
                            "end": meta["end"], "market_checksum": market_checksum(fid, st),
-                           "parameters": meta["parameters"]})
+                           "parameters": meta["parameters"], "shape": shape(get_published(fid, st))})
         items.append({"id": fid, "name": fam["name"], "description": fam["description"], "label": LABEL,
                       "seed": fam["seed"], "styles": styles})
     return {"label": LABEL, "model_version": MODEL_VERSION, "scenarios": items}
