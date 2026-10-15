@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
+import { geometryIssues } from "../e2e/geometry";
 
 const WEB = process.env.DEPLOY_WEB!, API = process.env.DEPLOY_API!;
 const report: Record<string, unknown> = {};
@@ -136,3 +137,38 @@ test("page weight and response sizes on Vercel", async ({ page, request }) => {
 });
 
 test.afterAll(() => fs.writeFileSync("screenshots/deployed/deployed-report.json", JSON.stringify(report, null, 1)));
+
+test("typical spending on the deployed preview: 10 a week at $0.50 for a whole number of weeks gives purchases x $0.50", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("radio", { name: /Typical spending/ }).check();
+  await page.locator("#perweek").fill("10");
+  await page.getByLabel("Start date").fill("2016-01-04");          // a Monday
+  await page.getByLabel("End date").fill("2016-12-25");           // a Sunday: 51 whole weeks
+  await page.getByRole("button", { name: "Run simulation" }).click();
+  await page.waitForURL("**/results");
+  await page.getByText("In this made-up scenario").waitFor();
+  const text = (await page.locator("body").innerText()).replace(/\s+/g, " ");
+  expect(text).toContain("Estimate: 10 purchases a week, each with a round-up of $0.50. Real spending varies.");
+  expect(text).toContain("510 sample purchases");                 // 51 weeks x 10
+  expect(text).toContain("$255.00");                               // 510 x $0.50, the engine's figure shown as sent
+});
+
+for (const [mode, opts] of Object.entries(MODES)) {
+  test.describe(`geometry ${mode}`, () => {
+    test.use(opts);
+    test(`no overlap, clipping or edge problems on the deployed screens (${mode})`, async ({ page }) => {
+      const problems: string[] = [];
+      const look = async (name: string) => { await page.waitForLoadState("networkidle"); await page.waitForTimeout(1500);
+        for (const i of await geometryIssues(page)) problems.push(`${name}/${mode}: ${i.kind}: ${i.detail}`); };
+      await page.goto("/"); await look("setup");
+      await runSample(page); await look("results");
+      await page.getByRole("link", { name: "Compare with another way of investing" }).click();
+      await page.getByRole("button", { name: "Compare" }).click();
+      await page.getByRole("rowheader", { name: "Growth on round-ups" }).waitFor(); await look("compare");
+      await page.goto("/saved"); await look("saved");
+      await page.goto("/how"); await look("how");
+      await page.goto("/privacy"); await look("privacy");
+      expect(problems).toEqual([]);
+    });
+  });
+}
