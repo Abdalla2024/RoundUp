@@ -1585,7 +1585,7 @@
   },
   "meta": {
    "engine_version": "0.2.0",
-   "model_version": "scenario-model-1",
+   "model_version": "scenario-model-2",
    "scenario_id": "steady-growth",
    "style": "broad",
    "scenario_seed": 1101,

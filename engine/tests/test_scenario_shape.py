@@ -45,6 +45,8 @@ def test_high_volatility_is_rougher_than_steady_growth():
     assert rough(sh("high-volatility")) > 1.5 * rough(sh("steady-growth"))
 
 
-# Not asserted, on purpose: that "sideways" has no overall trend. The published seeded series for sideways/broad ends at 0.31 of its
-# starting value (found when the shape was first drawn on a shared scale); that is a property of the published model and its seed, reported
-# to the owner (OPEN-QUESTIONS OQ-14), not something to hide by normalising each picture to its own height.
+def test_sideways_is_flat_on_the_shared_scale_in_both_styles():
+    """OQ-15: after the model change Sideways wanders near its start. On the shared 0-100 scale every value stays within 8 of its first."""
+    for style in ("broad", "dividend"):
+        v = shape(get_published("sideways", style))
+        assert max(abs(x - v[0]) for x in v) <= 8, (style, v)

@@ -76,7 +76,7 @@ The limits are kept in memory per server instance (see OPERATIONS.md).
 
 **Meta** (in every simulation-type response):
 ```json
-{"engine_version": "0.2.0", "model_version": "scenario-model-1", "scenario_id": "steady-growth",
+{"engine_version": "0.2.0", "model_version": "scenario-model-2", "scenario_id": "steady-growth",
  "style": "broad", "scenario_seed": 1101, "market_checksum": "<sha256 hex>",
  "input_checksum": "<sha256 hex>", "label": "Synthetic scenario. Not a real fund, not real prices, and not a forecast."}
 ```

@@ -96,6 +96,9 @@ Results from a clean `git clone` run with CI's exact commands (pip install from 
 - Screenshots: `web/e2e/redesign-shots.spec.ts` (run with `REDESIGN_SHOTS_RUN=1`; skipped otherwise) captures 21 screens and states in light, dark and mobile.
 - **Not done here:** the Linux-font run (`tools/run-e2e-linux.sh`). No container runtime is installed on this machine now, and I do not install software without asking. It needs a runtime that can mount the home folder, for example `brew install colima docker` then `colima start`, and about 2 GB for the Playwright image. Until it runs, the geometry results for the redesign are macOS-only; CI's Ubuntu run will be the first Linux measurement.
 
+### 0.1f Sideways band (OQ-15, 2026-10-16)
+scenario-model-2 gives the Sideways family a pull back toward its start (SCENARIO-MODEL.md, "Sideways: the stated band"). Tests: `engine/tests/test_sideways_band.py` (the band for both styles and for seeds 1 to 60; the six other published series pinned byte-for-byte by checksum; the engine and the independent implementation agree on the new series for 4 strategies x reinvest on/off x 2 styles; version and parameters), a sparkline flatness test, and 3 new fault-injection mutations (pull reversed, pull ignoring splits, pull too weak): 55 of 55 caught. Engine suite 577 passed.
+
 ### 0.2 Screen-reader pass (for the owner's VoiceOver check)
 
 Automated checks cannot judge these; please cover each with VoiceOver on macOS (Safari) and, if possible, iOS:

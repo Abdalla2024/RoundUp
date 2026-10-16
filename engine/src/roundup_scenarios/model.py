@@ -11,7 +11,7 @@ from roundup_engine.money import CONTEXT
 
 from .calendar import trading_calendar
 
-MODEL_VERSION = "scenario-model-1"
+MODEL_VERSION = "scenario-model-2"      # 2: the Sideways family gained a pull back toward its starting level (OQ-15); every other series is unchanged
 LABEL = "Synthetic scenario. Not a real fund, not real prices, and not a forecast."
 START, END = date(2012, 1, 3), date(2026, 9, 30)
 
@@ -28,7 +28,7 @@ FAMILIES = {
     },
     "sideways": {
         "name": "Sideways", "seed": 1303, "split_ratio": "2",
-        "regimes": [("0", 0, 90)],
+        "regimes": [("0", 0, 70)], "reversion_permille": 12,
         "description": "A synthetic market with no overall trend: prices wander up and down.",
     },
     "high-volatility": {
@@ -84,6 +84,8 @@ def generate_series(family: str, style: str, seed: int, start: date = START, end
             break
     ratio = Decimal(fam["split_ratio"])
     regimes = [(int(Decimal(f) * n), drift, vol) for f, drift, vol in fam["regimes"]]
+    reversion = fam.get("reversion_permille", 0)    # per mille of the gap to the starting level, closed each day (0: none)
+    anchor, factor = Decimal(sty["start_price"]), Decimal(1)
 
     closes, dividends = {}, []
     with localcontext(CONTEXT):
@@ -94,7 +96,11 @@ def generate_series(family: str, style: str, seed: int, start: date = START, end
                 continue
             _, drift, vol = [rg for rg in regimes if rg[0] <= t][-1]
             z = sum(rng.randint(0, 1000) for _ in range(12)) - 6000
-            r = drift + sty["drift_adj"] + _div_half_even(vol * z, 1000)
+            pull = 0
+            if reversion:                         # the value of one share held from day one (split-adjusted) vs where it started
+                gap_bp = int(((prev * factor / anchor - 1) * 10000).to_integral_value(ROUND_HALF_EVEN))
+                pull = -_div_half_even(gap_bp * reversion, 1000)
+            r = drift + sty["drift_adj"] + pull + _div_half_even(vol * z, 1000)
             cap = 500 if d == split_day else 2500
             r = max(-cap, min(cap, r))
             close = prev * (10000 + r) / 10000
@@ -104,6 +110,7 @@ def generate_series(family: str, style: str, seed: int, start: date = START, end
                 dividends.append(Dividend(d, d + timedelta(days=7), amount))
             if d == split_day:
                 close = close / ratio
+                factor *= ratio
             close = max(close.quantize(Q4, rounding=ROUND_HALF_EVEN), FLOOR)
             closes[d] = close
             prev = close
@@ -117,7 +124,7 @@ def generate_series(family: str, style: str, seed: int, start: date = START, end
         "symbol": symbol, "start": cal[0].isoformat(), "end": cal[-1].isoformat(),
         "parameters": {"regimes": [{"from": f, "drift_bp": dr, "vol_bp": v} for f, dr, v in fam["regimes"]],
                        "split_ratio": fam["split_ratio"], "start_price": sty["start_price"],
-                       "yield_bp": sty["yield_bp"], "drift_adj_bp": sty["drift_adj"]},
+                       "yield_bp": sty["yield_bp"], "drift_adj_bp": sty["drift_adj"], "reversion_permille": reversion},
     }
     return ScenarioSeries(market, meta)
 

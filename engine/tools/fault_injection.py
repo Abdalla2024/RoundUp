@@ -32,7 +32,14 @@ BUY_BLOCK = (
 )
 
 S = "src/roundup_engine/"
+MS = "src/roundup_scenarios/"
 MUTATIONS = [
+    ("sideways: the pull pushes away from the start instead of toward it", "OQ-15", MS + "model.py",
+     [("pull = -_div_half_even(gap_bp * reversion, 1000)", "pull = _div_half_even(gap_bp * reversion, 1000)")]),
+    ("sideways: the pull ignores splits (the split looks like a crash)", "OQ-15", MS + "model.py",
+     [("(prev * factor / anchor - 1)", "(prev / anchor - 1)")]),
+    ("sideways: the pull is too weak to hold the band", "OQ-15", MS + "model.py",
+     [('"reversion_permille": 12,', '"reversion_permille": 2,')]),
     ("typical: spread rounds up instead of down", "R-1.9", S + "typical.py",
      [("days=(7 * k) // per_week", "days=(7 * k + per_week - 1) // per_week")]),
     ("typical: amount makes the round-up the wrong way round", "R-1.9", S + "typical.py",

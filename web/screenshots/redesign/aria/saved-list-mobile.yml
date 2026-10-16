@@ -14,7 +14,7 @@
     - listitem:
       - heading "Typical week, 10 purchases" [level=2]
       - paragraph: "Synthetic scenario: crash and recovery · broad-market style · Invest each time round-ups reach $5 · dividends reinvested"
-      - paragraph: Round-ups added $2,608.50 · value at end $4,295.37 on Dec 31, 2024 · saved Oct 15, 2026
+      - paragraph: Round-ups added $2,608.50 · value at end $4,295.37 on Dec 31, 2024 · saved Oct 16, 2026
       - button "Open Typical week, 10 purchases": Open
       - button "Delete Typical week, 10 purchases": Delete
 - contentinfo:
