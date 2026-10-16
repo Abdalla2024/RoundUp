@@ -142,19 +142,85 @@ Used in tooltips, the assumptions panel and "How this works". The AI explainer i
 
 **Goal:** modern, sleek, friendly and colourful, still calm and trustworthy, with every disclaimer visible. WCAG 2.2 AA throughout.
 
-### Palette (hex values are in `web/app/tokens.json`; `node web/tools/contrast.mjs` prints every ratio, and `web/tests/contrast.test.ts` fails the build if any pair drops below its minimum)
+### Palette (hex values are in `web/app/tokens.json`; `node web/tools/contrast.mjs` prints every ratio, and `web/tests/contrast.test.ts` fails the build if any pair drops below its minimum or if gain and loss become confusable)
+
+**Revised 2026-10-16 (owner request): green and red.** The first version of this spec used indigo and teal. Rules for the new scheme:
+- **Green** is the brand accent: primary buttons, links, selected states, the "value" line, the strip's "shares" part. **Red** means a made-up loss, an error, or a negative figure ("lowest point below money put in", a negative "growth on round-ups"). **Amber** is only for neutral notes (the disclaimer). **Blue** is strategy B and the focus ring, so no red/green pair is ever needed to tell two series apart. Backgrounds stay calm: soft off-white in light mode, dark navy in dark mode.
+- **Colour never carries meaning alone** (WCAG 2.2 SC 1.4.1, [Understanding Use of Color](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html)): every gain has a plus sign and an up arrow, every loss a minus sign and a down arrow (the `Delta` component; the arrow is decoration, the sign is what a screen reader reads). The A-versus-B difference shows its sign only, with no arrow and no colour (an arrow beside "+$2.65" reads as "better"); the round-ups line is dashed and the value line solid; chips and strip legends carry text.
+- **Not advice, not a forecast:** red and green only describe a result in this made-up market. The difference between two strategies (A vs B, "B minus A", the difference line) is deliberately **neutral** (slate, with an arrow for direction): red or green there would read as "better" or "worse". There is no buy/sell colouring anywhere.
+- **Green is a brand and series colour, not a verdict.** The value line, the strip's "shares" part and the scenario sparklines are green in every result, including a made-up loss and the "Crash and recovery" and "High volatility" scenarios; whether a result is a gain or a loss is said only by the signed figure with its arrow and its red or green. (An independent review pointed out that a green line ending below the dashed line can read as "good"; I kept the single series colour for consistency and say so here.)
+- **Lightness as well as hue:** the gain and loss colours also differ in lightness (light theme: figures #16A34A against #B42318, L* 19 apart; dark theme: #7AE8A8 against #FF5C5C, 23 apart). Small text has to be dark enough for 4.5:1, which limits how far apart the light theme's two small-text colours can be (L* 7), so the sign and arrow matter most there.
 
 | Role | Light | Dark |
 |---|---|---|
-| Page / card | `#F4F6FB` / `#FFFFFF` | `#0A1020` / `#121A30` |
-| Ink (deep navy) / secondary ink | `#0E1A3B` / `#475069` | `#E8ECF8` / `#A9B3CC` |
-| Primary (indigo): buttons, links, focus | `#4338CA` (white text) | `#818CF8` (dark text); links/focus `#A5B4FC` |
-| Accent (teal): value line, success, icons | `#0F766E` (text and fills), `#14B8A6` (decorative fills) | `#2DD4BF` |
-| Soft tints | teal `#E3F5F1`, indigo `#ECEEFC` | teal `#0F2F2E`, indigo `#1B2250` |
-| Amber (warnings and notes only) | bg `#FFF3D1`, border `#B45309`, text `#3D2A00` | bg `#2B2208`, border `#D9A441`, text `#FBE7B4` |
-| Hero gradient (header only) | `#1E1B6E` to `#0F766E`, white text | same |
+| Page / card | `#F5F7FA` / `#FFFFFF` | `#0B1220` / `#131C2F` |
+| Ink / secondary ink | `#0F1B33` / `#475066` | `#E8EDF7` / `#A9B4CB` |
+| Primary (green): buttons, links, selected | `#15803D` | `#7AE8A8` |
+| Green tint / slate tint | `#E4F5EA` / `#EAEFF7` | `#10291F` / `#19243D` |
+| Gain: large figures and marks / small text | `#16A34A` / `#15803D` | `#7AE8A8` / `#7AE8A8` |
+| Loss (red): negative figures, errors | `#B42318` | `#FF5C5C` |
+| Strategy B (blue) | `#2563EB` | `#8DB4FF` |
+| Focus ring (blue) | `#1D4ED8` | `#93C5FD` |
+| Amber (neutral notes) | `#FFF3D1` / `#B45309` / `#3D2A00` | `#2B2208` / `#D9A441` / `#FBE7B4` |
+| Hero gradient | `#0B1F4B` / `#0F6B3F` | `#0B1F4B` / `#0F6B3F` |
 
-Measured contrast (light / dark): body text on page 15.80 / 16.05; on card 17.08 / 14.62; secondary text on card 8.02 / 8.23; links on card 7.90 / 8.66; primary button text 7.90 / 6.35; accent button text 5.47 / 10.18; hero text on the lightest gradient end 5.47 and 5.12; amber note text 12.42 / 12.88; error text 5.75 / 8.35; control borders on card 4.24 / 4.95 (needs 3); focus ring on card 7.90 / 8.66 (needs 3); chart lines on card: value 5.47 / 9.28, strategy B 7.90 / 8.66, round-ups added 8.02 / 8.23 (need 3). All 48 pairs pass. (The first draft failed one: secondary hero text at 4.44, changed to `#F5F7FF`, now 5.12.)
+### Measured contrast (WCAG 2.2 AA: text 4.5:1; large text, user-interface components and chart lines 3:1; SC [1.4.3](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) and [1.4.11](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html))
+All pairs pass in both themes; the test fails the build otherwise.
+
+| Pair (foreground on background) | Needs | Light | Dark |
+|---|---|---|---|
+| body text on page (`ink` on `bg`) | 4.5:1 | 15.97 | 15.95 |
+| body text on card (`ink` on `surface`) | 4.5:1 | 17.14 | 14.49 |
+| secondary text on card (`ink2` on `surface`) | 4.5:1 | 8.05 | 8.16 |
+| secondary text on page (`ink2` on `bg`) | 4.5:1 | 7.50 | 8.99 |
+| text on green tint (`ink` on `greenTint`) | 4.5:1 | 15.14 | 13.16 |
+| text on slate tint (`ink` on `slateTint`) | 4.5:1 | 14.85 | 13.14 |
+| secondary on green tint (`ink2` on `greenTint`) | 4.5:1 | 7.11 | 7.42 |
+| link on card (`link` on `surface`) | 4.5:1 | 6.61 | 11.29 |
+| link on page (`link` on `bg`) | 4.5:1 | 6.16 | 12.42 |
+| primary button text (`onPrimary` on `primary`) | 4.5:1 | 5.02 | 11.21 |
+| accent button text (`onAccent` on `accent`) | 4.5:1 | 5.02 | 11.21 |
+| hero heading on gradient start (`onHero` on `heroFrom`) | 4.5:1 | 16.01 | 16.01 |
+| hero heading on gradient end (`onHero` on `heroTo`) | 4.5:1 | 6.57 | 6.57 |
+| hero text 2 on gradient end (`onHero2` on `heroTo`) | 4.5:1 | 6.14 | 6.14 |
+| amber note text (`amberInk` on `amberBg`) | 4.5:1 | 12.42 | 12.88 |
+| amber note border (`amberLine` on `amberBg`) | 3:1 | 4.54 | 6.99 |
+| error text (`danger` on `dangerBg`) | 4.5:1 | 5.75 | 7.10 |
+| control border on card (`control` on `surface`) | 3:1 | 4.24 | 4.88 |
+| control border on page (`control` on `bg`) | 3:1 | 3.95 | 5.37 |
+| focus ring on card (`focus` on `surface`) | 3:1 | 6.70 | 9.43 |
+| focus ring on page (`focus` on `bg`) | 3:1 | 6.24 | 10.38 |
+| value line (series A) on card (`seriesA` on `surface`) | 3:1 | 5.02 | 11.29 |
+| strategy B line on card (`seriesB` on `surface`) | 3:1 | 5.17 | 8.18 |
+| round-ups added line on card (`added` on `surface`) | 3:1 | 8.05 | 8.16 |
+| text on slate tint (chips, hover) (`ink` on `slateTint`) | 4.5:1 | 14.85 | 13.14 |
+| link on slate tint (`link` on `slateTint`) | 4.5:1 | 5.73 | 10.24 |
+| gain text on card (`gainText` on `surface`) | 4.5:1 | 5.02 | 11.29 |
+| gain text on page (`gainText` on `bg`) | 4.5:1 | 4.67 | 12.42 |
+| gain text on gain tint (`gainText` on `gainBg`) | 4.5:1 | 4.64 | 10.25 |
+| loss text on card (`loss` on `surface`) | 4.5:1 | 6.57 | 5.62 |
+| loss text on page (`loss` on `bg`) | 4.5:1 | 6.13 | 6.19 |
+| loss text on loss tint (`loss` on `lossBg`) | 4.5:1 | 5.75 | 5.35 |
+| gain mark (large figure, arrow, strip) on card (`gain` on `surface`) | 3:1 | 3.30 | 11.29 |
+| loss mark (large figure, arrow) on card (`loss` on `surface`) | 3:1 | 6.57 | 5.62 |
+| primary on card (selected border, radio) (`primary` on `surface`) | 3:1 | 5.02 | 11.29 |
+| strategy B text/line on page (`seriesB` on `bg`) | 3:1 | 4.82 | 9.01 |
+
+### Colour-blindness check
+- **Method:** every pixel of the screenshots goes through the matrices of Machado, Oliveira and Fernandes (2009), *A Physiologically-based Model for Simulation of Color Vision Deficiency*, IEEE TVCG 15(6), at severity 1.0 (full dichromacy) for protanopia, deuteranopia and tritanopia, applied in linear RGB ([matrices](https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html); that page lists the matrices, and the linear-RGB step is the paper's model, which the page does not spell out). Code: `web/tools/cvd.mjs` (matrices and ΔE) and `web/e2e/cvd-shots.spec.ts` (screenshots). Chrome's built-in vision-deficiency emulation was not used (its documentation page could not be read here). Colour difference is CIE76 ΔE in CIELAB; as a rule of thumb ΔE above about 10 to 20 is a clear difference.
+- **Images:** `web/screenshots/redesign/cvd/<screen>-<light|dark>-<original|protanopia|deuteranopia|tritanopia>.jpg` for setup, results with a gain, results with a loss, and compare (32 images).
+- **Numbers (first colour against second colour):**
+
+| Gain vs loss | Theme | Colours | L* difference | ΔE protanopia | ΔE deuteranopia | ΔE tritanopia |
+|---|---|---|---|---|---|---|
+| small text | light | #15803D / #B42318 | 7 | 18 | 23 | 108 |
+| figures and marks | light | #16A34A / #B42318 | 19 | 33 | 20 | 115 |
+| strategy A vs B lines | light | #15803D / #2563EB | 1 | 106 | 102 | 23 |
+| small text | dark | #7AE8A8 / #FF5C5C | 23 | 35 | 27 | 122 |
+| figures and marks | dark | #7AE8A8 / #FF5C5C | 23 | 35 | 27 | 122 |
+| strategy A vs B lines | dark | #7AE8A8 / #8DB4FF | 11 | 67 | 62 | 21 |
+
+- **Result:** under tritanopia (blue-yellow) green and red stay far apart (ΔE above 100). Under protanopia and deuteranopia they are *distinguishable* (ΔE 18 to 35) but not strongly so: in the deuteranopia images the loss figure and the green accent both turn olive/brown. That is expected for this pair, and it is why the sign, the arrow and the words carry the meaning. On the screens I could tell every gain from every loss by sign and arrow; by colour alone only with effort. Strategy A (green) and B (blue) stay apart under protanopia and deuteranopia (ΔE above 60) and, less strongly, under tritanopia (ΔE 21 to 23). **Not verified:** a person with colour-vision deficiency has not looked at the screens.
 
 ### Type
 One self-hosted sans, **Manrope** (variable, loaded with `next/font/google`: downloaded at build time and served from our own origin, so no request to a font server at run time), tabular figures for every number. Scale: hero heading clamp(32 to 52 px)/1.1/800; page title 32/1.15/800; section 24/1.25/700; card title 18/1.3/700; body 16/1.55/500; small 14/1.5; axis and captions 12; hero figure clamp(40 to 64 px)/1/800; stat figure 28/1.1/800. Spacing on a 4 px grid (4, 8, 12, 16, 24, 32, 48, 64). Radii: controls 12, cards 20, hero 28, chips 999. Soft shadows in light mode, 1 px borders in dark.
@@ -163,14 +229,14 @@ One self-hosted sans, **Manrope** (variable, loaded with `next/font/google`: dow
 Header (logo mark, nav, theme toggle: system by default, explicit override remembered) · hero with one call to action · sticky **progress rail** for the four setup steps (done / current / to do; one page, not a wizard, so every choice stays visible and keyboard order stays simple) · choice cards (radio cards with icons) · **scenario cards** with a coloured chip and a **sparkline of the model's own shape** (computed by the scenario generator, passed through the API, drawn as an SVG that screen readers skip) · large aligned inputs (equal heights, baseline-aligned labels) · weekly-purchases slider with its explanation beside it · tucked-away "adjust" disclosure · results hero figure with a **digit-roll count-up** (CSS only, no arithmetic on money, off under reduced motion) · stat cards with icons · **composition strip** · area chart · compare strategy cards with a "difference" summary · saved-scenario cards · skeleton loaders · friendly empty and error states · amber note for disclaimers · assumptions panel · footer. One icon set: 24 px stroke icons drawn for this project, inline SVG, `aria-hidden`, never the only carrier of meaning.
 
 ### Chart style
-Area chart with a soft gradient fill under the **value** line (teal), a dashed **round-ups added** line (slate-indigo), one axis starting at $0, recessive grid, no animation. Compare: two small multiples on a shared scale, A teal and B indigo, each labelled A or B so colour is never the only cue. A table and a text summary stay for every chart.
+Area chart with a soft gradient fill under the **value** line (green), a dashed **round-ups added** line (slate), one axis starting at $0, recessive grid; the chart draws in once, the first time it is seen (see Motion), and not otherwise. Compare: two small multiples on a shared scale, A green and B blue, each labelled A or B so colour is never the only cue. A table and a text summary stay for every chart.
 
 ### Where I changed your direction, and why
 1. **"Colour-coded strip splitting contributions, growth, dividends and cash waiting"** becomes a strip showing **what the end value is made of**: shares, round-ups waiting, dividends kept as cash (the parts always add up to the end value). Growth can be negative, which a split cannot show honestly, and the widths must come from the engine, not the browser. The shares are computed in the engine (rule R-13.4, with golden cases and an independent cross-check).
 2. **Guided stepper** is one page with a sticky progress rail rather than a hide-and-reveal wizard: fewer clicks, nothing hidden, simpler keyboard and screen-reader use.
 3. **Count-up** rolls the digits of the engine's own figure (CSS) instead of interpolating numbers, because the browser must never calculate a money figure.
 4. **Sparklines** are drawn from the scenario model itself, not hand-drawn lookalikes, so they cannot misrepresent a scenario.
-5. **Amber** stays for warnings and notes only (the disclaimer note, errors that need attention); the colourful accents are teal and indigo.
+5. **Amber** stays for neutral notes only (the disclaimer); errors and negative figures are red (see the revised palette above).
 
 ### As built (2026-10-15)
 - Screens, states and modes: 21 screens and states in light, dark and mobile are in `web/screenshots/redesign/after/` (JPEG, with the pre-redesign set in `before/` and accessibility-tree text in `aria/`). `web/e2e/redesign-shots.spec.ts` regenerates them; `web/tools/compress-shots.sh` makes the JPEGs.
@@ -183,3 +249,21 @@ Area chart with a soft gradient fill under the **value** line (teal), a dashed *
 - **Compare:** the "Both use the same round-ups..." note now sits inside the difference box, directly under the difference sentence (the wording is unchanged and appears once). The two charts reserve the same title height so their plots line up side by side (tested: same top and height).
 - **Slider:** "1" and "60" are shown under its ends (hidden from screen readers, which already hear the slider's own limits).
 - **Screenshots:** the accessibility run's own PNGs are written to `web/screenshots/a11y/` (git-ignored) instead of overwriting tracked files on every run; the committed set is `redesign/after/`.
+
+### Motion (2026-10-16, owner request)
+CSS first, no animation library (the JavaScript added is about 3 KB: `web/lib/inpage.ts`, `web/lib/reveal.ts`, `web/components/MotionInit.tsx`). Sources read: MDN on [`prefers-reduced-motion`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion) (honour the "reduce" request by removing or replacing motion), [`scrollend`](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollend_event) and [`focus({ preventScroll })`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus).
+- **Smooth in-page links.** A click on the progress rail, "Start a simulation" or any `#section` link scrolls smoothly (the sticky rail is allowed for by `scroll-margin-top`), puts the section in the address bar, highlights the chosen step at once (and keeps it while the page scrolls), and, when the scroll has ended (`scrollend`, with a 1.2 s timer as a fallback for browsers without it), moves keyboard focus to the section's heading without scrolling again. The heading gets `tabindex="-1"`: focusable by script, not an extra Tab stop. The "Skip to main content" link, modified clicks and unknown ids keep the browser's own behaviour. Focus moves only because the person activated that link.
+- **Entrance.** Cards, stat tiles, the strip, compare and saved cards, and sections fade and rise 16 px as they scroll into view, staggered by 70 ms (at most five steps). Things already on screen when the page loads are left alone (no flash); the hero's text rises in with CSS from the first paint; things added later that are on screen animate at once. Once per element, never again.
+- **Chart.** Reveals left to right once, the first time it is seen (1.2 s), and leaves no clip behind (so the focus ring is not cut).
+- **Other.** The existing digit roll on the big number; hover lift (`translate`) and press shrink (`scale`) on cards and buttons; the rail's dots and borders ease between states; light and dark ease into each other for 0.3 s after the toggle is pressed.
+- **Reduced motion.** `<html data-motion="on">` is set before the first paint unless the person prefers reduced motion, and every rule also sits under `@media (prefers-reduced-motion: no-preference)`, so changing the setting later is respected. With "reduce": links jump instantly and still move focus, nothing is marked for animation, nothing is hidden or moved, no animation or transition runs, the digit roll is a plain number. A final blanket rule switches off any animation and transition.
+- **Never hides content.** Pending elements are only faded and lowered (opacity and transform); they stay in the page, in the accessibility tree and in the tab order, and a pending element that holds focus is shown at once (`:focus-within`). A print rule shows every pending element (tested in the stylesheet; I did not print a page). Find-in-page still finds text in a faded-out card, but it will scroll to it first, which reveals it.
+- **Tests.** Every other end-to-end, geometry, axe and screenshot test runs with reduced motion (set in `playwright.config.ts`), so they see the page at rest. `web/e2e/motion.spec.ts` runs the motion cases explicitly: smooth scroll (several in-between positions), the step highlight at once, landing below the sticky rail, focus on the heading, the skip link unchanged, pending then in, keyboard focus reveals, nothing clipped or overlapping after the animations finish (checked while scrolling the whole page), the chart draws once and leaves no clip, the theme transition class, hover lift, and reduced motion (instant jump, no marked elements, no running animation, all cards opaque). Unit tests: `tests/inpage.test.ts`, `tests/reveal.test.ts`.
+- **Size and speed** (local production build, first load of the setup page): 637,728 B before, 646,377 B after (+8.6 KB: script +3.7 KB, stylesheet +2.4 KB, the rest is markup); to the results page 1,080,975 B before, 1,090,934 B after. Time to network idle measured back to back on the same machine: 845 and 867 ms before (a clean checkout of the previous commit), 847 to 861 ms after, so no measurable change.
+
+### Changes after the independent review of colours and motion (2026-10-16)
+- **Focus handling** (`lib/inpage.ts`): a newer click cancels an older pending focus move; typing, wheel or touch before the scroll ends cancels it; focus is only moved if it is still on the link the person used (or on nothing); a section already in place gets focus at once instead of after the 1.2 s fallback. Tested in `tests/inpage.test.ts`.
+- **Reveal safety** (`lib/reveal.ts`): at the very bottom of the page everything still waiting is shown, because nothing can intersect the shrunk viewport there. A print rule shows everything.
+- **No global smooth scrolling:** `html { scroll-behavior: smooth }` is removed. The scripts pass the behaviour explicitly, so the skip link and Back/Forward jump natively, and Next's own scroll on page change is not slowed.
+- **Hover lift** only on cards that can be opened (saved scenarios), not on read-only tiles.
+- **Not changed, on purpose:** the green series colour in a loss result (see above); small differences in the light-theme small-text gain/loss colours (L* 7), which the sign and arrow cover.

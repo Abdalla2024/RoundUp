@@ -1,0 +1,109 @@
+- link "Skip to main content":
+  - /url: "#main"
+- banner:
+  - link "RoundUp":
+    - /url: /
+  - button "Menu"
+  - 'button "Colour theme: the system setting. Change to light."'
+  - paragraph: Synthetic scenario. Not a real fund, not real prices, and not a forecast.
+- main:
+  - heading "Your sample round-ups in a made-up market" [level=1]
+  - list "Simulation settings":
+    - listitem: 999 sample purchases
+    - listitem: Crash and recovery, broad-market style
+    - listitem: Invest each time round-ups reach $5
+    - listitem: Dividends reinvested
+    - listitem: Jan 2, 2015 – Nov 30, 2016
+    - listitem:
+      - link "Edit settings":
+        - /url: /
+  - paragraph: "Estimate: 10 purchases a week, each with a round-up of $0.50. Real spending varies."
+  - note:
+    - paragraph:
+      - strong: Hypothetical simulation on a synthetic market.
+      - text: These results show how sample round-ups behave in a made-up market scenario. No money was invested, the prices are not real, and this is not a forecast. It is not investment, tax or financial advice.
+  - region "Result":
+    - paragraph: Value at the end, Nov 30, 2016
+    - text: $385.06
+    - paragraph:
+      - text: In this made-up scenario,
+      - strong: $499.50
+      - text: of sample round-ups ends at
+      - strong: $385.06
+      - text: "on Nov 30, 2016:"
+      - strong: $114.44
+      - text: less than was put in.
+  - term:
+    - button "Round-ups added"
+  - definition: $499.50 from 999 sample purchases
+  - term:
+    - button "Value at end"
+  - definition: $385.06 on Nov 30, 2016
+  - term:
+    - button "Dividends (simulated)"
+  - definition: $6.36 7 payments reinvested
+  - term:
+    - button "Growth on round-ups"
+  - definition: −$114.44 compared with the round-ups added
+  - figure "What the end value is made of":
+    - strong: What the end value is made of
+    - 'img "What the end value is made of: Invested in shares $380.56, Round-ups waiting to be invested $4.50, Dividends kept as cash $0.00, Dividends not yet paid $0.00."'
+    - list:
+      - listitem:
+        - text: Invested in shares
+        - strong: $380.56
+      - listitem:
+        - text: Round-ups waiting to be invested
+        - strong: $4.50
+      - listitem:
+        - text: Dividends kept as cash
+        - strong: $0.00
+      - listitem:
+        - text: Dividends not yet paid
+        - strong: $0.00
+  - figure "Value over time":
+    - heading "Value over time" [level=2]
+    - group "Value over time. To read values with the keyboard, select the chart, then use the arrow keys, Home, End, Page Up and Page Down.":
+      - img "Value over time": Jan 2015 Oct 2015 Oct 2016 $0 $150 $300 $450 $500
+    - paragraph
+    - text: Chart shows daily values for ranges up to 366 days and one value per week (the week's last trading day) for longer ranges. All figures are calculated daily. Scenario dates follow a real calendar, but the prices are made up.
+    - paragraph: From Jan 2, 2015 to Nov 30, 2016 the value goes from $1.00 to $385.06, with ups and downs in between, while the round-ups added go from $1.00 to $499.50.
+    - paragraph: To read values with the keyboard, select the chart, then use the arrow keys, Home, End, Page Up and Page Down.
+    - button "Show the chart as a table"
+  - paragraph:
+    - strong: "Lowest point compared with money put in:"
+    - text: on Nov 8, 2016 the value was $327.71, which was $155.79 below the $483.50 of round-ups added by then.
+  - paragraph: On the last day, $4.50 of round-ups was waiting to be invested and $0.00 of dividends was kept as cash. Money was invested 99 times from round-ups and 7 times from dividends.
+  - heading "Questions about these numbers" [level=2]
+  - paragraph:
+    - strong: "Coming later:"
+    - text: an AI explainer that only describes these numbers. It will never predict or advise.
+  - button "Sign in to save"
+  - link "Compare with another way of investing":
+    - /url: /compare
+  - group: Technical details
+  - complementary:
+    - region "Key points":
+      - heading "Key points" [level=2]
+      - list:
+        - listitem:
+          - strong: Made-up prices.
+          - text: The scenario is invented. It is not a real fund or a real market.
+        - listitem:
+          - strong: Not a forecast.
+          - text: It says nothing about what any market will do.
+        - listitem:
+          - strong: No fees included.
+          - text: Real round-up apps may charge fees that matter a lot for small balances.
+        - listitem:
+          - strong: Not advice.
+          - text: Nothing here suggests what you should do with your money.
+      - group: All assumptions (12)
+- contentinfo:
+  - text: RoundUp is an educational demo. No money moves and nothing here is advice or a forecast.
+  - link "Privacy":
+    - /url: /privacy
+  - text: ·
+  - link "How this works":
+    - /url: /how
+- alert: Your sample round-ups in a made-up market
