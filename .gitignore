@@ -11,3 +11,8 @@ supabase/.temp/
 web/screenshots/layout/
 web/screenshots/redesign/png/
 web/screenshots/a11y/
+
+# iCloud/file-sync conflict copies ("name 2.ext", "name 3.ext"): never commit them. The repository is to be moved out of Desktop (OPERATIONS.md).
+* 2.*
+* 3.*
+* 4.*

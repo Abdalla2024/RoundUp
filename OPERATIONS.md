@@ -96,3 +96,6 @@ Prices verified on the [pricing page](https://platform.claude.com/docs/en/about-
 **Engine bug.** Every stored result carries `engine_version`. Fix the bug, add a golden case, bump the version, and show "Re-run to update" on results from affected versions.
 
 **Supabase project paused.** Restore it from the dashboard (InsForge documents restoring paused projects for up to 30 days; Supabase's restore window is unverified). Anonymous simulations keep working throughout, because they don't touch the database.
+
+## 8. Working copy location (2026-10-16)
+The working copy lives in `~/Desktop`, which iCloud syncs. The sync creates conflict copies named `name 2.ext` and `name 3.ext` (seen: fixtures, screenshots, `.next/types`, test output), and twice they were committed by accident. Decision (owner): move the repository folder out of Desktop (for example `~/code/RoundUp`). Until then `.gitignore` ignores `* 2.*`, `* 3.*` and `* 4.*` so a duplicate cannot be committed, and a stray `.next/types/... 2.ts` makes `tsc` fail ("Duplicate identifier"): delete `web/.next` and retry. After the move, `tools/run-e2e-linux.sh` and the CI emulation still work (they use `~/.cache`).
