@@ -109,14 +109,19 @@ Checked from outside: ✅ sign-ups are disabled (`disable_signup: true`), email 
 
 ## 7. Real numbers on Vercel (preview, measured from this laptop, so timings include the network round trip)
 
-| Measure | Local | Vercel preview |
-|---|---|---|
-| Setup page, first load | 614 KB, about 150–200 KB transferred | 860 KB, 226 KB transferred |
-| Full-range simulation, `buys: none` | 59,313 bytes, about 150 ms | 59,313 bytes, 333–459 ms (5 runs) |
-| Full-range comparison | 118,384 bytes, about 245 ms | 118,384 bytes, 627–743 ms (5 runs) |
-| Run to the results page | 1,015 KB, about 175 KB transferred | 1,262 KB, 119 KB transferred |
+Measured 2026-10-16 on the redesign (scenario-model-2); the deployments are previews (`vercel inspect`: target `preview`): API `roundup-4tqwi6jvb-…`, web `roundup-4zgxw3q4k-…`, aliased to the two `-pr` addresses with the commands in §1 and §2 (both run from the repository root).
 
-The setup page is bigger on Vercel because the deployed build loads the Supabase browser library (243 KB uncompressed, verified by listing the scripts) on every page, while the local test build does not. Loading it only when someone signs in would remove that; this is not done yet.
+| Measure | Local (same build, earlier run) | Vercel preview |
+|---|---|---|
+| Setup page, first load | 635 KB, 182 KB transferred, 608 ms | 883 KB, 279 KB transferred, 813 ms |
+| Full-range simulation, `buys: none` | 59,915 bytes, 189 ms | 59,915 bytes, 409–505 ms (5 runs) |
+| Full-range simulation, `buys: all` | 723,182 bytes, 170 ms | 723,182 bytes, 520–593 ms (5 runs) |
+| Full-range comparison | 119,593 bytes, 248 ms | 119,593 bytes, 637–718 ms (5 runs) |
+| Run to the results page | 1,078 KB, 70 KB transferred, 758 ms | 1,326 KB, 123 KB transferred, 1,168 ms |
+
+The setup page is bigger on Vercel because the deployed build loads the Supabase browser library on every page, while the local test build does not. Loading it only when someone signs in would remove that; not done.
+
+Typical spending, checked on the deployed API and in the browser: 10 purchases a week at $0.50 from Mon 2016-01-04 to Sun 2016-12-25 (51 whole weeks) gives 510 purchases and $255.00 of round-ups (510 x $0.50); the ending value of that steady-growth run is $255.37.
 
 ## 8. Verified by the owner on 2026-10-13, and still not verified
 

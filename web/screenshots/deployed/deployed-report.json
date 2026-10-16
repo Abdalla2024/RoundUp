@@ -1,131 +1,131 @@
 {
  "setup/light": {
   "violations": [],
-  "passes": 41
+  "passes": 45
  },
  "results/light": {
   "violations": [],
-  "passes": 44
+  "passes": 45
  },
  "compare/light": {
   "violations": [],
-  "passes": 51
+  "passes": 50
  },
  "saved-signed-out/light": {
   "violations": [],
-  "passes": 42
+  "passes": 43
  },
  "how/light": {
   "violations": [],
-  "passes": 40
+  "passes": 42
  },
  "privacy/light": {
   "violations": [],
-  "passes": 37
+  "passes": 41
  },
  "setup/dark": {
   "violations": [],
-  "passes": 41
+  "passes": 45
  },
  "results/dark": {
   "violations": [],
-  "passes": 44
+  "passes": 45
  },
  "compare/dark": {
   "violations": [],
-  "passes": 51
+  "passes": 50
  },
  "saved-signed-out/dark": {
   "violations": [],
-  "passes": 42
+  "passes": 43
  },
  "how/dark": {
   "violations": [],
-  "passes": 40
+  "passes": 42
  },
  "privacy/dark": {
   "violations": [],
-  "passes": 37
+  "passes": 41
  },
  "setup/mobile": {
   "violations": [],
-  "passes": 41
+  "passes": 45
  },
  "results/mobile": {
   "violations": [],
-  "passes": 44
+  "passes": 45
  },
  "compare/mobile": {
   "violations": [],
-  "passes": 51
+  "passes": 50
  },
  "saved-signed-out/mobile": {
   "violations": [],
-  "passes": 42
+  "passes": 43
  },
  "how/mobile": {
   "violations": [],
-  "passes": 40
+  "passes": 42
  },
  "privacy/mobile": {
   "violations": [],
-  "passes": 37
+  "passes": 41
  },
  "perf": {
   "setup_first_load": {
-   "ms": 790,
-   "total_bytes": 867534,
-   "transferred_bytes": 283954,
+   "ms": 813,
+   "total_bytes": 882928,
+   "transferred_bytes": 278653,
    "by_type": {
-    "document": 12755,
-    "script": 768743,
-    "stylesheet": 15485,
-    "font": 48432,
-    "fetch": 21881,
+    "document": 24920,
+    "stylesheet": 25396,
+    "font": 24576,
+    "script": 782343,
+    "fetch": 25455,
     "other": 238
    }
   },
   "api_simulate_full_range_buys_none": {
-   "bytes": 59313,
+   "bytes": 59915,
    "ms_each_of_5": [
-    440,
-    391,
-    346,
-    367,
-    356
+    492,
+    409,
+    427,
+    505,
+    409
    ],
    "series_points": 770
   },
   "api_simulate_full_range_buys_all": {
-   "bytes": 553448,
+   "bytes": 723182,
    "ms_each_of_5": [
-    444,
-    484,
-    443,
-    448,
-    439
+    524,
+    520,
+    593,
+    521,
+    577
    ],
    "series_points": 770
   },
   "api_compare_full_range": {
-   "bytes": 118384,
+   "bytes": 119593,
    "ms_each_of_5": [
-    631,
-    633,
-    662,
-    713,
-    683
+    637,
+    685,
+    656,
+    676,
+    718
    ]
   },
   "run_full_range_to_results": {
-   "ms": 1201,
-   "total_bytes": 1269922,
-   "transferred_bytes": 119356,
+   "ms": 1168,
+   "total_bytes": 1326339,
+   "transferred_bytes": 123470,
    "by_type": {
-    "stylesheet": 15485,
-    "script": 1147775,
-    "document": 12755,
-    "fetch": 93431,
+    "stylesheet": 25396,
+    "script": 1177550,
+    "document": 24920,
+    "fetch": 97997,
     "other": 476
    }
   }
