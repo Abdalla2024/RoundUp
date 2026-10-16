@@ -11,6 +11,6 @@ export default defineConfig({
   timeout: 90_000,
   workers: 1,
   reporter: [["list"]],
-  use: { baseURL: web, trace: "off", ...(channel ? { channel } : {}) },
+  use: { baseURL: web, trace: "off", reducedMotion: "reduce", ...(channel ? { channel } : {}) },
   projects: [{ name: "deployed", use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 900 }, ...(channel ? { channel } : {}) } }],
 });

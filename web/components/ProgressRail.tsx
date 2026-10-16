@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { INPAGE_EVENT } from "@/lib/inpage";
 import { Icon } from "./Icon";
 
 const STEPS = ["Your purchases", "Market scenario", "How round-ups are invested", "Dates"];
@@ -20,11 +21,21 @@ export function ProgressRail() {
       });
       setCurrent(now);
     };
-    const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+    // Choosing a step (click or Enter) highlights it at once, and the highlight stays while the page scrolls there smoothly.
+    let lockedUntil = 0;
+    const onGoto = (e: Event) => {
+      const id = (e as CustomEvent<{ id: string }>).detail.id;
+      if (!id.startsWith("step-")) return;
+      setCurrent(Number.parseInt(id.slice(5), 10) || 1);
+      lockedUntil = Date.now() + 1300;
+    };
+    const guarded = () => { if (Date.now() >= lockedUntil) update(); else frame = 0; };
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(guarded); };
+    window.addEventListener(INPAGE_EVENT, onGoto);
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
-    return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); if (frame) cancelAnimationFrame(frame); };
+    return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); window.removeEventListener(INPAGE_EVENT, onGoto); if (frame) cancelAnimationFrame(frame); };
   }, []);
   return (
     <nav className="rail-wrap" aria-label="Progress">

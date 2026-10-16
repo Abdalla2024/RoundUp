@@ -62,6 +62,14 @@ for (const [mode, opts] of Object.entries(MODES)) {
       // results
       await runSample(page);
       await shot("results");
+      // a made-up LOSS (the crash scenario, ending inside the fall): red figures with minus signs and down arrows
+      await page.goto("/");
+      await page.getByRole("radio", { name: /Crash and recovery/ }).check();
+      await page.getByLabel("Start date").fill("2015-01-02"); await page.getByLabel("End date").fill("2016-11-30");
+      await page.getByRole("button", { name: "Run simulation" }).click();
+      await page.waitForURL("**/results"); await page.getByText("In this made-up scenario").waitFor();
+      await shot("results-loss");
+      await runSample(page);
       await page.getByRole("button", { name: "Show the chart as a table" }).click();
       await page.locator("details.all-assumptions summary").first().click();
       await shot("results-table-assumptions");

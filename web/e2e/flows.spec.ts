@@ -2,6 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { expect, test } from "@playwright/test";
+import { geometryIssues } from "./geometry";
 import { API, runSample, signIn } from "./helpers";
 
 test("simulate: sample spending → results that match the API exactly", async ({ page, request }) => {
@@ -58,17 +59,17 @@ test("theme: the system setting decides until the person chooses; the choice sur
   const page = await ctx.newPage();
   const bg = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   await page.goto("/");
-  expect(await bg()).toBe("rgb(10, 16, 32)");                                      // system dark: the dark token --bg (#0A1020)
+  expect(await bg()).toBe("rgb(11, 18, 32)");                                      // system dark: the dark token --bg (#0B1220)
   const toggle = page.getByRole("button", { name: /^Colour theme:/ });
   await expect(toggle).toHaveAccessibleName("Colour theme: the system setting. Change to light.");
   await toggle.click();
-  expect(await bg()).toBe("rgb(244, 246, 251)");                                   // chosen light, although the system is dark
+  expect(await bg()).toBe("rgb(245, 247, 250)");                                   // chosen light, although the system is dark
   await page.reload();
-  expect(await bg()).toBe("rgb(244, 246, 251)");                                   // remembered, applied before paint
+  expect(await bg()).toBe("rgb(245, 247, 250)");                                   // remembered, applied before paint
   await page.getByRole("button", { name: /^Colour theme:/ }).click();              // dark
   await page.getByRole("button", { name: /^Colour theme:/ }).click();              // back to the system setting
   await page.reload();
-  expect(await bg()).toBe("rgb(10, 16, 32)");
+  expect(await bg()).toBe("rgb(11, 18, 32)");
   await ctx.close();
 });
 
@@ -299,4 +300,22 @@ test("API errors reach the user in plain language", async ({ page }) => {
   await page.getByLabel("Start date").fill("2011-01-03");
   await page.getByRole("button", { name: "Run simulation" }).click();
   await expect(page.locator(".form-error")).toContainText("The dates must be inside the scenario");   // Next's route announcer is also role=alert
+});
+
+test("a made-up loss shows a minus sign, a down arrow and red; gain and loss figures fit at every width", async ({ page }) => {
+  for (const width of [320, 390, 768, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await page.getByRole("radio", { name: /Crash and recovery/ }).check();
+    await page.getByLabel("Start date").fill("2015-01-02"); await page.getByLabel("End date").fill("2016-11-30");
+    await page.getByRole("button", { name: "Run simulation" }).click();
+    await page.waitForURL("**/results"); await page.getByText("In this made-up scenario").waitFor();
+    const growth = page.locator(".stat").filter({ hasText: "Growth on round-ups" });
+    await expect(growth.locator(".delta.neg")).toHaveText("−$114.44");
+    await expect(growth.locator(".delta.neg svg.icon-down")).toBeVisible();
+    await expect(page.locator(".dip.neg svg.icon-down")).toBeVisible();
+    expect(await growth.locator(".delta").evaluate((e) => getComputedStyle(e).color), "loss colour, not gain").not.toBe(
+      await page.evaluate(() => getComputedStyle(document.body).color));
+    expect(await geometryIssues(page), `at ${width}px`).toEqual([]);
+  }
 });

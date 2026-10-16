@@ -4,7 +4,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { CompositionStrip } from "@/components/ResultParts";
+import { Delta } from "@/components/Delta";
+import { CompositionStrip, DipSentence, StatTiles } from "@/components/ResultParts";
 import { Icon } from "@/components/Icon";
 import { Num } from "@/components/Num";
 import { ProgressRail } from "@/components/ProgressRail";
@@ -136,13 +137,16 @@ describe("Setup cards", () => {
 });
 
 describe("Stylesheet rules", () => {
-  test("colours come from tokens: the only literal hex values are the hero button and the brand mark's white", () => {
+  test("colours come from tokens: the only literal hex values are white on the hero", () => {
     const hex = [...css.matchAll(/#[0-9A-Fa-f]{6}\b|#[0-9A-Fa-f]{3}\b/g)].map((m) => m[0].toLowerCase());
-    expect(new Set(hex)).toEqual(new Set(["#fff", "#1e1b6e"]));                    // white on the hero, and the hero button's text
+    expect(new Set(hex)).toEqual(new Set(["#fff"]));                    // white on the hero, and the hero button's text
   });
   test("reduced motion switches every animation and transition off", () => {
     expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*animation: none !important[\s\S]*transition: none !important/);
     expect(css).toMatch(/\.roll::before \{ animation: none !important; \}/);
+  });
+  test("printing shows every element that is waiting to animate in", () => {
+    expect(css).toMatch(/@media print \{ \[data-reveal\], \[data-draw\] \{ opacity: 1 !important; transform: none !important; clip-path: none !important/);
   });
   test("a visible focus ring is defined for keyboard users", () => {
     expect(css).toMatch(/:focus-visible \{ outline: 3px solid var\(--focus\)/);
@@ -156,5 +160,44 @@ describe("reading order", () => {
   test("setup step 1 uses the same name as the option (Typical spending), not the old 'sample spending'", async () => {
     const { SetupForm } = await import("@/components/SetupForm");
     expect(SetupForm.toString()).not.toContain("Use sample spending");
+  });
+});
+
+describe("red and green never carry meaning alone (WCAG 2.2 SC 1.4.1)", () => {
+  test("a gain has a plus sign and an up arrow; a loss has a minus sign and a down arrow; zero has neither colour nor arrow", () => {
+    const up = render(<Delta value="1686.87" />).container, down = render(<Delta value="-65.11" />).container,
+      zero = render(<Delta value="0.00" />).container;
+    expect(up.textContent).toBe("+$1,686.87");
+    expect(up.querySelector(".delta")!.className).toContain("pos");
+    expect(up.querySelector("svg.icon-up")).toBeTruthy();
+    expect(down.textContent).toBe("−$65.11");
+    expect(down.querySelector(".delta")!.className).toContain("neg");
+    expect(down.querySelector("svg.icon-down")).toBeTruthy();
+    expect(zero.textContent).toBe("$0.00");
+    expect(zero.querySelector(".delta")!.className).toContain("flat");
+    expect(zero.querySelector("svg")).toBeNull();
+  });
+  test("a difference between A and B is neutral (no gain/loss colour and no arrow: it would read as better or worse)", () => {
+    const { container } = render(<Delta value="-91.91" neutral />);
+    expect(container.querySelector(".delta")!.className).toContain("flat");
+    expect(container.querySelector("svg")).toBeNull();                    // sign only: an arrow would read as better or worse
+    expect(container.textContent).toBe("−$91.91");
+  });
+  test("the growth card shows its sign and arrow, and the arrow is hidden from screen readers (the sign is read)", () => {
+    const { container } = render(<StatTiles result={result} sample />);
+    const growth = container.querySelector("#def-growth")!.closest(".stat")!;
+    expect(growth.querySelector(".delta svg")!.getAttribute("aria-hidden")).toBe("true");
+    expect(growth.textContent).toContain("+$1,686.87");
+  });
+  test("the lowest-point sentence carries a down arrow and the loss style", () => {
+    const dip = { date: "2017-11-06", value: "500.83", added: "743.00", below_by: "242.17" } as never;
+    const { container } = render(<DipSentence dip={dip} />);
+    expect(container.querySelector(".dip.neg svg.icon-down")).toBeTruthy();
+  });
+  test("the value line is solid and the round-ups line is dashed (line style, not only colour)", () => {
+    expect(css).toMatch(/\.legend \.swatch\.dashed \{ border-top-style: dashed/);
+    const chart = fs.readFileSync(path.resolve(__dirname, "../../components/ChartCanvas.tsx"), "utf8");
+    expect(chart).toMatch(/dataKey="a"[^>]*strokeDasharray/);
+    expect(chart).not.toMatch(/dataKey="v"[^>]*strokeDasharray/);
   });
 });

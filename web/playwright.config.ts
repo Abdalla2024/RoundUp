@@ -12,7 +12,8 @@ export default defineConfig({
   workers: 1,
   reporter: [["list"]],
   // PW_CHROMIUM_ARGS: extra Chromium flags, used to imitate another platform's text rendering (see TEST-STRATEGY.md 0.1d)
-  use: { baseURL: WEB, trace: "off", ...(channel ? { channel } : {}),
+  // reducedMotion: every test runs without animation (settled, deterministic) unless it asks for motion (e2e/motion.spec.ts)
+  use: { baseURL: WEB, trace: "off", reducedMotion: "reduce", ...(channel ? { channel } : {}),
          launchOptions: { args: (process.env.PW_CHROMIUM_ARGS ?? "").split(" ").filter(Boolean) } },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 900 }, ...(channel ? { channel } : {}) } },

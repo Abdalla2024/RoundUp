@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
-import { counted, longDate, money, signedMoney, unsignedMoney, isNegative } from "@/lib/format";
+import { counted, longDate, money, unsignedMoney, isNegative } from "@/lib/format";
 import type { Dip, Result } from "@/lib/types";
+import { Delta } from "./Delta";
 import { Icon, type IconName } from "./Icon";
 
 export function Headline({ result, sample }: { result: Result; sample: boolean }) {
@@ -15,7 +16,7 @@ export function Headline({ result, sample }: { result: Result; sample: boolean }
   );
 }
 
-function Tile({ id, term, def, value, note, icon }: { id: string; term: string; def: string; value: string; note: string; icon: IconName }) {
+function Tile({ id, term, def, value, note, icon }: { id: string; term: string; def: string; value: React.ReactNode; note: string; icon: IconName }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="stat">
@@ -40,7 +41,7 @@ export function StatTiles({ result, sample }: { result: Result; sample: boolean 
       <Tile id="div" icon="percent" term="Dividends (simulated)" value={money(s.dividends_earned)}
         note={`${counted(s.dividend_buys, "payment", "payments")} reinvested`}
         def="Cash the made-up fund paid out from what its holdings earned." />
-      <Tile id="growth" icon="trend" term="Growth on round-ups" value={signedMoney(s.gain)}
+      <Tile id="growth" icon="trend" term="Growth on round-ups" value={<Delta value={s.gain} />}
         note={s.gain_pct === "n/a" ? "no round-ups were added" : "compared with the round-ups added"}
         def="How far the value at the end is above, or below, the round-ups added. It can be negative." />
     </dl>
@@ -77,7 +78,7 @@ export function dipText(d: Dip | null): string {
 }
 
 export function DipSentence({ dip, who }: { dip: Dip | null; who?: string }) {
-  return <p className="dip"><strong>{who ? `${who}, lowest` : "Lowest"} point compared with money put in:</strong> {dipText(dip)}</p>;
+  return <p className={`dip${dip ? " neg" : ""}`}>{dip && <Icon name="down" size={18} />}<span><strong>{who ? `${who}, lowest` : "Lowest"} point compared with money put in:</strong> {dipText(dip)}</span></p>;
 }
 
 export function CashSentence({ result }: { result: Result }) {

@@ -16,6 +16,8 @@ export function ThemeToggle() {
   function choose(t: Theme) {
     setTheme(t);
     const el = document.documentElement;
+    // colours ease between light and dark for a moment (the stylesheet switches this off under reduced motion)
+    el.classList.add("theme-anim"); window.setTimeout(() => el.classList.remove("theme-anim"), 400);
     if (t === "system") el.removeAttribute("data-theme"); else el.setAttribute("data-theme", t);
     try { if (t === "system") localStorage.removeItem(KEY); else localStorage.setItem(KEY, t); } catch { /* ignore */ }
   }

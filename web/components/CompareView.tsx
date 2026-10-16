@@ -3,9 +3,10 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { COPY } from "@/lib/copy";
-import { count, dateRange, isNegative, money, signedMoney, unsignedMoney } from "@/lib/format";
+import { count, dateRange, isNegative, money, unsignedMoney } from "@/lib/format";
 import type { Strategy } from "@/lib/types";
 import { Disclaimer, ErrorNotice } from "./Chrome";
+import { Delta } from "./Delta";
 import { Icon } from "./Icon";
 import { KeyPoints } from "./KeyPoints";
 import { DipSentence } from "./ResultParts";
@@ -56,11 +57,11 @@ export function CompareView() {
     catch (err) { noteRateLimit(err as ApiError); setError(err as ApiError); } finally { inFlight.current = false; setBusy(false); }
   }
   const C = compare?.response;
-  const rows: [string, string, string, string][] = C ? [
+  const rows: [string, React.ReactNode, React.ReactNode, React.ReactNode][] = C ? [
     ["Round-ups added", money(C.a.summary.contributed), money(C.b.summary.contributed), COPY.sameForBoth],
-    ["Value at end", money(C.a.summary.ending_value), money(C.b.summary.ending_value), signedMoney(C.difference.ending_value)],
-    ["Growth on round-ups", signedMoney(C.a.summary.gain), signedMoney(C.b.summary.gain), signedMoney(C.difference.gain)],
-    ["Dividends (simulated)", money(C.a.summary.dividends_earned), money(C.b.summary.dividends_earned), signedMoney(C.difference.dividends_earned)],
+    ["Value at end", money(C.a.summary.ending_value), money(C.b.summary.ending_value), <Delta key="d1" value={C.difference.ending_value} neutral />],
+    ["Growth on round-ups", <Delta key="a" value={C.a.summary.gain} />, <Delta key="b" value={C.b.summary.gain} />, <Delta key="d2" value={C.difference.gain} neutral />],
+    ["Dividends (simulated)", money(C.a.summary.dividends_earned), money(C.b.summary.dividends_earned), <Delta key="d3" value={C.difference.dividends_earned} neutral />],
     ["Round-ups waiting to be invested", money(C.a.summary.roundups_waiting), money(C.b.summary.roundups_waiting), COPY.seeAB],
     ["Dividends kept as cash", money(C.a.summary.dividends_as_cash), money(C.b.summary.dividends_as_cash), COPY.seeAB],
     ["Times invested from round-ups", count(C.a.summary.roundup_buys), count(C.b.summary.roundup_buys), count(C.difference.roundup_buys, true)],

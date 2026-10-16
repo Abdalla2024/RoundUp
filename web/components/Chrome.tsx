@@ -12,7 +12,7 @@ const NAV = [["/", "New simulation"], ["/compare", "Compare"], ["/saved", "Saved
 function BrandMark() {
   return (
     <svg className="brand-mark decor" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-      <defs><linearGradient id="brand-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#4338CA" /><stop offset="1" stopColor="#14B8A6" /></linearGradient></defs>
+      <defs><linearGradient id="brand-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#0B1F4B" /><stop offset="1" stopColor="#16A34A" /></linearGradient></defs>
       <rect width="32" height="32" rx="9" fill="url(#brand-g)" />
       <circle cx="16" cy="16" r="7.5" fill="none" stroke="#fff" strokeWidth="2.2" /><path d="M16 12.5v7M12.5 16h7" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" />
     </svg>
