@@ -99,6 +99,13 @@ Results from a clean `git clone` run with CI's exact commands (pip install from 
 ### 0.1f Sideways band (OQ-15, 2026-10-16)
 scenario-model-2 gives the Sideways family a pull back toward its start (SCENARIO-MODEL.md, "Sideways: the stated band"). Tests: `engine/tests/test_sideways_band.py` (the band for both styles and for seeds 1 to 60; the six other published series pinned byte-for-byte by checksum; the engine and the independent implementation agree on the new series for 4 strategies x reinvest on/off x 2 styles; version and parameters), a sparkline flatness test, and 3 new fault-injection mutations (pull reversed, pull ignoring splits, pull too weak): 55 of 55 caught. Engine suite 577 passed.
 
+### 0.1g Colour scheme and motion (2026-10-16)
+Clean `git clone` at `3199c67`, CI's exact commands: engine, scenario model and cross-check agreement 577 passed; cross-check self-tests 0 failures; API 152; independent API 514; fault injection 55 of 55 caught; typecheck clean; Vitest 212 passed (13 files); Playwright 63 passed, 8 skipped (3 screenshot-capture specs, 1 CVD capture spec counted per theme, the owner-CSV test, and the phone-only menu check). Not run here: the Supabase local database tests (they ran green on GitHub for the earlier push), and the Linux-font container run (no container runtime is installed; CI's Ubuntu run is the gate).
+- **Colour:** `tests/contrast.test.ts` now covers 37 pairs in both themes and checks, with simulated protanopia, deuteranopia and tritanopia (Machado et al. 2009), that gain and loss and strategy A and B stay apart (`tools/cvd.mjs`); `tests/screens/design.test.tsx` checks that every gain has a plus sign and an up arrow, every loss a minus sign and a down arrow, differences between strategies are neutral, and the value line is solid while the round-ups line is dashed; `e2e/flows.spec.ts` shows a made-up loss at four widths.
+- **Motion:** `tests/inpage.test.ts`, `tests/reveal.test.ts`, `e2e/motion.spec.ts` (see DESIGN.md, Motion). All other end-to-end specs run with reduced motion so they measure the page at rest.
+- **Review:** an independent reviewer found problems that were fixed (focus handling races, printing, global smooth scroll, arrows on neutral differences); see DESIGN.md, "Changes after the independent review".
+- **Not verified:** a real screen reader, a person with colour-vision deficiency, a printed page.
+
 ### 0.2 Screen-reader pass (for the owner's VoiceOver check)
 
 Automated checks cannot judge these; please cover each with VoiceOver on macOS (Safari) and, if possible, iOS:
