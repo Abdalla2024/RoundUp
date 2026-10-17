@@ -73,60 +73,60 @@
  },
  "perf": {
   "setup_first_load": {
-   "ms": 813,
-   "total_bytes": 882928,
-   "transferred_bytes": 278653,
+   "ms": 783,
+   "total_bytes": 892355,
+   "transferred_bytes": 240896,
    "by_type": {
-    "document": 24920,
-    "stylesheet": 25396,
+    "document": 25827,
+    "stylesheet": 27862,
     "font": 24576,
-    "script": 782343,
-    "fetch": 25455,
-    "other": 238
+    "script": 786631,
+    "fetch": 27062,
+    "other": 397
    }
   },
   "api_simulate_full_range_buys_none": {
    "bytes": 59915,
    "ms_each_of_5": [
-    492,
-    409,
-    427,
-    505,
-    409
+    457,
+    440,
+    400,
+    414,
+    420
    ],
    "series_points": 770
   },
   "api_simulate_full_range_buys_all": {
    "bytes": 723182,
    "ms_each_of_5": [
-    524,
-    520,
-    593,
-    521,
-    577
+    526,
+    506,
+    511,
+    563,
+    500
    ],
    "series_points": 770
   },
   "api_compare_full_range": {
    "bytes": 119593,
    "ms_each_of_5": [
+    665,
+    645,
+    679,
     637,
-    685,
-    656,
-    676,
-    718
+    689
    ]
   },
   "run_full_range_to_results": {
-   "ms": 1168,
-   "total_bytes": 1326339,
-   "transferred_bytes": 123470,
+   "ms": 1278,
+   "total_bytes": 1337124,
+   "transferred_bytes": 122934,
    "by_type": {
-    "stylesheet": 25396,
-    "script": 1177550,
-    "document": 24920,
-    "fetch": 97997,
-    "other": 476
+    "stylesheet": 27862,
+    "script": 1182225,
+    "document": 25827,
+    "fetch": 100416,
+    "other": 794
    }
   }
  }

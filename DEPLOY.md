@@ -109,19 +109,19 @@ Checked from outside: ✅ sign-ups are disabled (`disable_signup: true`), email 
 
 ## 7. Real numbers on Vercel (preview, measured from this laptop, so timings include the network round trip)
 
-Measured 2026-10-16 on the redesign (scenario-model-2); the deployments are previews (`vercel inspect`: target `preview`): API `roundup-4tqwi6jvb-…`, web `roundup-4zgxw3q4k-…`, aliased to the two `-pr` addresses with the commands in §1 and §2 (both run from the repository root).
+Measured 2026-10-16 after the green/red colour scheme and the motion changes. The web preview is `roundup-pun9mpb4n-…` (`vercel inspect`: target `preview`), aliased to `roundup-demo-web-pr.vercel.app` with `link --project roundup-web`, `deploy --yes --target=preview` and `alias set`, run from the repository root. The API preview is unchanged from the earlier deployment (`roundup-4tqwi6jvb-…`, scenario-model-2).
 
-| Measure | Local (same build, earlier run) | Vercel preview |
+| Measure | Local (same build) | Vercel preview |
 |---|---|---|
-| Setup page, first load | 635 KB, 182 KB transferred, 608 ms | 883 KB, 279 KB transferred, 813 ms |
-| Full-range simulation, `buys: none` | 59,915 bytes, 189 ms | 59,915 bytes, 409–505 ms (5 runs) |
-| Full-range simulation, `buys: all` | 723,182 bytes, 170 ms | 723,182 bytes, 520–593 ms (5 runs) |
-| Full-range comparison | 119,593 bytes, 248 ms | 119,593 bytes, 637–718 ms (5 runs) |
-| Run to the results page | 1,078 KB, 70 KB transferred, 758 ms | 1,326 KB, 123 KB transferred, 1,168 ms |
+| Setup page, first load | 646 KB, about 0.85 s to network idle | 892 KB, 241 KB transferred, 783 ms |
+| Full-range simulation, `buys: none` | 59,915 bytes | 59,915 bytes, 400–457 ms (5 runs) |
+| Full-range simulation, `buys: all` | 723,182 bytes | 723,182 bytes, 500–563 ms (5 runs) |
+| Full-range comparison | 119,593 bytes | 119,593 bytes, 637–689 ms (5 runs) |
+| Run to the results page | 1,091 KB | 1,337 KB, 123 KB transferred, 1,278 ms |
 
-The setup page is bigger on Vercel because the deployed build loads the Supabase browser library on every page, while the local test build does not. Loading it only when someone signs in would remove that; not done.
+Compared with the previous deployed redesign (883 KB, 813 ms setup; 1,326 KB, 1,168 ms to results) the colour and motion changes add about 9–11 KB; the timings are within the laptop's usual variation. The setup page is bigger on Vercel because the deployed build loads the Supabase browser library on every page, while the local test build does not.
 
-Typical spending, checked on the deployed API and in the browser: 10 purchases a week at $0.50 from Mon 2016-01-04 to Sun 2016-12-25 (51 whole weeks) gives 510 purchases and $255.00 of round-ups (510 x $0.50); the ending value of that steady-growth run is $255.37.
+Deployed checks run 2026-10-16 (`web/e2e-deployed`, 31 of 32 run, 1 skipped = your own export, which needs `OWNER_SAMPLE_CSV`): smoke; the build points at the right services; axe in light, dark and mobile on 6 screens; geometry on 6 screens in all three modes; the three sample CSVs (93 of 93 rows each); upload layout at 7 widths in both themes; typical spending (10 a week, 51 whole weeks: 510 purchases, $255.00); served colour tokens in light and dark; a made-up loss with minus sign, down arrow and loss colour; neutral strategy differences; smooth in-page scroll with focus, entrance, and reduced motion.
 
 ## 8. Verified by the owner on 2026-10-13, and still not verified
 
